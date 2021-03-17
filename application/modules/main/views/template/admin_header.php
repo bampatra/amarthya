@@ -9,7 +9,8 @@
     <meta name="description" content="">
     <meta name="author" content="">
 
-    <title>YAPN</title>
+    <title>Amarthya Group</title>
+    <link rel="icon" href="<?php echo base_url('assets/images/logo_amarthya.png');?>" type = "image/x-icon">
 
     <!-- Custom fonts for this template-->
 
@@ -17,7 +18,7 @@
     <link href="https://fonts.googleapis.com/css?family=Nunito:200,200i,300,300i,400,400i,600,600i,700,700i,800,800i,900,900i" rel="stylesheet">
 
     <!-- Custom styles for this template-->
-    <link href="<?php echo base_url('assets/css/startbootstrap/sb-admin-2.css');?>" rel="stylesheet">
+    <link href="<?php echo base_url('assets/css/startbootstrap/sb-admin-2.css?v=1');?>" rel="stylesheet">
     <link href="<?php echo base_url('assets/css/cropper.css');?>" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/jqueryui/1.12.1/jquery-ui.min.css" integrity="sha512-aOG0c6nPNzGk+5zjwyJaoRUgCdOrfSDhmMID2u4+OIslr0GjpLKo7Xm0Ao3xmpM4T8AmIouRkqwj1nrdVsLKEQ==" crossorigin="anonymous" />
 
@@ -352,7 +353,7 @@
     }
 
     .navbar-nav.sidebar{
-        background: rgba(78,116,219,1);
+        background: rgba(20,143,143,1);
     }
 
     .row_level1{
@@ -387,6 +388,13 @@
             left: 0;
             right: 0;
         }
+    }
+
+    .center{
+        display: block;
+        margin-left: auto;
+        margin-right: auto;
+        width: 50%;
     }
 
 </style>

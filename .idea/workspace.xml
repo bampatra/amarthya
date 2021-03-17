@@ -2,15 +2,34 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="822c5f09-bd0b-4858-81e7-523fc1d476f6" name="Default Changelist" comment="">
+      <change afterPath="$PROJECT_DIR$/application/modules/main/views/index.php" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/application/modules/main/views/user.php" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/assets/images/logo_amarthya.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/modules.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/modules.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/pira.iml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/amarthya.iml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/application/modules/admin/controllers/Admin.php" beforeDir="false" afterPath="$PROJECT_DIR$/application/modules/admin/controllers/Admin.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/application/modules/admin/models/Admin_model.php" beforeDir="false" afterPath="$PROJECT_DIR$/application/modules/admin/models/Admin_model.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/application/modules/admin/views/bukubesar.php" beforeDir="false" afterPath="$PROJECT_DIR$/application/modules/admin/views/bukubesar.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/application/modules/admin/views/mutasi.php" beforeDir="false" afterPath="$PROJECT_DIR$/application/modules/admin/views/mutasi.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/application/modules/admin/views/neraca.php" beforeDir="false" afterPath="$PROJECT_DIR$/application/modules/admin/views/neraca.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/application/modules/admin/views/saldo_golongan.php" beforeDir="false" afterPath="$PROJECT_DIR$/application/modules/admin/views/saldo_golongan.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/application/modules/admin/views/template/admin_header.php" beforeDir="false" afterPath="$PROJECT_DIR$/application/modules/admin/views/template/admin_header.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/application/modules/admin/views/transaksi.php" beforeDir="false" afterPath="$PROJECT_DIR$/application/modules/admin/views/transaksi.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/application/config/config.php" beforeDir="false" afterPath="$PROJECT_DIR$/application/config/config.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/application/modules/admin/controllers/Admin.php" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/application/modules/admin/models/Admin_model.php" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/application/modules/admin/views/404.html" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/application/modules/admin/views/aruskas.php" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/application/modules/admin/views/bukubesar.php" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/application/modules/admin/views/golongan.php" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/application/modules/admin/views/index.php" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/application/modules/admin/views/labarugi.php" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/application/modules/admin/views/laporan_aruskas.php" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/application/modules/admin/views/mutasi.php" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/application/modules/admin/views/neraca.php" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/application/modules/admin/views/neraca_saldo.php" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/application/modules/admin/views/nsaldo_mtm.php" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/application/modules/admin/views/rekening.php" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/application/modules/admin/views/saldo_golongan.php" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/application/modules/admin/views/template/admin_footer.php" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/application/modules/admin/views/template/admin_header.php" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/application/modules/admin/views/transaksi.php" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/application/modules/admin/views/user.php" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/css/startbootstrap/sb-admin-2.css" beforeDir="false" afterPath="$PROJECT_DIR$/assets/css/startbootstrap/sb-admin-2.css" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/css/style.css" beforeDir="false" afterPath="$PROJECT_DIR$/assets/css/style.css" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
@@ -41,104 +60,44 @@
   <component name="FileEditorManager">
     <leaf SIDE_TABS_SIZE_LIMIT_KEY="300">
       <file pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/application/modules/admin/views/template/admin_header.php">
+        <entry file="file://$PROJECT_DIR$/application/modules/main/controllers/Main.php">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="349">
-              <caret line="383" column="16" selection-start-line="383" selection-start-column="16" selection-end-line="383" selection-end-column="16" />
+            <state relative-caret-position="285">
+              <caret line="19" column="33" selection-start-line="19" selection-start-column="33" selection-end-line="19" selection-end-column="33" />
             </state>
           </provider>
         </entry>
       </file>
       <file pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/application/modules/admin/views/transaksi.php">
+        <entry file="file://$PROJECT_DIR$/application/modules/main/models/Main_model.php">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="3121">
-              <caret line="258" column="26" lean-forward="true" selection-start-line="258" selection-start-column="26" selection-end-line="258" selection-end-column="26" />
+            <state relative-caret-position="45">
+              <caret line="3" selection-start-line="3" selection-end-line="3" />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/application/modules/main/views/index.php">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="330">
+              <caret line="22" column="8" lean-forward="true" selection-start-line="22" selection-start-column="8" selection-end-line="22" selection-end-column="8" />
               <folding>
-                <element signature="n#style#0;n#button#0;n#div#1;n#!!top" expanded="true" />
-                <element signature="n#style#0;n#td#0;n#tr#0;n#!!top" expanded="true" />
-              </folding>
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/application/modules/admin/views/bukubesar.php">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="-603">
-              <caret line="77" column="40" selection-start-line="77" selection-start-column="40" selection-end-line="77" selection-end-column="40" />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/application/modules/admin/views/mutasi.php">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="296">
-              <caret line="71" column="40" selection-start-line="71" selection-start-column="40" selection-end-line="71" selection-end-column="40" />
-              <folding>
-                <element signature="n#style#0;n#span#0;n#td#0;n#tr#0;n#!!top" expanded="true" />
-              </folding>
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/application/modules/admin/views/saldo_golongan.php">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="328">
-              <caret line="32" column="44" selection-start-line="32" selection-start-column="44" selection-end-line="32" selection-end-column="44" />
-              <folding>
-                <element signature="n#style#0;n#th#0;n#tr#0;n#thead#0;n#table#0;n#div#0;n#div#1;n#div#0;n#div#0;n#!!top" expanded="true" />
-                <element signature="n#style#0;n#th#1;n#tr#0;n#thead#0;n#table#0;n#div#0;n#div#1;n#div#0;n#div#0;n#!!top" expanded="true" />
-                <element signature="n#style#0;n#th#2;n#tr#0;n#thead#0;n#table#0;n#div#0;n#div#1;n#div#0;n#div#0;n#!!top" expanded="true" />
-                <element signature="n#style#0;n#th#3;n#tr#0;n#thead#0;n#table#0;n#div#0;n#div#1;n#div#0;n#div#0;n#!!top" expanded="true" />
-                <element signature="n#style#0;n#th#4;n#tr#0;n#thead#0;n#table#0;n#div#0;n#div#1;n#div#0;n#div#0;n#!!top" expanded="true" />
-                <element signature="n#style#0;n#th#5;n#tr#0;n#thead#0;n#table#0;n#div#0;n#div#1;n#div#0;n#div#0;n#!!top" expanded="true" />
-                <element signature="n#style#0;n#th#6;n#tr#0;n#thead#0;n#table#0;n#div#0;n#div#1;n#div#0;n#div#0;n#!!top" expanded="true" />
-                <element signature="n#style#0;n#th#7;n#tr#0;n#thead#0;n#table#0;n#div#0;n#div#1;n#div#0;n#div#0;n#!!top" expanded="true" />
-              </folding>
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/application/modules/admin/views/neraca.php">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="210">
-              <caret line="164" column="69" selection-start-line="164" selection-start-column="69" selection-end-line="164" selection-end-column="69" />
-              <folding>
-                <element signature="n#style#0;n#td#2;n#tr#0;n#!!top" expanded="true" />
-                <element signature="n#style#0;n#td#3;n#tr#0;n#!!top" expanded="true" />
-                <element signature="n#style#0;n#td#2;n#tr#0;n#!!top" expanded="true" />
-                <element signature="n#style#0;n#td#2;n#tr#0;n#!!top" expanded="true" />
-                <element signature="n#style#0;n#td#2;n#tr#0;n#!!top" expanded="true" />
-                <element signature="n#style#0;n#td#0;n#!!top" expanded="true" />
-                <element signature="n#style#0;n#td#1;n#!!top" expanded="true" />
-                <element signature="n#style#0;n#td#2;n#tr#0;n#!!top" expanded="true" />
-                <element signature="n#style#0;n#td#3;n#tr#0;n#!!top" expanded="true" />
-                <element signature="n#style#0;n#td#0;n#!!top" expanded="true" />
-                <element signature="n#style#0;n#td#1;n#!!top" expanded="true" />
-                <element signature="n#style#0;n#th#0;n#tr#0;n#!!top" expanded="true" />
-                <element signature="n#style#0;n#th#1;n#tr#0;n#!!top" expanded="true" />
-                <element signature="n#style#0;n#th#2;n#tr#0;n#!!top" expanded="true" />
-                <element signature="n#style#0;n#td#0;n#tr#0;n#!!top" expanded="true" />
-                <element signature="n#style#0;n#td#0;n#tr#0;n#!!top" expanded="true" />
-                <element signature="n#style#0;n#td#0;n#tr#0;n#!!top" expanded="true" />
-                <element signature="n#style#0;n#td#2;n#tr#0;n#!!top" expanded="true" />
-                <element signature="n#style#0;n#td#3;n#tr#0;n#!!top" expanded="true" />
-                <element signature="n#style#0;n#td#0;n#tr#1;n#!!top" expanded="true" />
-                <element signature="n#style#0;n#span#0;n#strong#0;n#td#0;n#tr#1;n#!!top" expanded="true" />
+                <element signature="n#style#0;n#p#0;n#div#0;n#!!top" expanded="true" />
               </folding>
             </state>
           </provider>
         </entry>
       </file>
       <file pinned="false" current-in-tab="true">
-        <entry file="file://$PROJECT_DIR$/application/config/config.php">
+        <entry file="file://$PROJECT_DIR$/application/modules/main/views/template/admin_header.php">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="153">
-              <caret line="385" column="33" lean-forward="true" selection-start-line="385" selection-start-column="33" selection-end-line="385" selection-end-column="33" />
+            <state relative-caret-position="331">
+              <caret line="160" column="34" selection-start-line="160" selection-start-column="27" selection-end-line="160" selection-end-column="34" />
+              <folding>
+                <element signature="n#style#1;n#div#0;n#div#0;n#div#2;n#body#0;n#html#0;n#!!top" />
+                <element signature="e#17316#17369#0#HTML" />
+              </folding>
             </state>
           </provider>
         </entry>
@@ -155,20 +114,6 @@
   </component>
   <component name="FindInProjectRecents">
     <findStrings>
-      <find>get_all_t</find>
-      <find>add_transaksi</find>
-      <find>get_tran</find>
-      <find>add_rekening</find>
-      <find>invalid</find>
-      <find>confirm-delete</find>
-      <find>rekening-modal</find>
-      <find>alert-danger</find>
-      <find>golongan</find>
-      <find>rekening</find>
-      <find>get_all_golongan</find>
-      <find>re</find>
-      <find>rekening_check</find>
-      <find>add_golongan</find>
       <find>delete</find>
       <find>add_goln</find>
       <find>add_tr</find>
@@ -185,10 +130,22 @@
       <find>scrollX</find>
       <find>578</find>
       <find>576</find>
+      <find>base_url</find>
+      <find>assets</find>
+      <find>css</find>
+      <find>style.c</find>
+      <find>style.css</find>
+      <find>style</find>
+      <find>rgba(78,116,219,1)</find>
+      <find>rgba(20,143,143,1)</find>
+      <find>#224abe</find>
+      <find>#4e73df</find>
+      <find>btn-link</find>
+      <find>Admin_model</find>
+      <find>navbar-golongan</find>
+      <find>navbar-</find>
     </findStrings>
     <replaceStrings>
-      <replace>disab</replace>
-      <replace>setTimeout(function() {$('.modal-dialog').scrollTop(0);}, 200);</replace>
       <replace>prop('disabled'</replace>
       <replace>tr-hover</replace>
       <replace>master-banner-modal</replace>
@@ -217,6 +174,8 @@
       <replace>rekening_mutasi</replace>
       <replace>data.neraca.trim()</replace>
       <replace>$year</replace>
+      <replace>Main_model</replace>
+      <replace>rgba(20,143,143,1)</replace>
     </replaceStrings>
   </component>
   <component name="Git.Settings">
@@ -225,13 +184,6 @@
   <component name="IdeDocumentHistory">
     <option name="CHANGED_PATHS">
       <list>
-        <option value="$PROJECT_DIR$/application/modules/profile/models/Profile_model.php" />
-        <option value="$PROJECT_DIR$/application/modules/chat/models/Chat_model.php" />
-        <option value="$PROJECT_DIR$/application/modules/cart/views/checkout.php" />
-        <option value="$PROJECT_DIR$/application/modules/profile/views/daftar_alamat.php" />
-        <option value="$PROJECT_DIR$/application/modules/admin/views/orders.php" />
-        <option value="$PROJECT_DIR$/application/modules/admin/views/order_detail.php" />
-        <option value="$PROJECT_DIR$/application/modules/register/views/main.php" />
         <option value="$PROJECT_DIR$/application/modules/register/models/Register_model.php" />
         <option value="$PROJECT_DIR$/application/modules/register/views/invalid_token.php" />
         <option value="$PROJECT_DIR$/application/modules/register/views/activated_warning.php" />
@@ -275,7 +227,14 @@
         <option value="$PROJECT_DIR$/application/modules/admin/views/saldo_golongan.php" />
         <option value="$PROJECT_DIR$/application/modules/admin/views/template/admin_header.php" />
         <option value="$PROJECT_DIR$/application/modules/admin/views/neraca.php" />
+        <option value="$PROJECT_DIR$/application/modules/main/controllers/Admin.php" />
         <option value="$PROJECT_DIR$/application/config/config.php" />
+        <option value="$PROJECT_DIR$/application/modules/main/models/Main_model.php" />
+        <option value="$PROJECT_DIR$/application/modules/main/controllers/Main.php" />
+        <option value="$PROJECT_DIR$/assets/css/style.css" />
+        <option value="$PROJECT_DIR$/application/modules/main/views/index.php" />
+        <option value="$PROJECT_DIR$/assets/css/startbootstrap/sb-admin-2.css" />
+        <option value="$PROJECT_DIR$/application/modules/main/views/template/admin_header.php" />
       </list>
     </option>
   </component>
@@ -333,101 +292,121 @@
       <foldersAlwaysOnTop value="true" />
     </navigator>
     <panes>
-      <pane id="Scope" />
       <pane id="ProjectPane">
         <subPane>
           <expand>
             <path>
-              <item name="yapn" type="b2602c69:ProjectViewProjectNode" />
-              <item name="yapn" type="462c0819:PsiDirectoryNode" />
+              <item name="amarthya" type="b2602c69:ProjectViewProjectNode" />
+              <item name="amarthya" type="462c0819:PsiDirectoryNode" />
             </path>
             <path>
-              <item name="yapn" type="b2602c69:ProjectViewProjectNode" />
-              <item name="yapn" type="462c0819:PsiDirectoryNode" />
+              <item name="amarthya" type="b2602c69:ProjectViewProjectNode" />
+              <item name="amarthya" type="462c0819:PsiDirectoryNode" />
               <item name="application" type="462c0819:PsiDirectoryNode" />
             </path>
             <path>
-              <item name="yapn" type="b2602c69:ProjectViewProjectNode" />
-              <item name="yapn" type="462c0819:PsiDirectoryNode" />
-              <item name="application" type="462c0819:PsiDirectoryNode" />
-              <item name="config" type="462c0819:PsiDirectoryNode" />
-            </path>
-            <path>
-              <item name="yapn" type="b2602c69:ProjectViewProjectNode" />
-              <item name="yapn" type="462c0819:PsiDirectoryNode" />
+              <item name="amarthya" type="b2602c69:ProjectViewProjectNode" />
+              <item name="amarthya" type="462c0819:PsiDirectoryNode" />
               <item name="application" type="462c0819:PsiDirectoryNode" />
               <item name="modules" type="462c0819:PsiDirectoryNode" />
             </path>
             <path>
-              <item name="yapn" type="b2602c69:ProjectViewProjectNode" />
-              <item name="yapn" type="462c0819:PsiDirectoryNode" />
+              <item name="amarthya" type="b2602c69:ProjectViewProjectNode" />
+              <item name="amarthya" type="462c0819:PsiDirectoryNode" />
               <item name="application" type="462c0819:PsiDirectoryNode" />
               <item name="modules" type="462c0819:PsiDirectoryNode" />
-              <item name="admin" type="462c0819:PsiDirectoryNode" />
+              <item name="home" type="462c0819:PsiDirectoryNode" />
             </path>
             <path>
-              <item name="yapn" type="b2602c69:ProjectViewProjectNode" />
-              <item name="yapn" type="462c0819:PsiDirectoryNode" />
+              <item name="amarthya" type="b2602c69:ProjectViewProjectNode" />
+              <item name="amarthya" type="462c0819:PsiDirectoryNode" />
               <item name="application" type="462c0819:PsiDirectoryNode" />
               <item name="modules" type="462c0819:PsiDirectoryNode" />
-              <item name="admin" type="462c0819:PsiDirectoryNode" />
-              <item name="controllers" type="462c0819:PsiDirectoryNode" />
-            </path>
-            <path>
-              <item name="yapn" type="b2602c69:ProjectViewProjectNode" />
-              <item name="yapn" type="462c0819:PsiDirectoryNode" />
-              <item name="application" type="462c0819:PsiDirectoryNode" />
-              <item name="modules" type="462c0819:PsiDirectoryNode" />
-              <item name="admin" type="462c0819:PsiDirectoryNode" />
+              <item name="home" type="462c0819:PsiDirectoryNode" />
               <item name="models" type="462c0819:PsiDirectoryNode" />
             </path>
             <path>
-              <item name="yapn" type="b2602c69:ProjectViewProjectNode" />
-              <item name="yapn" type="462c0819:PsiDirectoryNode" />
+              <item name="amarthya" type="b2602c69:ProjectViewProjectNode" />
+              <item name="amarthya" type="462c0819:PsiDirectoryNode" />
               <item name="application" type="462c0819:PsiDirectoryNode" />
               <item name="modules" type="462c0819:PsiDirectoryNode" />
-              <item name="admin" type="462c0819:PsiDirectoryNode" />
+              <item name="main" type="462c0819:PsiDirectoryNode" />
+            </path>
+            <path>
+              <item name="amarthya" type="b2602c69:ProjectViewProjectNode" />
+              <item name="amarthya" type="462c0819:PsiDirectoryNode" />
+              <item name="application" type="462c0819:PsiDirectoryNode" />
+              <item name="modules" type="462c0819:PsiDirectoryNode" />
+              <item name="main" type="462c0819:PsiDirectoryNode" />
+              <item name="controllers" type="462c0819:PsiDirectoryNode" />
+            </path>
+            <path>
+              <item name="amarthya" type="b2602c69:ProjectViewProjectNode" />
+              <item name="amarthya" type="462c0819:PsiDirectoryNode" />
+              <item name="application" type="462c0819:PsiDirectoryNode" />
+              <item name="modules" type="462c0819:PsiDirectoryNode" />
+              <item name="main" type="462c0819:PsiDirectoryNode" />
+              <item name="models" type="462c0819:PsiDirectoryNode" />
+            </path>
+            <path>
+              <item name="amarthya" type="b2602c69:ProjectViewProjectNode" />
+              <item name="amarthya" type="462c0819:PsiDirectoryNode" />
+              <item name="application" type="462c0819:PsiDirectoryNode" />
+              <item name="modules" type="462c0819:PsiDirectoryNode" />
+              <item name="main" type="462c0819:PsiDirectoryNode" />
               <item name="views" type="462c0819:PsiDirectoryNode" />
             </path>
             <path>
-              <item name="yapn" type="b2602c69:ProjectViewProjectNode" />
-              <item name="yapn" type="462c0819:PsiDirectoryNode" />
+              <item name="amarthya" type="b2602c69:ProjectViewProjectNode" />
+              <item name="amarthya" type="462c0819:PsiDirectoryNode" />
               <item name="application" type="462c0819:PsiDirectoryNode" />
               <item name="modules" type="462c0819:PsiDirectoryNode" />
-              <item name="admin" type="462c0819:PsiDirectoryNode" />
+              <item name="main" type="462c0819:PsiDirectoryNode" />
               <item name="views" type="462c0819:PsiDirectoryNode" />
               <item name="template" type="462c0819:PsiDirectoryNode" />
             </path>
             <path>
-              <item name="yapn" type="b2602c69:ProjectViewProjectNode" />
-              <item name="yapn" type="462c0819:PsiDirectoryNode" />
-              <item name="application" type="462c0819:PsiDirectoryNode" />
-              <item name="modules" type="462c0819:PsiDirectoryNode" />
-              <item name="home" type="462c0819:PsiDirectoryNode" />
+              <item name="amarthya" type="b2602c69:ProjectViewProjectNode" />
+              <item name="amarthya" type="462c0819:PsiDirectoryNode" />
+              <item name="assets" type="462c0819:PsiDirectoryNode" />
             </path>
             <path>
-              <item name="yapn" type="b2602c69:ProjectViewProjectNode" />
-              <item name="yapn" type="462c0819:PsiDirectoryNode" />
-              <item name="application" type="462c0819:PsiDirectoryNode" />
-              <item name="modules" type="462c0819:PsiDirectoryNode" />
-              <item name="home" type="462c0819:PsiDirectoryNode" />
-              <item name="controllers" type="462c0819:PsiDirectoryNode" />
+              <item name="amarthya" type="b2602c69:ProjectViewProjectNode" />
+              <item name="amarthya" type="462c0819:PsiDirectoryNode" />
+              <item name="assets" type="462c0819:PsiDirectoryNode" />
+              <item name="css" type="462c0819:PsiDirectoryNode" />
             </path>
             <path>
-              <item name="yapn" type="b2602c69:ProjectViewProjectNode" />
-              <item name="yapn" type="462c0819:PsiDirectoryNode" />
-              <item name="system" type="462c0819:PsiDirectoryNode" />
+              <item name="amarthya" type="b2602c69:ProjectViewProjectNode" />
+              <item name="amarthya" type="462c0819:PsiDirectoryNode" />
+              <item name="assets" type="462c0819:PsiDirectoryNode" />
+              <item name="css" type="462c0819:PsiDirectoryNode" />
+              <item name="bootstrap" type="462c0819:PsiDirectoryNode" />
+            </path>
+            <path>
+              <item name="amarthya" type="b2602c69:ProjectViewProjectNode" />
+              <item name="amarthya" type="462c0819:PsiDirectoryNode" />
+              <item name="assets" type="462c0819:PsiDirectoryNode" />
+              <item name="css" type="462c0819:PsiDirectoryNode" />
+              <item name="startbootstrap" type="462c0819:PsiDirectoryNode" />
+            </path>
+            <path>
+              <item name="amarthya" type="b2602c69:ProjectViewProjectNode" />
+              <item name="amarthya" type="462c0819:PsiDirectoryNode" />
+              <item name="assets" type="462c0819:PsiDirectoryNode" />
+              <item name="images" type="462c0819:PsiDirectoryNode" />
             </path>
           </expand>
           <select />
         </subPane>
       </pane>
+      <pane id="Scope" />
     </panes>
   </component>
   <component name="PropertiesComponent">
     <property name="SHARE_PROJECT_CONFIGURATION_FILES" value="true" />
     <property name="WebServerToolWindowFactoryState" value="false" />
-    <property name="last_opened_file_path" value="$PROJECT_DIR$/application/modules/admin/views" />
+    <property name="last_opened_file_path" value="$PROJECT_DIR$" />
     <property name="list.type.of.created.stylesheet" value="CSS" />
     <property name="node.js.detected.package.eslint" value="true" />
     <property name="node.js.detected.package.tslint" value="true" />
@@ -442,19 +421,19 @@
     <property name="settings.editor.selected.configurable" value="reference.webide.settings.project.settings.php" />
   </component>
   <component name="RecentsManager">
+    <key name="MoveFile.RECENT_KEYS">
+      <recent name="$PROJECT_DIR$/assets/images" />
+      <recent name="$PROJECT_DIR$/application/third_party" />
+      <recent name="$PROJECT_DIR$/assets/upload" />
+      <recent name="$PROJECT_DIR$/application/modules/category/views" />
+      <recent name="$PROJECT_DIR$/application/libraries" />
+    </key>
     <key name="CopyFile.RECENT_KEYS">
       <recent name="$PROJECT_DIR$/application/modules/admin/views" />
       <recent name="$PROJECT_DIR$/application/modules/home/views" />
       <recent name="$PROJECT_DIR$/application/modules/home/models" />
       <recent name="$PROJECT_DIR$/application/modules/home/controllers" />
       <recent name="$PROJECT_DIR$/application/modules/register/views" />
-    </key>
-    <key name="MoveFile.RECENT_KEYS">
-      <recent name="$PROJECT_DIR$/application/third_party" />
-      <recent name="$PROJECT_DIR$/assets/upload" />
-      <recent name="$PROJECT_DIR$/application/modules/category/views" />
-      <recent name="$PROJECT_DIR$/application/libraries" />
-      <recent name="$PROJECT_DIR$/application/modules/chat/views" />
     </key>
   </component>
   <component name="RunDashboard">
@@ -584,18 +563,20 @@
       <workItem from="1599705745028" duration="4822000" />
       <workItem from="1599793663752" duration="5960000" />
       <workItem from="1599991460106" duration="932000" />
-      <workItem from="1600058239889" duration="3024000" />
+      <workItem from="1600058239889" duration="3342000" />
+      <workItem from="1614433703821" duration="19000" />
+      <workItem from="1615944287925" duration="3088000" />
     </task>
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="1277863000" />
+    <option name="totallyTimeSpent" value="1281288000" />
   </component>
   <component name="ToolWindowManager">
     <frame x="0" y="23" width="1280" height="777" extended-state="0" />
     <editor active="true" />
     <layout>
-      <window_info active="true" content_ui="combo" id="Project" order="0" visible="true" weight="0.23263328" />
+      <window_info active="true" content_ui="combo" id="Project" order="0" visible="true" weight="0.23909532" />
       <window_info id="Structure" order="1" side_tool="true" weight="0.25" />
       <window_info id="Favorites" order="2" side_tool="true" />
       <window_info anchor="bottom" id="Message" order="0" />
@@ -620,31 +601,6 @@
     <option name="version" value="1" />
   </component>
   <component name="editorHistoryManager">
-    <entry file="file://$PROJECT_DIR$/application/modules/register/views/activated.php" />
-    <entry file="file://$PROJECT_DIR$/application/third_party/PHPMailer/src/Exception.php">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="150">
-          <caret line="27" column="6" selection-start-line="27" selection-start-column="6" selection-end-line="27" selection-end-column="6" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/application/third_party/PHPMailer/src/SMTP.php">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="-2011">
-          <caret line="29" column="6" selection-start-line="29" selection-start-column="6" selection-end-line="29" selection-end-column="6" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/application/third_party/PHPMailer/src/PHPMailer.php">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="203">
-          <caret line="1945" column="41" selection-start-line="1945" selection-start-column="30" selection-end-line="1945" selection-end-column="41" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/application/modules/admin/views/chat.php" />
-    <entry file="file://$PROJECT_DIR$/application/modules/admin/views/product.php" />
-    <entry file="file://$PROJECT_DIR$/application/modules/admin/views/product_v2.php" />
     <entry file="file://$PROJECT_DIR$/application/modules/admin/views/pricelist.php" />
     <entry file="file://$PROJECT_DIR$/application/modules/chat/models/Chat_model.php" />
     <entry file="file://$PROJECT_DIR$/application/modules/profile/models/Profile_model.php" />
@@ -662,22 +618,8 @@
     <entry file="file://$PROJECT_DIR$/application/modules/register/controllers/Register.php" />
     <entry file="file://$PROJECT_DIR$/application/modules/rekomendasi/controllers/Rekomendasi.php" />
     <entry file="file://$PROJECT_DIR$/application/modules/search/controllers/Search.php" />
-    <entry file="file://$PROJECT_DIR$/assets/css/style.css">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="355">
-          <caret line="441" selection-start-line="441" selection-end-line="641" selection-end-column="1" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/application/modules/home/views/main.php" />
     <entry file="file://$PROJECT_DIR$/application/modules/admin/views/alamat.php" />
-    <entry file="file://$PROJECT_DIR$/application/modules/home/models/Home_model.php">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="204">
-          <caret line="15" lean-forward="true" selection-start-line="15" selection-end-line="15" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/application/modules/home/views/admin_login.php">
       <provider selected="true" editor-type-id="text-editor" />
     </entry>
@@ -688,30 +630,8 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/application/modules/admin/views/aruskas.php">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="358">
-          <caret line="74" selection-start-line="74" selection-end-line="74" />
-          <folding>
-            <element signature="n#style#0;n#td#0;n#tr#0;n#!!top" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/application/modules/admin/views/nsaldo_mtm.php">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="6680">
-          <caret line="491" column="51" lean-forward="true" selection-start-line="491" selection-start-column="51" selection-end-line="491" selection-end-column="51" />
-          <folding>
-            <element signature="n#style#0;n#tr#0;n#!!top" expanded="true" />
-            <element signature="n#style#0;n#tr#0;n#!!top" expanded="true" />
-            <element signature="n#style#0;n#tr#0;n#!!top" expanded="true" />
-            <element signature="n#style#0;n#td#1;n#tr#0;n#!!top" expanded="true" />
-            <element signature="n#style#0;n#tr#0;n#!!top" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
+    <entry file="file://$PROJECT_DIR$/application/modules/admin/views/aruskas.php" />
+    <entry file="file://$PROJECT_DIR$/application/modules/admin/views/nsaldo_mtm.php" />
     <entry file="file://$PROJECT_DIR$/application/modules/home/controllers/Home.php">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="293">
@@ -719,23 +639,8 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/application/modules/admin/views/index.php">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="1095">
-          <caret line="73" column="38" selection-start-line="73" selection-start-column="38" selection-end-line="73" selection-end-column="38" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/application/modules/admin/views/rekening.php">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="106">
-          <caret line="245" column="10" lean-forward="true" selection-start-line="245" selection-start-column="10" selection-end-line="245" selection-end-column="10" />
-          <folding>
-            <element signature="n#style#0;n#td#0;n#tr#0;n#!!top" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
+    <entry file="file://$PROJECT_DIR$/application/modules/admin/views/index.php" />
+    <entry file="file://$PROJECT_DIR$/application/modules/admin/views/rekening.php" />
     <entry file="file://$PROJECT_DIR$/application/config/constants.php">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="330">
@@ -743,204 +648,110 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/application/modules/admin/views/golongan.php">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="157">
-          <caret line="146" column="16" lean-forward="true" selection-start-line="146" selection-start-column="16" selection-end-line="146" selection-end-column="16" />
-          <folding>
-            <element signature="n#style#0;n#td#0;n#tr#0;n#!!top" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/application/modules/admin/views/labarugi.php">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="148">
-          <caret line="31" column="86" selection-start-line="31" selection-start-column="86" selection-end-line="31" selection-end-column="86" />
-          <folding>
-            <element signature="n#style#0;n#td#0;n#tr#0;n#!!top" expanded="true" />
-            <element signature="n#style#0;n#th#2;n#tr#1;n#!!top" expanded="true" />
-            <element signature="n#style#0;n#td#0;n#tr#0;n#!!top" expanded="true" />
-            <element signature="n#style#0;n#th#2;n#tr#1;n#!!top" expanded="true" />
-            <element signature="n#style#0;n#td#2;n#tr#0;n#!!top" expanded="true" />
-            <element signature="n#style#0;n#td#3;n#tr#0;n#!!top" expanded="true" />
-            <element signature="n#style#0;n#td#2;n#tr#0;n#!!top" expanded="true" />
-            <element signature="n#style#0;n#td#3;n#tr#0;n#!!top" expanded="true" />
-            <element signature="n#style#0;n#td#2;n#tr#0;n#!!top" expanded="true" />
-            <element signature="n#style#0;n#td#3;n#tr#0;n#!!top" expanded="true" />
-            <element signature="n#style#0;n#td#2;n#tr#0;n#!!top" expanded="true" />
-            <element signature="n#style#0;n#td#3;n#tr#0;n#!!top" expanded="true" />
-            <element signature="n#style#0;n#tr#0;n#!!top" expanded="true" />
-            <element signature="n#style#0;n#td#2;n#tr#0;n#!!top" expanded="true" />
-            <element signature="n#style#0;n#td#3;n#tr#0;n#!!top" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/application/modules/admin/views/laporan_aruskas.php">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="178">
-          <caret line="31" column="86" selection-start-line="31" selection-start-column="86" selection-end-line="31" selection-end-column="86" />
-          <folding>
-            <element signature="n#style#0;n#th#2;n#tr#0;n#!!top" expanded="true" />
-            <element signature="n#style#0;n#th#3;n#tr#0;n#!!top" expanded="true" />
-            <element signature="n#style#0;n#th#0;n#tr#0;n#!!top" expanded="true" />
-            <element signature="n#style#0;n#td#2;n#tr#0;n#!!top" expanded="true" />
-            <element signature="n#style#0;n#td#3;n#tr#0;n#!!top" expanded="true" />
-            <element signature="n#style#0;n#th#2;n#tr#0;n#!!top" expanded="true" />
-            <element signature="n#style#0;n#th#3;n#tr#0;n#!!top" expanded="true" />
-            <element signature="n#style#0;n#th#1;n#tr#0;n#!!top" expanded="true" />
-            <element signature="n#style#0;n#th#2;n#tr#0;n#!!top" expanded="true" />
-            <element signature="n#style#0;n#span#0;n#th#0;n#tr#1;n#!!top" expanded="true" />
-            <element signature="n#style#0;n#td#2;n#tr#0;n#!!top" expanded="true" />
-            <element signature="n#style#0;n#td#3;n#tr#0;n#!!top" expanded="true" />
-            <element signature="n#style#0;n#td#2;n#tr#1;n#!!top" expanded="true" />
-            <element signature="n#style#0;n#td#3;n#tr#1;n#!!top" expanded="true" />
-            <element signature="n#style#0;n#th#1;n#tr#2;n#!!top" expanded="true" />
-            <element signature="n#style#0;n#th#2;n#tr#2;n#!!top" expanded="true" />
-            <element signature="n#style#0;n#span#0;n#th#0;n#tr#3;n#!!top" expanded="true" />
-            <element signature="n#style#0;n#tr#0;n#!!top" expanded="true" />
-            <element signature="n#style#0;n#th#1;n#tr#0;n#!!top" expanded="true" />
-            <element signature="n#style#0;n#tr#0;n#!!top" expanded="true" />
-            <element signature="n#style#0;n#td#1;n#tr#0;n#!!top" expanded="true" />
-            <element signature="n#style#0;n#th#1;n#tr#0;n#!!top" expanded="true" />
-            <element signature="n#style#0;n#th#2;n#tr#0;n#!!top" expanded="true" />
-            <element signature="n#style#0;n#span#0;n#th#0;n#tr#1;n#!!top" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/application/modules/admin/views/neraca_saldo.php">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="103">
-          <caret line="62" column="28" selection-start-line="62" selection-start-column="28" selection-end-line="65" selection-end-column="30" />
-          <folding>
-            <element signature="e#764#818#0#PHP" expanded="true" />
-            <element signature="e#1668#1735#0#PHP" expanded="true" />
-            <element signature="e#2064#2066#0#PHP" expanded="true" />
-            <element signature="n#style#0;n#tr#0;n#!!top" expanded="true" />
-            <element signature="n#style#0;n#td#1;n#tr#0;n#!!top" expanded="true" />
-            <element signature="n#style#0;n#th#1;n#tr#0;n#!!top" expanded="true" />
-            <element signature="n#style#0;n#th#2;n#tr#0;n#!!top" expanded="true" />
-            <element signature="n#style#0;n#th#3;n#tr#0;n#!!top" expanded="true" />
-            <element signature="n#style#0;n#th#4;n#tr#0;n#!!top" expanded="true" />
-            <element signature="n#style#0;n#th#5;n#tr#0;n#!!top" expanded="true" />
-            <element signature="n#style#0;n#th#6;n#tr#0;n#!!top" expanded="true" />
-            <marker date="1598493375655" expanded="true" signature="7838:8624" ph="..." />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/application/modules/admin/views/user.php">
-      <provider selected="true" editor-type-id="text-editor" />
-    </entry>
-    <entry file="file://$PROJECT_DIR$/application/modules/admin/models/Admin_model.php">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="3855">
-          <caret line="257" column="56" selection-start-line="257" selection-start-column="43" selection-end-line="257" selection-end-column="56" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/application/modules/admin/controllers/Admin.php">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="360">
-          <caret line="584" column="53" selection-start-line="584" selection-start-column="53" selection-end-line="584" selection-end-column="53" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/application/modules/admin/views/template/admin_footer.php">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="495">
-          <caret line="33" column="36" selection-start-line="33" selection-start-column="36" selection-end-line="33" selection-end-column="36" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/application/modules/admin/views/bukubesar.php">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="-603">
-          <caret line="77" column="40" selection-start-line="77" selection-start-column="40" selection-end-line="77" selection-end-column="40" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/application/modules/admin/views/transaksi.php">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="3121">
-          <caret line="258" column="26" lean-forward="true" selection-start-line="258" selection-start-column="26" selection-end-line="258" selection-end-column="26" />
-          <folding>
-            <element signature="n#style#0;n#button#0;n#div#1;n#!!top" expanded="true" />
-            <element signature="n#style#0;n#td#0;n#tr#0;n#!!top" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/application/modules/admin/views/mutasi.php">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="296">
-          <caret line="71" column="40" selection-start-line="71" selection-start-column="40" selection-end-line="71" selection-end-column="40" />
-          <folding>
-            <element signature="n#style#0;n#span#0;n#td#0;n#tr#0;n#!!top" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/application/modules/admin/views/saldo_golongan.php">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="328">
-          <caret line="32" column="44" selection-start-line="32" selection-start-column="44" selection-end-line="32" selection-end-column="44" />
-          <folding>
-            <element signature="n#style#0;n#th#0;n#tr#0;n#thead#0;n#table#0;n#div#0;n#div#1;n#div#0;n#div#0;n#!!top" expanded="true" />
-            <element signature="n#style#0;n#th#1;n#tr#0;n#thead#0;n#table#0;n#div#0;n#div#1;n#div#0;n#div#0;n#!!top" expanded="true" />
-            <element signature="n#style#0;n#th#2;n#tr#0;n#thead#0;n#table#0;n#div#0;n#div#1;n#div#0;n#div#0;n#!!top" expanded="true" />
-            <element signature="n#style#0;n#th#3;n#tr#0;n#thead#0;n#table#0;n#div#0;n#div#1;n#div#0;n#div#0;n#!!top" expanded="true" />
-            <element signature="n#style#0;n#th#4;n#tr#0;n#thead#0;n#table#0;n#div#0;n#div#1;n#div#0;n#div#0;n#!!top" expanded="true" />
-            <element signature="n#style#0;n#th#5;n#tr#0;n#thead#0;n#table#0;n#div#0;n#div#1;n#div#0;n#div#0;n#!!top" expanded="true" />
-            <element signature="n#style#0;n#th#6;n#tr#0;n#thead#0;n#table#0;n#div#0;n#div#1;n#div#0;n#div#0;n#!!top" expanded="true" />
-            <element signature="n#style#0;n#th#7;n#tr#0;n#thead#0;n#table#0;n#div#0;n#div#1;n#div#0;n#div#0;n#!!top" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/application/modules/admin/views/template/admin_header.php">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="349">
-          <caret line="383" column="16" selection-start-line="383" selection-start-column="16" selection-end-line="383" selection-end-column="16" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/application/modules/admin/views/neraca.php">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="210">
-          <caret line="164" column="69" selection-start-line="164" selection-start-column="69" selection-end-line="164" selection-end-column="69" />
-          <folding>
-            <element signature="n#style#0;n#td#2;n#tr#0;n#!!top" expanded="true" />
-            <element signature="n#style#0;n#td#3;n#tr#0;n#!!top" expanded="true" />
-            <element signature="n#style#0;n#td#2;n#tr#0;n#!!top" expanded="true" />
-            <element signature="n#style#0;n#td#2;n#tr#0;n#!!top" expanded="true" />
-            <element signature="n#style#0;n#td#2;n#tr#0;n#!!top" expanded="true" />
-            <element signature="n#style#0;n#td#0;n#!!top" expanded="true" />
-            <element signature="n#style#0;n#td#1;n#!!top" expanded="true" />
-            <element signature="n#style#0;n#td#2;n#tr#0;n#!!top" expanded="true" />
-            <element signature="n#style#0;n#td#3;n#tr#0;n#!!top" expanded="true" />
-            <element signature="n#style#0;n#td#0;n#!!top" expanded="true" />
-            <element signature="n#style#0;n#td#1;n#!!top" expanded="true" />
-            <element signature="n#style#0;n#th#0;n#tr#0;n#!!top" expanded="true" />
-            <element signature="n#style#0;n#th#1;n#tr#0;n#!!top" expanded="true" />
-            <element signature="n#style#0;n#th#2;n#tr#0;n#!!top" expanded="true" />
-            <element signature="n#style#0;n#td#0;n#tr#0;n#!!top" expanded="true" />
-            <element signature="n#style#0;n#td#0;n#tr#0;n#!!top" expanded="true" />
-            <element signature="n#style#0;n#td#0;n#tr#0;n#!!top" expanded="true" />
-            <element signature="n#style#0;n#td#2;n#tr#0;n#!!top" expanded="true" />
-            <element signature="n#style#0;n#td#3;n#tr#0;n#!!top" expanded="true" />
-            <element signature="n#style#0;n#td#0;n#tr#1;n#!!top" expanded="true" />
-            <element signature="n#style#0;n#span#0;n#strong#0;n#td#0;n#tr#1;n#!!top" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
+    <entry file="file://$PROJECT_DIR$/application/modules/admin/views/golongan.php" />
+    <entry file="file://$PROJECT_DIR$/application/modules/admin/views/labarugi.php" />
+    <entry file="file://$PROJECT_DIR$/application/modules/admin/views/laporan_aruskas.php" />
+    <entry file="file://$PROJECT_DIR$/application/modules/admin/views/neraca_saldo.php" />
+    <entry file="file://$PROJECT_DIR$/application/modules/admin/views/user.php" />
+    <entry file="file://$PROJECT_DIR$/application/modules/admin/models/Admin_model.php" />
+    <entry file="file://$PROJECT_DIR$/application/modules/admin/controllers/Admin.php" />
+    <entry file="file://$PROJECT_DIR$/application/modules/admin/views/template/admin_footer.php" />
+    <entry file="file://$PROJECT_DIR$/application/modules/admin/views/template/admin_header.php" />
+    <entry file="file://$PROJECT_DIR$/application/modules/admin/views/transaksi.php" />
+    <entry file="file://$PROJECT_DIR$/application/modules/admin/views/bukubesar.php" />
+    <entry file="file://$PROJECT_DIR$/application/modules/admin/views/mutasi.php" />
+    <entry file="file://$PROJECT_DIR$/application/modules/admin/views/saldo_golongan.php" />
+    <entry file="file://$PROJECT_DIR$/application/modules/admin/views/neraca.php" />
     <entry file="file://$PROJECT_DIR$/application/config/config.php">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="153">
-          <caret line="385" column="33" lean-forward="true" selection-start-line="385" selection-start-column="33" selection-end-line="385" selection-end-column="33" />
+        <state relative-caret-position="203">
+          <caret line="25" column="48" selection-start-line="25" selection-start-column="48" selection-end-line="25" selection-end-column="48" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/application/modules/home/models/Home_model.php">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="225">
+          <caret line="15" lean-forward="true" selection-start-line="15" selection-end-line="15" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/application/modules/main/views/template/admin_footer.php">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="370">
+          <caret line="33" column="9" selection-start-line="33" selection-start-column="9" selection-end-line="33" selection-end-column="9" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/assets/css/style.css">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="285">
+          <caret line="19" selection-start-line="19" selection-end-line="19" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/assets/css/bootstrap/bootstrap.css">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="127955">
+          <caret line="10231" column="11" selection-start-line="10231" selection-start-column="11" selection-end-line="10231" selection-end-column="11" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/application/modules/main/controllers/Main.php">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="285">
+          <caret line="19" column="33" selection-start-line="19" selection-start-column="33" selection-end-line="19" selection-end-column="33" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/application/modules/main/models/Main_model.php">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="45">
+          <caret line="3" selection-start-line="3" selection-end-line="3" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/assets/css/startbootstrap/sb-admin-2.css">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="203">
+          <caret line="2783" column="9" lean-forward="true" selection-start-line="2783" selection-start-column="9" selection-end-line="2783" selection-end-column="9" />
+          <folding>
+            <element signature="e#29507#29741#2" expanded="true" />
+            <element signature="e#30641#30794#1" expanded="true" />
+            <element signature="e#30836#31070#1" expanded="true" />
+            <element signature="e#34438#34714#2" expanded="true" />
+            <element signature="e#35641#35794#1" expanded="true" />
+            <element signature="e#35836#36112#1" expanded="true" />
+            <element signature="e#69464#69651#2" expanded="true" />
+            <element signature="e#69928#70064#2" expanded="true" />
+            <element signature="e#70519#70652#2" expanded="true" />
+            <element signature="e#71983#72136#1" expanded="true" />
+            <element signature="e#85367#85597#2" expanded="true" />
+            <element signature="e#86609#86845#2" expanded="true" />
+            <element signature="e#120748#120925#2" expanded="true" />
+            <element signature="e#120980#121157#2" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/application/modules/main/views/index.php">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="330">
+          <caret line="22" column="8" lean-forward="true" selection-start-line="22" selection-start-column="8" selection-end-line="22" selection-end-column="8" />
+          <folding>
+            <element signature="n#style#0;n#p#0;n#div#0;n#!!top" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/application/modules/main/views/template/admin_header.php">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="331">
+          <caret line="160" column="34" selection-start-line="160" selection-start-column="27" selection-end-line="160" selection-end-column="34" />
+          <folding>
+            <element signature="n#style#1;n#div#0;n#div#0;n#div#2;n#body#0;n#html#0;n#!!top" />
+            <element signature="e#17316#17369#0#HTML" />
+          </folding>
         </state>
       </provider>
     </entry>

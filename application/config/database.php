@@ -75,13 +75,10 @@ $query_builder = TRUE;
 
 $db['default'] = array(
 	'dsn'	=> '',
-//	'hostname' => 'pira.cr7fkvrh6nmq.ap-southeast-1.rds.amazonaws.com',
-//	'username' => 'pira',
-//	'password' => 'password',
-    'hostname' => 'us-cdbr-east-02.cleardb.com',
-	'username' => 'bba3e9625b0237',
-	'password' => 'efe1aaae',
-	'database' => 'heroku_f7c89147b049159',
+    'hostname' => 'us-cdbr-east-03.cleardb.com',
+	'username' => 'b7a8fb9815cd05',
+	'password' => '40951bfc',
+	'database' => 'heroku_af064f792737933',
 	'dbdriver' => 'mysqli',
 	'dbprefix' => '',
 	'pconnect' => FALSE,

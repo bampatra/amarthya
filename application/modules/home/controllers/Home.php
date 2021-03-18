@@ -14,7 +14,7 @@ class Home extends MX_Controller
     function admin_login(){
         if(isset($_SESSION['id_web_user'])){
             if($_SESSION['is_admin'] == '1'){
-                redirect(base_url('admin'));
+                redirect(base_url('main'));
             } else {
                 redirect(base_url('home'));
             }

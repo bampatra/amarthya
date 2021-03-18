@@ -94,7 +94,7 @@
         }
 
         .loading{
-            width: 600px;
+            width: 125px;
             position: fixed;
             z-index: 10000;
             display: none;
@@ -116,7 +116,7 @@
 
 <div class="Veil-non-hover"></div>
 <div id="snackbar"></div>
-<img class="loading" src="<?php echo base_url('assets/images/load.gif');?>">
+<img class="loading" src="<?php echo base_url('assets/images/load4.gif');?>">
 
 
 
@@ -150,97 +150,27 @@
         </div>
 
         <!-- Nav Item - Pages Collapse Menu -->
-        <li class="nav-item">
-            <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseMaster" aria-expanded="true" aria-controls="collapseMaster">
-                <i class="fas fa-fw fa-key"></i>
-                <span>Master Data</span>
-            </a>
-            <div id="collapseMaster" class="collapse" aria-labelledby="headingTwo" data-parent="#accordionSidebar">
-                <div class="bg-white py-2 collapse-inner rounded">
-                    <h6 class="collapse-header">Option:</h6>
-                    <a id="navbar-golongan" class="collapse-item" href="<?php echo base_url('admin/golongan')?>">Golongan</a>
-                    <a id="navbar-rekening" class="collapse-item" href="<?php echo base_url('admin/rekening')?>">Rekening</a>
-                    <a id="navbar-arus-kas" class="collapse-item" href="<?php echo base_url('admin/aruskas')?>">Arus Kas</a>
-                </div>
-            </div>
-        </li>
+<!--        <li class="nav-item">-->
+<!--            <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseMaster" aria-expanded="true" aria-controls="collapseMaster">-->
+<!--                <i class="fas fa-fw fa-key"></i>-->
+<!--                <span>Staff</span>-->
+<!--            </a>-->
+<!--            <div id="collapseMaster" class="collapse" aria-labelledby="headingTwo" data-parent="#accordionSidebar">-->
+<!--                <div class="bg-white py-2 collapse-inner rounded">-->
+<!--                    <h6 class="collapse-header">Option:</h6>-->
+<!--                    <a class="collapse-item" href="--><?php //echo base_url('main/staff')?><!--">Data Staff</a>-->
+<!--                    <a class="collapse-item" href="--><?php //echo base_url('main/staff-input')?><!--">Input Staff</a>-->
+<!--                </div>-->
+<!--            </div>-->
+<!--        </li>-->
 
         <li class="nav-item">
-            <a class="nav-link" href="<?php echo base_url('admin/transaksi')?>">
+            <a class="nav-link" href="<?php echo base_url('main/staff')?>">
                 <i class="fas fa-fw fa-money-bill-wave"></i>
-                <span>Transaksi</span>
+                <span>Staff</span>
             </a>
         </li>
 
-        <li class="nav-item">
-            <a class="nav-link" href="<?php echo base_url('admin/bukubesar')?>">
-                <i class="fas fa-fw fa-book-open"></i>
-                <span>Buku Besar</span>
-            </a>
-        </li>
-
-        <li class="nav-item">
-            <a class="nav-link" href="<?php echo base_url('admin/mutasi')?>">
-                <i class="fas fa-fw fa-calendar"></i>
-                <span>Mutasi</span>
-            </a>
-        </li>
-
-<!--        <li class="nav-item">-->
-<!--            <a class="nav-link" href="--><?php //echo base_url('admin/saldo_golongan')?><!--">-->
-<!--                <i class="fas fa-fw fa-bullseye"></i>-->
-<!--                <span>Saldo per Golongan</span>-->
-<!--            </a>-->
-<!--        </li>-->
-
-        <li class="nav-item">
-            <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseSaldo" aria-expanded="true" aria-controls="collapseSaldo">
-                <i class="fas fa-fw fa-dollar-sign"></i>
-                <span>Saldo</span>
-            </a>
-            <div id="collapseSaldo" class="collapse" aria-labelledby="headingTwo" data-parent="#accordionSidebar">
-                <div class="bg-white py-2 collapse-inner rounded">
-                    <h6 class="collapse-header">Option:</h6>
-                    <a id="navbar-golongan" class="collapse-item" href="<?php echo base_url('admin/neraca_saldo')?>">Neraca Saldo</a>
-                    <a id="navbar-rekening" class="collapse-item" href="<?php echo base_url('admin/nsaldo_mtm')?>">Neraca Saldo MTM</a>
-                    <a id="navbar-arus-kas" class="collapse-item" href="<?php echo base_url('admin/saldo_golongan')?>">Saldo per Golongan</a>
-                </div>
-            </div>
-        </li>
-
-<!--        <li class="nav-item">-->
-<!--            <a class="nav-link" href="--><?php //echo base_url('admin/neraca')?><!--">-->
-<!--                <i class="fas fa-fw fa-balance-scale"></i>-->
-<!--                <span>Neraca</span>-->
-<!--            </a>-->
-<!--        </li>-->
-<!--        <li class="nav-item">-->
-<!--            <a class="nav-link" href="--><?php //echo base_url('admin/labarugi')?><!--">-->
-<!--                <i class="fas fa-fw fa-dollar-sign"></i>-->
-<!--                <span>Laba Rugi</span>-->
-<!--            </a>-->
-<!--        </li>-->
-<!--        <li class="nav-item">-->
-<!--            <a class="nav-link" href="--><?php //echo base_url('admin/laporan_aruskas')?><!--">-->
-<!--                <i class="fas fa-fw fa-dollar-sign"></i>-->
-<!--                <span>Laporan Arus Kas</span>-->
-<!--            </a>-->
-<!--        </li>-->
-
-        <li class="nav-item">
-            <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseLaporan" aria-expanded="true" aria-controls="collapseSaldo">
-                <i class="fas fa-fw fa-file"></i>
-                <span>Laporan</span>
-            </a>
-            <div id="collapseLaporan" class="collapse" aria-labelledby="headingTwo" data-parent="#accordionSidebar">
-                <div class="bg-white py-2 collapse-inner rounded">
-                    <h6 class="collapse-header">Option:</h6>
-                    <a id="navbar-golongan" class="collapse-item" href="<?php echo base_url('admin/neraca')?>">Neraca</a>
-                    <a id="navbar-rekening" class="collapse-item" href="<?php echo base_url('admin/labarugi')?>">Laba Rugi</a>
-                    <a id="navbar-arus-kas" class="collapse-item" href="<?php echo base_url('admin/laporan_aruskas')?>">Arus Kas</a>
-                </div>
-            </div>
-        </li>
 
         <!-- Divider -->
         <hr class="sidebar-divider">
@@ -687,6 +617,18 @@
         display: inline-block;
         margin: 100px auto;
     }
+
+    input::-webkit-outer-spin-button,
+    input::-webkit-inner-spin-button {
+        /* display: none; <- Crashes Chrome on hover */
+        -webkit-appearance: none;
+        margin: 0; /* <-- Apparently some margin are still there even though it's hidden */
+    }
+
+    input[type=number] {
+        -moz-appearance:textfield; /* Firefox */
+    }
+
 </style>
 <script>
 
@@ -696,7 +638,7 @@
         setTimeout(function(){ $('#snackbar').removeClass('show'); }, 3000);
     }
 
-    admin_url = '<?php echo base_url('admin/');?>';
+    admin_url = '<?php echo base_url('main/');?>';
 
     $('.Veil-non-hover').click(function(){
         $(this).fadeOut();

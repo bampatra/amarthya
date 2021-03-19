@@ -9,6 +9,55 @@ class Main_model extends CI_Model
         return $query;
     }
 
+    function get_product(){
+        $sql = "SELECT *
+                FROM product 
+                WHERE active_product = '1'
+                ORDER BY nama_product";
+
+        $query = $this->db->query($sql);
+        return $query;
+    }
+
+    function get_product_by_id($id){
+        $sql = "SELECT *
+                FROM product 
+                WHERE active_product = '1' AND id_product = '".$id."'
+                ORDER BY nama_product";
+
+        $query = $this->db->query($sql);
+        return $query;
+    }
+
+    function nama_product_check($nama_product){
+        $sql = "SELECT * 
+                FROM product
+                WHERE nama_product = '".$nama_product."'";
+
+        $query = $this->db->query($sql);
+        return $query;
+    }
+
+    function add_product($data){
+        $input_data = array(
+            'nama_product' => $data['nama_product'],
+            'SKU_product' => $data['SKU_product'],
+            'satuan_product' => $data['satuan_product'],
+            'HP_product' => $data['HP_product'],
+            'HJ_product' => $data['HJ_product'],
+            'HR_product' => $data['HR_product']
+        );
+
+        $this->db->insert('product',$input_data);
+        $insert_id = $this->db->insert_id();
+        return $insert_id;
+    }
+
+    function update_product($updated_data, $id_product){
+        $this->db->where('id_product', $id_product);
+        return $this->db->update('product',$updated_data);
+    }
+
     function get_vendor(){
         $sql = "SELECT *
                 FROM vendor 

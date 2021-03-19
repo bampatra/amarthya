@@ -21,10 +21,105 @@ class Main extends MX_Controller
         $this->load->view('template/admin_footer');
     }
 
+    function product(){
+        $this->load->view('template/admin_header');
+        $this->load->view('product');
+        $this->load->view('template/admin_footer');
+    }
+
+    function get_product(){
+        $data = $this->Main_model->get_product();
+        echo json_encode($data->result_object());
+        return;
+    }
+
     function vendor(){
         $this->load->view('template/admin_header');
         $this->load->view('vendor');
         $this->load->view('template/admin_footer');
+    }
+
+    function get_product_by_id(){
+        $id = htmlentities($_REQUEST['id_product'], ENT_QUOTES);
+        $data = $this->Main_model->get_product_by_id($id);
+        echo json_encode($data->row());
+        return;
+    }
+
+    function add_product(){
+
+        $id_product = strtoupper(trim(htmlentities($_REQUEST['id_product'], ENT_QUOTES)));
+        $nama_product = trim(htmlentities($_REQUEST['nama_product'], ENT_QUOTES));
+        $SKU_product = strtoupper(trim(htmlentities($_REQUEST['SKU_product'], ENT_QUOTES)));
+        $satuan_product = strtoupper(trim(htmlentities($_REQUEST['satuan_product'], ENT_QUOTES)));
+        $HP_product = strtoupper(trim(htmlentities($_REQUEST['HP_product'], ENT_QUOTES)));
+        $HJ_product = strtoupper(trim(htmlentities($_REQUEST['HJ_product'], ENT_QUOTES)));
+        $HR_product = strtoupper(trim(htmlentities($_REQUEST['HR_product'], ENT_QUOTES)));
+
+        //validation
+        $error = array();
+
+        $this->db->trans_begin();
+
+        if(empty($nama_product)){
+            array_push($error, "invalid-namaproduct");
+        }
+
+        if(empty($satuan_product)){
+            array_push($error, "invalid-satuanproduct");
+        }
+
+        if(empty($HP_product) || !is_numeric($HP_product)){
+            array_push($error, "invalid-HP");
+        }
+
+        if(empty($HJ_product) || !is_numeric($HJ_product)){
+            array_push($error, "invalid-HJ");
+        }
+
+        if(empty($HR_product) || !is_numeric($HR_product)){
+            array_push($error, "invalid-HR");
+        }
+
+        if(!empty($error)){
+            $return_arr = array("Status" => 'FORMERROR', "Error" => $error);
+            $this->db->trans_rollback();
+            echo json_encode($return_arr);
+            return;
+        }
+
+        $data = compact('nama_product', 'SKU_product', 'satuan_product',
+                        'HJ_product', 'HR_product', 'HP_product');
+
+
+        if($this->Main_model->get_product_by_id($id_product)->num_rows() == 0){
+            if($this->Main_model->nama_product_check($nama_product)->num_rows() > 0){
+                $return_arr = array("Status" => 'EXIST');
+                $this->db->trans_rollback();
+                echo json_encode($return_arr);
+                return;
+            }
+
+            if($this->Main_model->add_product($data)){
+                $this->db->trans_commit();
+                $return_arr = array("Status" => 'OK', "Message" => '');
+            } else {
+                $this->db->trans_rollback();
+                $return_arr = array("Status" => 'ERROR', "Message" => 'Gagal menambahkan produk');
+            }
+        } else {
+            if($this->Main_model->update_product($data, $id_product)){
+                $this->db->trans_commit();
+                $return_arr = array("Status" => 'OK', "Message" => '');
+            } else {
+                $this->db->trans_rollback();
+                $return_arr = array("Status" => 'ERROR', "Message" => 'Gagal mengupdate produk');
+            }
+
+        }
+
+        echo json_encode($return_arr);
+
     }
 
     function get_vendor(){
@@ -86,6 +181,7 @@ class Main extends MX_Controller
             }
 
             if($this->Main_model->add_vendor($data)){
+                $this->db->trans_commit();
                 $return_arr = array("Status" => 'OK', "Message" => '');
             } else {
                 $this->db->trans_rollback();
@@ -93,6 +189,7 @@ class Main extends MX_Controller
             }
         } else {
             if($this->Main_model->update_vendor($data, $id_vendor)){
+                $this->db->trans_commit();
                 $return_arr = array("Status" => 'OK', "Message" => '');
             } else {
                 $this->db->trans_rollback();
@@ -100,7 +197,6 @@ class Main extends MX_Controller
             }
         }
 
-        $this->db->trans_commit();
         echo json_encode($return_arr);
 
     }
@@ -170,6 +266,7 @@ class Main extends MX_Controller
             }
 
             if($this->Main_model->add_customer($data)){
+                $this->db->trans_commit();
                 $return_arr = array("Status" => 'OK', "Message" => '');
             } else {
                 $this->db->trans_rollback();
@@ -177,6 +274,7 @@ class Main extends MX_Controller
             }
         } else {
             if($this->Main_model->update_customer($data, $id_customer)){
+                $this->db->trans_commit();
                 $return_arr = array("Status" => 'OK', "Message" => '');
             } else {
                 $this->db->trans_rollback();
@@ -184,7 +282,6 @@ class Main extends MX_Controller
             }
         }
 
-        $this->db->trans_commit();
         echo json_encode($return_arr);
 
     }
@@ -287,6 +384,7 @@ class Main extends MX_Controller
             }
 
             if($this->Main_model->add_staff($data)){
+                $this->db->trans_commit();
                 $return_arr = array("Status" => 'OK', "Message" => '');
             } else {
                 $this->db->trans_rollback();
@@ -294,6 +392,7 @@ class Main extends MX_Controller
             }
         } else {
             if($this->Main_model->update_staff($data, $id_staff)){
+                $this->db->trans_commit();
                 $return_arr = array("Status" => 'OK', "Message" => '');
             } else {
                 $this->db->trans_rollback();
@@ -301,7 +400,6 @@ class Main extends MX_Controller
             }
         }
 
-        $this->db->trans_commit();
         echo json_encode($return_arr);
 
     }

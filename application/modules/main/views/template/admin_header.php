@@ -171,6 +171,13 @@
             </a>
         </li>
 
+        <li class="nav-item">
+            <a class="nav-link" href="<?php echo base_url('main/customer')?>">
+                <i class="fas fa-fw fa-money-bill-wave"></i>
+                <span>Customer</span>
+            </a>
+        </li>
+
 
         <!-- Divider -->
         <hr class="sidebar-divider">

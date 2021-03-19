@@ -4,15 +4,15 @@
 <div class="container-fluid">
 
     <!-- Page Heading -->
-    <h1 class="h3 mb-2 text-gray-800">Data Staff</h1>
+    <h1 class="h3 mb-2 text-gray-800">Data Vendor</h1>
     <br>
 
-    <button class="btn btn-primary add" style="background: #a50000; color: white; width: 300px;"> Tambah Customer </button>
+    <button class="btn btn-primary add" style="background: #a50000; color: white; width: 300px;"> Tambah Vendor</button>
     <br> <br>
     <!-- DataTales Example -->
     <div class="card shadow mb-4">
         <div class="card-header py-3">
-            <h6 class="m-0 font-weight-bold text-primary">Daftar Customer</h6>
+            <h6 class="m-0 font-weight-bold text-primary">Daftar Vendor</h6>
         </div>
         <div class="card-body">
             <div class="table-responsive">
@@ -20,7 +20,7 @@
                     <thead>
                     <tr>
                         <th style="display: none;"> ID </th>
-                        <th> Nama Customer </th>
+                        <th> Nama Vendor </th>
                     </tr>
                     </thead>
                     <tbody id="main-content">
@@ -38,7 +38,7 @@
 <!-- End of Main Content -->
 
 
-<div class="modal fade" tabindex="-1" role="dialog" id="customer-modal" style="z-index: 5000">
+<div class="modal fade" tabindex="-1" role="dialog" id="vendor-modal" style="z-index: 5000">
     <div class="modal-dialog" role="document">
         <div class="modal-content">
             <div class="modal-header">
@@ -48,38 +48,38 @@
                 </button>
             </div>
             <div class="modal-body">
-                <form id="customer-form">
+                <form id="vendor-form">
                     <div class="form-group" >
-                        <label class="col-form-label">Nama Customer</label>
-                        <input type="text" id="nama_customer"  name="nama_customer" class="form-control form-active-control">
-                        <div class="invalid-feedback invalid-namacustomer">Data tidak valid</div>
+                        <label class="col-form-label">Nama Vendor</label>
+                        <input type="text" id="nama_vendor"  name="nama_vendor" class="form-control form-active-control">
+                        <div class="invalid-feedback invalid-namavendor">Data tidak valid</div>
                     </div>
 
                     <div class="form-group">
-                        <label class="col-form-label">Alamat Delivery</label>
-                        <textarea id="alamat_customer" name="alamat_customer" class="form-control form-active-control"> </textarea>
-                        <div class="invalid-feedback invalid-alamatcustomer">Data tidak valid</div>
+                        <label class="col-form-label">Alamat Vendor</label>
+                        <textarea id="alamat_vendor" name="alamat_vendor" class="form-control form-active-control"> </textarea>
+                        <div class="invalid-feedback invalid-alamatvendor">Data tidak valid</div>
                     </div>
 
                     <div class="form-group" >
                         <label class="col-form-label">No. HP</label>
-                        <input type="number" id="no_hp_customer"  name="no_hp_customer" class="form-control form-active-control">
+                        <input type="number" id="no_hp_vendor"  name="no_hp_vendor" class="form-control form-active-control">
                         <div class="invalid-feedback invalid-nohp">Data tidak valid</div>
                     </div>
 
                     <div class="form-group" >
                         <label class="col-form-label">Email</label>
-                        <input type="text" id="email_customer"  name="email_customer" class="form-control form-active-control">
+                        <input type="text" id="email_vendor"  name="email_vendor" class="form-control form-active-control">
                         <div class="invalid-feedback invalid-email">Data tidak valid</div>
                     </div>
 
                     <div class="form-group">
                         <label class="col-form-label">Catatan</label>
-                        <textarea id="catatan_customer" name="catatan_customer" class="form-control form-active-control"> </textarea>
+                        <textarea id="catatan_vendor" name="catatan_vendor" class="form-control form-active-control"> </textarea>
                     </div>
 
 
-                    <input type="hidden" id="id_customer" name="id_customer" val="0">
+                    <input type="hidden" id="id_vendor" name="id_vendor" val="0">
                 </form>
             </div>
             <div class="modal-footer">
@@ -116,24 +116,24 @@
     $('#collapseUser').addClass('show');
     $('#navbar-user').addClass('active');
 
-    get_customer();
+    get_vendor();
 
     //get all products
-    function get_customer(){
+    function get_vendor(){
         $('.loading').css("display", "block");
         $('.Veil-non-hover').fadeIn();
         $.ajax({
             type        : 'GET', // define the type of HTTP verb we want to use (POST for our form)
-            url         : admin_url + 'get_customer', // the url where we want to POST// our data object
+            url         : admin_url + 'get_vendor', // the url where we want to POST// our data object
             dataType    : 'json',
             success     : function(data){
                 html = '';
                 data.forEach(function(data){
 
                     html += '<tr>'+
-                        '<td style="display: none;">'+ data.id_customer +'</td>';
+                        '<td style="display: none;">'+ data.id_vendor +'</td>';
 
-                    html += ' <td>'+ data.nama_customer +'</td></tr>';
+                    html += ' <td>'+ data.nama_vendor +'</td></tr>';
                 })
 
                 $('#dataTable').DataTable().destroy();
@@ -153,28 +153,28 @@
         $('.loading').css("display", "block");
         $('.Veil-non-hover').fadeIn();
         $('body').addClass('modal-open');
-        id_customer = $('#dataTable').DataTable().row( this ).data()[0];
+        id_vendor = $('#dataTable').DataTable().row( this ).data()[0];
         $.ajax({
             type        : 'POST', // define the type of HTTP verb we want to use (POST for our form)
-            url         : admin_url + 'get_customer_by_id', // the url where we want to POST// our data object
+            url         : admin_url + 'get_vendor_by_id', // the url where we want to POST// our data object
             dataType    : 'json',
-            data        : {id_customer: id_customer},
+            data        : {id_vendor: id_vendor},
             success     : function(data){
 
                 setTimeout(function() {$('.modal-dialog').scrollTop(0);}, 200);
-                $('#id_customer').val(htmlDecode(data.id_customer));
-                $('#nama_customer').val(htmlDecode(data.nama_customer));
-                $('#alamat_customer').val(htmlDecode(data.alamat_customer));
-                $('#no_hp_customer').val(htmlDecode(data.no_hp_customer));
-                $('#email_customer').val(htmlDecode(data.email_customer));
-                $('#catatan_customer').val(htmlDecode(data.catatan_customer));
+                $('#id_vendor').val(htmlDecode(data.id_vendor));
+                $('#nama_vendor').val(htmlDecode(data.nama_vendor));
+                $('#alamat_vendor').val(htmlDecode(data.alamat_vendor));
+                $('#no_hp_vendor').val(htmlDecode(data.no_hp_vendor));
+                $('#email_vendor').val(htmlDecode(data.email_vendor));
+                $('#catatan_vendor').val(htmlDecode(data.catatan_vendor));
 
 
                 $('.form-active-control').prop('disabled', true);
 
                 $('.modal-button-save').css('display', 'none');
                 $('.modal-button-view-only').css('display', 'block');
-                $('#customer-modal').modal('toggle');
+                $('#vendor-modal').modal('toggle');
 
                 $('.loading').css("display", "none");
                 $('.Veil-non-hover').fadeOut();
@@ -185,12 +185,12 @@
     $('.add').click(function (e) {
         e.preventDefault();
         $('.invalid-feedback').css('display', 'none');
-        $('#id_customer').val(0);
+        $('#id_vendor').val(0);
         setTimeout(function() {$('.modal-dialog').scrollTop(0);}, 200);
         $('.modal-button-view-only').css('display', 'none');
-        $('#customer-form').trigger('reset');
+        $('#vendor-form').trigger('reset');
         $('.form-active-control').prop('disabled', false);
-        $('#customer-modal').modal('toggle');
+        $('#vendor-modal').modal('toggle');
         $('.modal-button-save').css('display', 'block');
     })
 
@@ -207,20 +207,20 @@
         $('.Veil-non-hover').fadeIn();
         $.ajax({
             type: 'POST', // define the type of HTTP verb we want to use (POST for our form)
-            url: admin_url + 'add_customer', // the url where we want to POST// our data object
+            url: admin_url + 'add_vendor', // the url where we want to POST// our data object
             dataType: 'json',
-            data: $('#customer-form').serialize(),
+            data: $('#vendor-form').serialize(),
             success: function (response) {
                 $('.invalid-feedback').css('display', 'none');
                 if(response.Status == "OK"){
-                    get_customer();
-                    $('#customer-modal').modal('hide');
+                    get_vendor();
+                    $('#vendor-modal').modal('hide');
                 } else if(response.Status == "FORMERROR") {
                     response.Error.forEach(function(error){
                         $('.'+ error +'').css('display', 'block');
                     })
                 } else if(response.Status == "EXIST") {
-                    show_snackbar('Nama Customer sudah terdaftar');
+                    show_snackbar('Nama Vendor sudah terdaftar');
                 } else if(response.Status == "ERROR" ){
                     show_snackbar(response.Message);
                 }

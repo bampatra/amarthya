@@ -69,6 +69,12 @@
                     </div>
 
                     <div class="form-group" >
+                        <label class="col-form-label">No. HP</label>
+                        <input type="number" id="no_hp_staff"  name="no_hp_staff" class="form-control form-active-control">
+                        <div class="invalid-feedback invalid-nohp">Data tidak valid</div>
+                    </div>
+
+                    <div class="form-group" >
                         <label class="col-form-label">Posisi</label>
                         <select id="id_posisi" name="id_posisi" class="form-control form-active-control selectpicker" data-live-search="true">
                             <option value="none"> -- Pilih Posisi -- </option>
@@ -198,6 +204,7 @@
                 $('#nama_staff').val(htmlDecode(data.nama_staff));
                 $('#tgl_lahir_staff').val(htmlDecode(data.custom_tgl_lahir));
                 $('#alamat_staff').val(htmlDecode(data.alamat_staff));
+                $('#no_hp_staff').val(htmlDecode(data.no_hp_staff));
                 $('#id_posisi').val(htmlDecode(data.id_posisi));
                 $('#salary').val(htmlDecode(data.salary_staff));
                 $('#no_rek_staff').val(htmlDecode(data.no_rek_staff));

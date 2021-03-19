@@ -4,8 +4,21 @@
 <IfModule !authz_core_module>
     Deny from all
 </IfModule>
+# Add Font Types
+AddType application/vnd.ms-fontobject .eot
+AddType application/x-font-ttf        .ttf
+AddType application/x-font-opentype   .otf
+AddType application/font-woff         .woff
+AddType application/font-woff2        .woff2
+
+# Add Image Types
+AddType image/svg+xml .svg .svgz .jpg .png .ico
+
 <IfModule mod_headers.c>
-  <FilesMatch "\.(ttf|ttc|otf|eot|woff|woff2|font.css|css)$">
-    Header set Access-Control-Allow-Origin "*"
-  </FilesMatch>
+    <FilesMatch "\.(ttf|ttc|otf|eot|woff|woff2|svg|svgz|jpg|png|ico|font.css|css|js)$">
+        #Header set Access-Control-Allow-Origin "*"
+        Header add Access-Control-Allow-Origin: "https://amarthyabali.herokuapp.com/"
+        Header add Access-Control-Allow-Methods: "GET,POST,OPTIONS,DELETE,PUT"
+        Header add Access-Control-Allow-Headers: "Upgrade-Insecure-Requests"
+    </FilesMatch>
 </IfModule>

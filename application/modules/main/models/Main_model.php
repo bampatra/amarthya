@@ -1,4 +1,5 @@
 <?php
+header('Access-Control-Allow-Origin: *');
 class Main_model extends CI_Model
 {
 

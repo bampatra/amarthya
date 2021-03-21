@@ -9,25 +9,103 @@ class Main_model extends CI_Model
         return $query;
     }
 
-    function get_product(){
-        $sql = "SELECT *
-                FROM product 
-                WHERE active_product = '1'
-                ORDER BY nama_product";
+    function get_product_stok_in_out($id_product){
+        $sql = "SELECT id_stok_in_out, tipe_in_out, stok_in_out, catatan_in_out,
+                    DATE_FORMAT(tgl_in, '%Y-%m-%d') AS custom_tgl_in,
+                    DATE_FORMAT(tgl_out, '%Y-%m-%d') AS custom_tgl_out,
+                    DATE_FORMAT(tgl_expired, '%Y-%m-%d') AS custom_tgl_expired
+                FROM stok_in_out
+                WHERE id_product = '".$id_product."'
+                ORDER BY id_stok_in_out DESC";
+
+        $query = $this->db->query($sql);
+        return $query;
+
+    }
+
+    function get_stok_in_out_by_id($id){
+        $sql = "SELECT id_stok_in_out, tipe_in_out, stok_in_out, catatan_in_out,
+                    DATE_FORMAT(tgl_in, '%Y-%m-%d') AS custom_tgl_in,
+                    DATE_FORMAT(tgl_out, '%Y-%m-%d') AS custom_tgl_out,
+                    DATE_FORMAT(tgl_expired, '%Y-%m-%d') AS custom_tgl_expired
+                FROM stok_in_out
+                WHERE id_stok_in_out = '".$id."'";
+
+        $query = $this->db->query($sql);
+        return $query;
+    }
+
+    function add_stok_in_out($data){
+        $input_data = array(
+            'id_product' => $data['id_product'],
+            'tipe_in_out' => $data['tipe_in_out'],
+            'stok_in_out' => $data['stok_in_out'],
+            'tgl_in' => $data['tgl_in'],
+            'tgl_out' => $data['tgl_out'],
+            'tgl_expired' => $data['tgl_expired'],
+            'catatan_in_out' => $data['catatan_in_out']
+        );
+
+        $this->db->insert('stok_in_out',$input_data);
+        $insert_id = $this->db->insert_id();
+        return $insert_id;
+    }
+
+    function update_stok_in_out($updated_data, $id_stok_in_out){
+        $this->db->where('id_stok_in_out', $id_stok_in_out);
+        return $this->db->update('stok_in_out',$updated_data);
+    }
+
+    function get_product($search = null){
+
+        $sql = "SELECT a.*, IFNULL(b.stok_in, 0) - IFNULL(c.stok_out, 0) as STOK
+                FROM product a
+                LEFT JOIN(
+                    SELECT SUM(stok_in_out) as stok_in, id_product 
+                    FROM stok_in_out
+                    WHERE tipe_in_out = 'IN'
+                    GROUP BY id_product
+                )b ON a.id_product = b.id_product
+                LEFT JOIN(
+                    SELECT SUM(stok_in_out) as stok_out, id_product 
+                    FROM stok_in_out
+                    WHERE tipe_in_out = 'OUT'
+                    GROUP BY id_product
+                )c ON a.id_product = c.id_product
+                WHERE a.active_product = '1'";
+
+        if($search != "" || $search == null){
+            $sql .= "and a.nama_product LIKE '%$search%'";
+        }
+
+        $sql .= "ORDER BY a.nama_product";
 
         $query = $this->db->query($sql);
         return $query;
     }
 
     function get_product_by_id($id){
-        $sql = "SELECT *
-                FROM product 
-                WHERE active_product = '1' AND id_product = '".$id."'
-                ORDER BY nama_product";
+        $sql = "SELECT a.*, IFNULL(b.stok_in, 0) - IFNULL(c.stok_out, 0) as STOK
+                FROM product a
+                LEFT JOIN(
+                    SELECT SUM(stok_in_out) as stok_in, id_product 
+                    FROM stok_in_out
+                    WHERE tipe_in_out = 'IN'
+                    GROUP BY id_product
+                )b ON a.id_product = b.id_product
+                LEFT JOIN(
+                    SELECT SUM(stok_in_out) as stok_out, id_product 
+                    FROM stok_in_out
+                    WHERE tipe_in_out = 'OUT'
+                    GROUP BY id_product
+                )c ON a.id_product = c.id_product
+                WHERE a.active_product = '1' AND a.id_product = '".$id."'
+                ORDER BY a.nama_product";
 
         $query = $this->db->query($sql);
         return $query;
     }
+
 
     function nama_product_check($nama_product){
         $sql = "SELECT * 

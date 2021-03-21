@@ -2,6 +2,7 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="822c5f09-bd0b-4858-81e7-523fc1d476f6" name="Default Changelist" comment="">
+      <change afterPath="$PROJECT_DIR$/application/modules/main/views/stok_in_out.php" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/application/modules/main/controllers/Main.php" beforeDir="false" afterPath="$PROJECT_DIR$/application/modules/main/controllers/Main.php" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/application/modules/main/models/Main_model.php" beforeDir="false" afterPath="$PROJECT_DIR$/application/modules/main/models/Main_model.php" afterDir="false" />
@@ -36,10 +37,31 @@
   <component name="FileEditorManager">
     <leaf SIDE_TABS_SIZE_LIMIT_KEY="300">
       <file pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/application/modules/main/views/product.php">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="349">
+              <caret line="192" column="27" selection-start-line="192" selection-start-column="27" selection-end-line="192" selection-end-column="27" />
+              <folding>
+                <element signature="n#style#0;n#a#0;n#div#1;n#div#0;n#div#0;n#div#2;n#!!top" expanded="true" />
+                <element signature="n#style#0;n#span#0;n#!!top" expanded="true" />
+                <element signature="e#8025#10418#0#HTML" />
+              </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/application/modules/main/controllers/Main.php">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="-176">
-              <caret line="35" column="22" lean-forward="true" selection-start-line="35" selection-start-column="22" selection-end-line="35" selection-end-column="22" />
+            <state relative-caret-position="224">
+              <caret line="165" column="20" selection-start-line="165" selection-start-column="20" selection-end-line="165" selection-end-column="20" />
+              <folding>
+                <element signature="n#get_stok_in_out_by_id#0;n#Main#0;n#!!top" />
+                <element signature="n#add_stok_in_out#0;n#Main#0;n#!!top" />
+                <element signature="n#product#0;n#Main#0;n#!!top" />
+                <element signature="n#vendor#0;n#Main#0;n#!!top" />
+                <element signature="n#get_product_by_id#0;n#Main#0;n#!!top" />
+              </folding>
             </state>
           </provider>
         </entry>
@@ -47,29 +69,8 @@
       <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/application/modules/main/models/Main_model.php">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="179">
-              <caret line="48" column="10" lean-forward="true" selection-start-line="48" selection-start-column="10" selection-end-line="48" selection-end-column="10" />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/application/modules/main/views/product.php">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="414">
-              <caret line="163" column="47" selection-start-line="163" selection-start-column="47" selection-end-line="163" selection-end-column="47" />
-              <folding>
-                <element signature="n#style#0;n#div#1;n#!!top" expanded="true" />
-                <element signature="e#1585#1592#1#HTML" expanded="true" />
-                <element signature="n#style#0;n#div#2;n#!!top" expanded="true" />
-                <element signature="e#4943#4950#1#HTML" expanded="true" />
-                <element signature="n#style#0;n#span#1;n#div#1;n#div#0;n#div#0;n#div#2;n#!!top" expanded="true" />
-                <element signature="n#style#0;n#table#0;n#div#0;n#div#1;n#div#0;n#div#0;n#div#2;n#!!top" expanded="true" />
-                <element signature="n#style#0;n#td#0;n#tr#0;n#!!top" expanded="true" />
-                <element signature="n#style#0;n#span#0;n#td#0;n#!!top" expanded="true" />
-                <element signature="n#style#0;n#td#1;n#!!top" expanded="true" />
-                <element signature="n#style#0;n#td#1;n#!!top" expanded="true" />
-              </folding>
+            <state relative-caret-position="336">
+              <caret line="72" column="39" lean-forward="true" selection-start-line="72" selection-start-column="39" selection-end-line="72" selection-end-column="39" />
             </state>
           </provider>
         </entry>
@@ -77,8 +78,21 @@
       <file pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/application/config/config.php">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="228">
+            <state relative-caret-position="524">
               <caret line="385" column="33" lean-forward="true" selection-start-line="385" selection-start-column="33" selection-end-line="385" selection-end-column="33" />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/application/modules/main/views/stok_in_out.php">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="-226">
+              <caret line="141" column="20" selection-start-line="141" selection-start-column="20" selection-end-line="141" selection-end-column="20" />
+              <folding>
+                <element signature="n#style#0;n#div#1;n#!!top" expanded="true" />
+                <element signature="e#1577#1584#1#HTML" expanded="true" />
+              </folding>
             </state>
           </provider>
         </entry>
@@ -95,10 +109,6 @@
   </component>
   <component name="FindInProjectRecents">
     <findStrings>
-      <find>nama_rekening</find>
-      <find>scrollX</find>
-      <find>578</find>
-      <find>576</find>
       <find>base_url</find>
       <find>assets</find>
       <find>css</find>
@@ -122,13 +132,15 @@
       <find>staff-modal</find>
       <find>staff-form</find>
       <find>customer-form</find>
-      <find>customer</find>
       <find>convert</find>
       <find>edit</find>
+      <find>customer</find>
+      <find>id_inout</find>
+      <find>inout-modal</find>
+      <find>num_rows</find>
+      <find>tgl_in</find>
     </findStrings>
     <replaceStrings>
-      <replace>$('.Veil-non-hover')</replace>
-      <replace>'&quot;.date('Y-m-d H:i:s').&quot;'</replace>
       <replace>pricelist_check</replace>
       <replace>[0]</replace>
       <replace>&lt;?php echo base_url</replace>
@@ -157,6 +169,8 @@
       <replace>vendor</replace>
       <replace>product-form</replace>
       <replace>product</replace>
+      <replace>inout</replace>
+      <replace>id_stok_in_out</replace>
     </replaceStrings>
   </component>
   <component name="Git.Settings">
@@ -165,7 +179,6 @@
   <component name="IdeDocumentHistory">
     <option name="CHANGED_PATHS">
       <list>
-        <option value="$PROJECT_DIR$/application/modules/admin/views/sosial_media.php" />
         <option value="$PROJECT_DIR$/application/modules/admin/views/pricelist.php" />
         <option value="$PROJECT_DIR$/application/modules/admin/views/media_sosial.php" />
         <option value="$PROJECT_DIR$/application/modules/home/models/Home_model.php" />
@@ -212,9 +225,10 @@
         <option value="$PROJECT_DIR$/application/modules/main/views/template/admin_header.php" />
         <option value="$PROJECT_DIR$/application/.htaccess" />
         <option value="$PROJECT_DIR$/.htaccess" />
-        <option value="$PROJECT_DIR$/application/modules/main/models/Main_model.php" />
-        <option value="$PROJECT_DIR$/application/modules/main/controllers/Main.php" />
         <option value="$PROJECT_DIR$/application/modules/main/views/product.php" />
+        <option value="$PROJECT_DIR$/application/modules/main/controllers/Main.php" />
+        <option value="$PROJECT_DIR$/application/modules/main/models/Main_model.php" />
+        <option value="$PROJECT_DIR$/application/modules/main/views/stok_in_out.php" />
         <option value="$PROJECT_DIR$/application/config/config.php" />
       </list>
     </option>
@@ -273,6 +287,7 @@
       <foldersAlwaysOnTop value="true" />
     </navigator>
     <panes>
+      <pane id="Scope" />
       <pane id="ProjectPane">
         <subPane>
           <expand>
@@ -325,6 +340,14 @@
               <item name="application" type="462c0819:PsiDirectoryNode" />
               <item name="modules" type="462c0819:PsiDirectoryNode" />
               <item name="main" type="462c0819:PsiDirectoryNode" />
+              <item name="models" type="462c0819:PsiDirectoryNode" />
+            </path>
+            <path>
+              <item name="amarthya" type="b2602c69:ProjectViewProjectNode" />
+              <item name="amarthya" type="462c0819:PsiDirectoryNode" />
+              <item name="application" type="462c0819:PsiDirectoryNode" />
+              <item name="modules" type="462c0819:PsiDirectoryNode" />
+              <item name="main" type="462c0819:PsiDirectoryNode" />
               <item name="views" type="462c0819:PsiDirectoryNode" />
             </path>
             <path>
@@ -364,7 +387,6 @@
           <select />
         </subPane>
       </pane>
-      <pane id="Scope" />
     </panes>
   </component>
   <component name="PropertiesComponent">
@@ -385,19 +407,19 @@
     <property name="settings.editor.selected.configurable" value="reference.webide.settings.project.settings.php" />
   </component>
   <component name="RecentsManager">
-    <key name="MoveFile.RECENT_KEYS">
-      <recent name="$PROJECT_DIR$/assets/images" />
-      <recent name="$PROJECT_DIR$/application/third_party" />
-      <recent name="$PROJECT_DIR$/assets/upload" />
-      <recent name="$PROJECT_DIR$/application/modules/category/views" />
-      <recent name="$PROJECT_DIR$/application/libraries" />
-    </key>
     <key name="CopyFile.RECENT_KEYS">
       <recent name="$PROJECT_DIR$/application/modules/main/views" />
       <recent name="$PROJECT_DIR$/application/modules/admin/views" />
       <recent name="$PROJECT_DIR$/application/modules/home/views" />
       <recent name="$PROJECT_DIR$/application/modules/home/models" />
       <recent name="$PROJECT_DIR$/application/modules/home/controllers" />
+    </key>
+    <key name="MoveFile.RECENT_KEYS">
+      <recent name="$PROJECT_DIR$/assets/images" />
+      <recent name="$PROJECT_DIR$/application/third_party" />
+      <recent name="$PROJECT_DIR$/assets/upload" />
+      <recent name="$PROJECT_DIR$/application/modules/category/views" />
+      <recent name="$PROJECT_DIR$/application/libraries" />
     </key>
   </component>
   <component name="RunDashboard">
@@ -531,18 +553,19 @@
       <workItem from="1614433703821" duration="19000" />
       <workItem from="1615944287925" duration="3620000" />
       <workItem from="1616038491768" duration="10697000" />
-      <workItem from="1616116162464" duration="14150000" />
+      <workItem from="1616116162464" duration="14421000" />
+      <workItem from="1616287516170" duration="17353000" />
     </task>
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="1306667000" />
+    <option name="totallyTimeSpent" value="1324291000" />
   </component>
   <component name="ToolWindowManager">
     <frame x="0" y="23" width="1280" height="777" extended-state="0" />
     <editor active="true" />
     <layout>
-      <window_info active="true" content_ui="combo" id="Project" order="0" visible="true" weight="0.24717286" />
+      <window_info active="true" content_ui="combo" id="Project" order="0" visible="true" weight="0.25121164" />
       <window_info id="Structure" order="1" side_tool="true" weight="0.25" />
       <window_info id="Favorites" order="2" side_tool="true" />
       <window_info anchor="bottom" id="Message" order="0" />
@@ -566,19 +589,7 @@
   <component name="TypeScriptGeneratedFilesManager">
     <option name="version" value="1" />
   </component>
-  <component name="XDebuggerManager">
-    <breakpoint-manager>
-      <breakpoints>
-        <line-breakpoint enabled="true" type="php">
-          <url>file://$PROJECT_DIR$/application/modules/main/models/Main_model.php</url>
-          <line>5</line>
-          <option name="timeStamp" value="1" />
-        </line-breakpoint>
-      </breakpoints>
-    </breakpoint-manager>
-  </component>
   <component name="editorHistoryManager">
-    <entry file="file://$PROJECT_DIR$/application/modules/product/controllers/Product.php" />
     <entry file="file://$PROJECT_DIR$/application/modules/template/views/header.php" />
     <entry file="file://$PROJECT_DIR$/application/modules/profile/views/purchase_detail.php" />
     <entry file="file://$PROJECT_DIR$/application/modules/profile/controllers/Profile.php" />
@@ -706,32 +717,12 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/application/modules/main/views/customer.php">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="379">
-          <caret line="67" column="26" lean-forward="true" selection-start-line="63" selection-start-column="20" selection-end-line="67" selection-end-column="26" />
-          <folding>
-            <element signature="n#style#0;n#td#0;n#tr#0;n#!!top" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/application/modules/main/views/user.php">
       <provider selected="true" editor-type-id="text-editor">
         <state>
           <folding>
             <element signature="n#style#0;n#td#0;n#tr#0;n#!!top" expanded="true" />
             <element signature="n#style#0;n#span#0;n#td#0;n#!!top" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/application/modules/main/views/staff.php">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="1046">
-          <caret line="212" lean-forward="true" selection-start-line="212" selection-end-line="212" />
-          <folding>
-            <element signature="n#style#0;n#td#0;n#tr#0;n#!!top" expanded="true" />
           </folding>
         </state>
       </provider>
@@ -757,42 +748,70 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/application/modules/main/controllers/Main.php">
+    <entry file="file://$PROJECT_DIR$/application/modules/main/views/customer.php">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="-176">
-          <caret line="35" column="22" lean-forward="true" selection-start-line="35" selection-start-column="22" selection-end-line="35" selection-end-column="22" />
+        <state relative-caret-position="525">
+          <caret line="148" column="5" lean-forward="true" selection-start-line="118" selection-start-column="4" selection-end-line="148" selection-end-column="5" />
+          <folding>
+            <element signature="n#style#0;n#td#0;n#tr#0;n#!!top" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/application/modules/main/views/staff.php">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="392">
+          <caret line="176" column="54" lean-forward="true" selection-start-line="176" selection-start-column="16" selection-end-line="176" selection-end-column="54" />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/application/modules/main/views/product.php">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="414">
-          <caret line="163" column="47" selection-start-line="163" selection-start-column="47" selection-end-line="163" selection-end-column="47" />
+        <state relative-caret-position="349">
+          <caret line="192" column="27" selection-start-line="192" selection-start-column="27" selection-end-line="192" selection-end-column="27" />
           <folding>
-            <element signature="n#style#0;n#div#1;n#!!top" expanded="true" />
-            <element signature="e#1585#1592#1#HTML" expanded="true" />
-            <element signature="n#style#0;n#div#2;n#!!top" expanded="true" />
-            <element signature="e#4943#4950#1#HTML" expanded="true" />
-            <element signature="n#style#0;n#span#1;n#div#1;n#div#0;n#div#0;n#div#2;n#!!top" expanded="true" />
-            <element signature="n#style#0;n#table#0;n#div#0;n#div#1;n#div#0;n#div#0;n#div#2;n#!!top" expanded="true" />
-            <element signature="n#style#0;n#td#0;n#tr#0;n#!!top" expanded="true" />
-            <element signature="n#style#0;n#span#0;n#td#0;n#!!top" expanded="true" />
-            <element signature="n#style#0;n#td#1;n#!!top" expanded="true" />
-            <element signature="n#style#0;n#td#1;n#!!top" expanded="true" />
+            <element signature="n#style#0;n#a#0;n#div#1;n#div#0;n#div#0;n#div#2;n#!!top" expanded="true" />
+            <element signature="n#style#0;n#span#0;n#!!top" expanded="true" />
+            <element signature="e#8025#10418#0#HTML" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/application/modules/main/controllers/Main.php">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="224">
+          <caret line="165" column="20" selection-start-line="165" selection-start-column="20" selection-end-line="165" selection-end-column="20" />
+          <folding>
+            <element signature="n#get_stok_in_out_by_id#0;n#Main#0;n#!!top" />
+            <element signature="n#add_stok_in_out#0;n#Main#0;n#!!top" />
+            <element signature="n#product#0;n#Main#0;n#!!top" />
+            <element signature="n#vendor#0;n#Main#0;n#!!top" />
+            <element signature="n#get_product_by_id#0;n#Main#0;n#!!top" />
           </folding>
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/application/modules/main/models/Main_model.php">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="179">
-          <caret line="48" column="10" lean-forward="true" selection-start-line="48" selection-start-column="10" selection-end-line="48" selection-end-column="10" />
+        <state relative-caret-position="336">
+          <caret line="72" column="39" lean-forward="true" selection-start-line="72" selection-start-column="39" selection-end-line="72" selection-end-column="39" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/application/modules/main/views/stok_in_out.php">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="-226">
+          <caret line="141" column="20" selection-start-line="141" selection-start-column="20" selection-end-line="141" selection-end-column="20" />
+          <folding>
+            <element signature="n#style#0;n#div#1;n#!!top" expanded="true" />
+            <element signature="e#1577#1584#1#HTML" expanded="true" />
+          </folding>
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/application/config/config.php">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="228">
+        <state relative-caret-position="524">
           <caret line="385" column="33" lean-forward="true" selection-start-line="385" selection-start-column="33" selection-end-line="385" selection-end-column="33" />
         </state>
       </provider>

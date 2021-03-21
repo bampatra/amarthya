@@ -21,6 +21,8 @@
                     <tr>
                         <th style="display: none;"> ID </th>
                         <th> Nama Produk </th>
+                        <th> HP </th>
+                        <th> HR </th>
                         <th> HJ </th>
                     </tr>
                     </thead>
@@ -43,7 +45,7 @@
     <div class="modal-dialog" role="document">
         <div class="modal-content">
             <div class="modal-header">
-                <h5 class="modal-title">Customer</h5>
+                <h5 class="modal-title">Product</h5>
                 <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                     <span aria-hidden="true">&times;</span>
                 </button>
@@ -109,7 +111,7 @@
                 </button>
             </div>
             <div class="modal-body">
-                Stok: <span class="stok_product">0</span><br>
+                Stok: <span class="stok_product"></span><br>
                 <span class="edit" style="color: blue; text-decoration: underline; font-size: 11px;">Edit Produk</span>
                 <br><br>
                 <table>
@@ -128,7 +130,8 @@
                 </table>
 
                 <br>
-                <p>Stok In/Out</p>
+                <span>Stok In/Out</span><br>
+                <a id="detail_stok_in_out" href="" target="_blank" style="font-size: 12px"> Lihat detail Stok In/Out </a>
 
 <!--                Table stok in out -->
                 <div class="table-responsive">
@@ -142,30 +145,7 @@
                             </tr>
                         </thead>
                         <tbody id="in-out-content">
-                            <tr>
-                                <th> 04/03/2021 </th>
-                                <th> IN </th>
-                                <th> 40 </th>
-                                <th> 2020-03-10 </th>
-                            </tr>
-                            <tr>
-                                <th> 04/03/2021 </th>
-                                <th> OUT </th>
-                                <th> 5 </th>
-                                <th> </th>
-                            </tr>
-                            <tr>
-                                <th> 05/03/2021 </th>
-                                <th> OUT </th>
-                                <th> 5 </th>
-                                <th> </th>
-                            </tr>
-                            <tr>
-                                <th> 06/03/2021 </th>
-                                <th> OUT </th>
-                                <th> 3 </th>
-                                <th> </th>
-                            </tr>
+
                         </tbody>
                     </table>
                 </div>
@@ -203,50 +183,125 @@
     function get_product(){
         $('.loading').css("display", "block");
         $('.Veil-non-hover').fadeIn();
-        $.ajax({
-            type        : 'GET', // define the type of HTTP verb we want to use (POST for our form)
-            url         : admin_url + 'get_product', // the url where we want to POST// our data object
-            dataType    : 'json',
-            success     : function(data){
-                html = '';
-                data.forEach(function(data){
 
-                    html += '<tr>'+
-                        '<td style="display: none;">'+ data.id_product +'</td>';
+        $('#dataTable').DataTable().destroy();
+        $('#dataTable').DataTable({
+            processing: true,
+            serverSide: true,
+            responsive: true,
+            lengthChange: false,
+            searching: true,
+            bInfo: false,
+            pagingType: "simple",
+            ajax: {
+                url     : admin_url + 'get_product',
+                type    : 'POST',
+            },
+            createdRow: function ( row, data, index ) {
+                $('td', row).eq(0).css("display", "none");
+            },
+            columns: [
+                {"data": "id_product"},
+                {
+                    "data": {
+                        "nama_product":"nama_product",
+                        "STOK":"STOK"
+                    },
+                    mRender : function(data, type, full) {
+                        html = data.nama_product +'<br> <span style="font-size: 11px">Stok: '+ data.STOK +'</span>';
+                        return html;
+                    }
+                },
+                {
+                    "data": {"HP_product":"HP_product"},
+                    mRender : function(data, type, full) {
+                        return convertToRupiah(data.HP_product)
+                    }
+                },
+                {
+                    "data": {"HR_product":"HR_product"},
+                    mRender : function(data, type, full) {
+                        return convertToRupiah(data.HR_product)
+                    }
+                },
+                {
+                    "data": {"HJ_product":"HJ_product"},
+                    mRender : function(data, type, full) {
+                        return convertToRupiah(data.HJ_product)
+                    }
+                }
 
-                    html += ' <td>'+ data.nama_product +'<br> <span style="font-size: 10px">Stok: '+ '0' +'</span></td>' +
-                            ' <td style="width:42%">'+ convertToRupiah(data.HJ_product) +'</td>' +
-                        '</tr>';
-                })
-
-                $('#dataTable').DataTable().destroy();
-                $('#main-content').html(html);
-                $('#dataTable').DataTable({
-                    "lengthChange": false
-                });
-
+            ],
+            initComplete: function (settings, json) {
                 $('.loading').css("display", "none");
                 $('.Veil-non-hover').fadeOut();
             }
-        })
+        });
+
     }
 
-    function in_out_init(){
+    function in_out_init(id_product){
 
         $('#inOutDataTable').DataTable().destroy();
+
         $('#inOutDataTable').DataTable({
-            "lengthChange": false,
-            "searching": false,
-            "bInfo": false,
-            "columnDefs": [ {
-                "targets": [1,2],
-                "orderable": false
+            processing: true,
+            serverSide: true,
+            responsive: true,
+            lengthChange: false,
+            searching: false,
+            bInfo: false,
+            columnDefs: [ {
+                targets: [1,2],
+                orderable: false
             },
                 {
-                    "targets":0,
-                    "type":"date-eu"
+                    targets:0,
+                    type:"date-eu"
                 }
-            ]
+            ],
+            pagingType: "simple",
+            ajax: {
+                url     : admin_url + 'get_stok_in_out',
+                data    : {id_product: id_product},
+                type    : 'POST',
+            },
+            createdRow: function ( row, data, index ) {
+                // $('td', row).eq(0).css("display", "none");
+            },
+            columns: [
+                {
+                    "data": {
+                        "custom_tgl_in":"custom_tgl_in",
+                        "custom_tgl_out":"custom_tgl_out",
+                        "tipe_in_out":"tipe_in_out"
+                    },
+                    mRender : function(data, type, full) {
+                        if(data.tipe_in_out == "IN"){
+                            return data.custom_tgl_in
+                        } else {
+                            return data.custom_tgl_out
+                        }
+
+                    }
+                },
+                {"data": "tipe_in_out"},
+                {"data": "stok_in_out"},
+                {
+                    "data": {"custom_tgl_expired":"custom_tgl_expired"},
+                    mRender : function(data, type, full) {
+                        if(data.custom_tgl_expired == '0000-00-00'){
+                            return '';
+                        } else {
+                            return data.custom_tgl_expired;
+                        }
+                    }
+                }
+            ],
+            initComplete: function (settings, json) {
+                $('.loading').css("display", "none");
+                $('.Veil-non-hover').fadeOut();
+            }
         });
 
     }
@@ -256,7 +311,7 @@
         $('.loading').css("display", "block");
         $('.Veil-non-hover').fadeIn();
         $('body').addClass('modal-open');
-        id_product = $('#dataTable').DataTable().row( this ).data()[0];
+        id_product = $('#dataTable').DataTable().row( this ).data().id_product;
         $.ajax({
             type        : 'POST', // define the type of HTTP verb we want to use (POST for our form)
             url         : admin_url + 'get_product_by_id', // the url where we want to POST// our data object
@@ -273,7 +328,9 @@
                 $('#HJ_product').val(htmlDecode(data.HJ_product));
                 $('#HR_product').val(htmlDecode(data.HR_product));
 
+                $('.stok_product').html(data.STOK);
 
+                $("#detail_stok_in_out").attr("href", admin_url + 'stok_in_out?product=' + data.id_product)
 
                 $('#detail-product-modal').modal('toggle');
 
@@ -283,10 +340,8 @@
                 $('.HJ_product').html(convertToRupiah(htmlDecode(data.HJ_product)));
                 $('.HR_product').html(convertToRupiah(htmlDecode(data.HR_product)));
 
-                in_out_init();
+                in_out_init(id_product);
 
-                $('.loading').css("display", "none");
-                $('.Veil-non-hover').fadeOut();
             }
         })
     });
@@ -336,7 +391,7 @@
                         $('.'+ error +'').css('display', 'block');
                     })
                 } else if(response.Status == "EXIST") {
-                    show_snackbar('Nama Customer sudah terdaftar');
+                    show_snackbar('Nama produk sudah terdaftar');
                 } else if(response.Status == "ERROR" ){
                     show_snackbar(response.Message);
                 }

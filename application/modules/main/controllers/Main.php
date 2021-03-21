@@ -21,6 +21,134 @@ class Main extends MX_Controller
         $this->load->view('template/admin_footer');
     }
 
+    function stok_in_out(){
+        $this->load->view('template/admin_header');
+
+
+        $product = $this->Main_model->get_product_by_id($_GET['product']);
+
+        if($product->num_rows() == 0){
+            // product not found error
+        } else {
+            $data['product'] = $product->result_array();
+            $this->load->view('stok_in_out', $data);
+        }
+
+        $this->load->view('template/admin_footer');
+    }
+
+    function get_stok_in_out(){
+
+        $id_product = strtoupper(trim(htmlentities($_REQUEST['id_product'], ENT_QUOTES)));
+
+        // server-side pagination
+        $draw = $_REQUEST['draw'];
+        $length = $_REQUEST['length'];
+        $start = $_REQUEST['start'];
+        $search = $_REQUEST['search']["value"];
+
+        $total = $this->Main_model->get_product_stok_in_out($id_product)->num_rows();
+
+        $output = array();
+        $output['draw'] = $draw;
+        $output['recordsTotal'] = $output['recordsFiltered'] = $total;
+        $output['data']=array();
+
+        if($search!=""){
+//            $this->db->like("CONCAT()",$search);
+        }
+
+        $this->db->limit($length,$start);
+
+        $output['data'] = $this->Main_model->get_product_stok_in_out($id_product)->result_object();
+
+        echo json_encode($output);
+
+
+    }
+
+    function get_stok_in_out_by_id(){
+        $id = htmlentities($_REQUEST['id_stok_in_out'], ENT_QUOTES);
+        $data = $this->Main_model->get_stok_in_out_by_id($id);
+        echo json_encode($data->row());
+        return;
+    }
+
+    function add_stok_in_out(){
+        $id_stok_in_out = strtoupper(trim(htmlentities($_REQUEST['id_stok_in_out'], ENT_QUOTES)));
+        $tipe_in_out = strtoupper(trim(htmlentities($_REQUEST['tipe_in_out'], ENT_QUOTES)));
+        $stok_in_out = strtoupper(trim(htmlentities($_REQUEST['stok_in_out'], ENT_QUOTES)));
+        $tgl_in = strtoupper(trim(htmlentities($_REQUEST['tgl_in'], ENT_QUOTES)));
+        $tgl_out = strtoupper(trim(htmlentities($_REQUEST['tgl_out'], ENT_QUOTES)));
+        $tgl_expired = strtoupper(trim(htmlentities($_REQUEST['tgl_expired'], ENT_QUOTES)));
+        $catatan_in_out = strtoupper(trim(htmlentities($_REQUEST['catatan_in_out'], ENT_QUOTES)));
+        $id_product = strtoupper(trim(htmlentities($_REQUEST['id_product'], ENT_QUOTES)));
+
+        //validation
+        $error = array();
+
+        $this->db->trans_begin();
+
+        if($tipe_in_out == "IN"){
+
+            if(empty($tgl_in)){
+                array_push($error, "invalid-tanggalin");
+            }
+
+            if(empty($tgl_expired)){
+                array_push($error, "invalid-tanggalexpired");
+            }
+
+        } else if($tipe_in_out == "OUT") {
+
+            if(empty($tgl_out)){
+                array_push($error, "invalid-tanggalout");
+            }
+
+        } else {
+            array_push($error, "invalid-tipe");
+        }
+
+        if(empty($stok_in_out) || !is_numeric($stok_in_out)){
+            array_push($error, "invalid-stok");
+        }
+
+        if(!empty($error)){
+            $return_arr = array("Status" => 'FORMERROR', "Error" => $error);
+            $this->db->trans_rollback();
+            echo json_encode($return_arr);
+            return;
+        }
+
+
+        $data = compact('id_product','tipe_in_out', 'stok_in_out',
+                            'tgl_in', 'tgl_out', 'tgl_expired', 'catatan_in_out');
+
+        if($this->Main_model->get_stok_in_out_by_id($id_stok_in_out)->num_rows() == 0){
+
+            if($this->Main_model->add_stok_in_out($data)){
+                $this->db->trans_commit();
+                $return_arr = array("Status" => 'OK', "Message" => '');
+            } else {
+                $this->db->trans_rollback();
+                $return_arr = array("Status" => 'ERROR', "Message" => 'Gagal menambahkan data');
+            }
+        } else {
+            if($this->Main_model->update_stok_in_out($data, $id_stok_in_out)){
+                $this->db->trans_commit();
+                $return_arr = array("Status" => 'OK', "Message" => '');
+            } else {
+                $this->db->trans_rollback();
+                $return_arr = array("Status" => 'ERROR', "Message" => 'Gagal mengupdate data');
+            }
+
+        }
+
+        echo json_encode($return_arr);
+
+
+    }
+
     function product(){
         $this->load->view('template/admin_header');
         $this->load->view('product');
@@ -28,9 +156,27 @@ class Main extends MX_Controller
     }
 
     function get_product(){
-        $data = $this->Main_model->get_product();
-        echo json_encode($data->result_object());
-        return;
+
+        // server-side pagination
+        $draw = $_REQUEST['draw'];
+        $length = $_REQUEST['length'];
+        $start = $_REQUEST['start'];
+        $search = $_REQUEST['search']["value"];
+
+        $total = $this->Main_model->get_product()->num_rows();
+
+        $output = array();
+        $output['draw'] = $draw;
+        $output['recordsTotal'] = $output['recordsFiltered'] = $total;
+        $output['data']=array();
+
+
+        $this->db->limit($length,$start);
+
+
+        $output['data'] = $this->Main_model->get_product($search)->result_object();
+
+        echo json_encode($output);
     }
 
     function vendor(){
@@ -102,7 +248,7 @@ class Main extends MX_Controller
 
             if($this->Main_model->add_product($data)){
                 $this->db->trans_commit();
-                $return_arr = array("Status" => 'OK', "Message" => '');
+                $return_arr = array("Status" => 'OK', "Message" => 'Berhasil ditambahkan');
             } else {
                 $this->db->trans_rollback();
                 $return_arr = array("Status" => 'ERROR', "Message" => 'Gagal menambahkan produk');
@@ -110,7 +256,7 @@ class Main extends MX_Controller
         } else {
             if($this->Main_model->update_product($data, $id_product)){
                 $this->db->trans_commit();
-                $return_arr = array("Status" => 'OK', "Message" => '');
+                $return_arr = array("Status" => 'OK', "Message" => 'Berhasil diupdate');
             } else {
                 $this->db->trans_rollback();
                 $return_arr = array("Status" => 'ERROR', "Message" => 'Gagal mengupdate produk');

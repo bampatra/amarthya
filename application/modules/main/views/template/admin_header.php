@@ -63,13 +63,12 @@
             background-color: #333; /* Black background color */
             color: #fff; /* White text color */
             text-align: center; /* Centered text */
-            border-radius: 8px; /* Rounded borders */
+            border-radius: 10px; /* Rounded borders */
             padding: 16px; /* Padding */
             position: fixed; /* Sit on top of the screen */
-            z-index: 1000; /* Add a z-index if needed */
+            z-index: 1; /* Add a z-index if needed */
             left: 50%; /* Center the snackbar */
-            bottom: 80px; /* 800px from the bottom */
-            z-index: 10000;
+            bottom: 100px;
         }
 
         /* Show the snackbar when clicking on a button (class added with JavaScript) */
@@ -79,6 +78,27 @@
             However, delay the fade out process for 2.5 seconds */
             -webkit-animation: fadein 0.5s, fadeout 0.5s 2.5s;
             animation: fadein 0.5s, fadeout 0.5s 2.5s;
+        }
+
+        /* Animations to fade the snackbar in and out */
+        @-webkit-keyframes fadein {
+            from {bottom: 0; opacity: 0;}
+            to {bottom: 100px; opacity: 1;}
+        }
+
+        @keyframes fadein {
+            from {bottom: 0; opacity: 0;}
+            to {bottom: 100px; opacity: 1;}
+        }
+
+        @-webkit-keyframes fadeout {
+            from {bottom: 100px; opacity: 1;}
+            to {bottom: 0; opacity: 0;}
+        }
+
+        @keyframes fadeout {
+            from {bottom: 100px; opacity: 1;}
+            to {bottom: 0; opacity: 0;}
         }
 
         .Veil-non-hover{
@@ -224,8 +244,63 @@
 
 <!-- Page level custom scripts -->
 <script src="<?php echo base_url('assets/chart.js/Chart.js');?>"></script>
+<style>
+    .one {
+        background-color: white;
+        float:left;
+        margin-right:20px;
+        width: 49%;
+        border-radius: 5px;
+        padding: 15px 30px;
+        min-height:200px;
+    }
+    .two {
+        background-color: white;
+        overflow:hidden;
+        min-height:200px;
+        border-radius: 5px;
+        padding: 15px 30px;
+    }
+
+    .three {
+        background-color: white;
+        border-radius: 5px;
+        padding: 15px 30px;
+        margin-top:10px
+
+
+    }
+
+    .green-line{
+        border-bottom: 2px solid rgba(20,143,143,0.3);
+        margin: 10px 0;
+        width: 100%
+    }
+
+    @media screen and (max-width: 400px) {
+        .one {
+            float: none;
+            margin-right: 0;
+            width: auto;
+            border: 0;
+            padding: 15px 20px;
+        }
+
+        .two, .three {
+            margin-top: 10px;
+            padding: 15px 20px;
+        }
+    }
+</style>
 
 <style>
+
+    .link{
+        text-decoration: underline;
+        color: rgba(20,143,143,1);
+        font-size: 12px;
+        cursor: pointer;
+    }
 
     .tr-hover:hover{
         cursor: pointer;
@@ -236,8 +311,20 @@
         background: #ececec;
     }
 
+    .btn-primary-empty{
+        background: white !important;
+        color: rgba(20,143,143,1);
+        border: 1px solid rgba(20,143,143,1);
+        transition: .2s;
+        cursor: pointer;
+    }
+
+    .btn-primary-empty:hover{
+        background: rgba(20,143,143,0.2) !important;
+    }
+
     .btn-primary{
-        background: black !important;
+        background: rgba(20,143,143,11) !important;
         color: white;
         border: 1px solid white;
         transition: .2s;
@@ -245,8 +332,8 @@
 
     .btn-primary:hover{
         background: white !important;
-        color: black !important;
-        border: 1px solid black;
+        color: rgba(20,143,143,1) !important;
+        border: 1px solid rgba(20,143,143,1);
     }
 
     td, .card-body{
@@ -256,6 +343,15 @@
 
     tr.tr-hover th, tr.tr-hover td{
         padding: 0.4rem !important;
+    }
+
+    .no-pointer{
+        pointer-events: none;
+    }
+
+    .no-hover-style{
+        background-color: transparent !important;
+        cursor: inherit !important;
     }
 
     .left_side{
@@ -635,6 +731,12 @@
     input[type=number] {
         -moz-appearance:textfield; /* Firefox */
     }
+
+    .dataTables_wrapper .dataTables_paginate .paginate_button
+    {
+       font-size: 12px;
+    }
+
 
 </style>
 <script>

@@ -9,6 +9,76 @@ class Main_model extends CI_Model
         return $query;
     }
 
+    function get_order_detail($no_order){
+
+        $sql = "SELECT *
+                FROM order_m a
+                INNER JOIN order_s b ON a.id_order_m = b.id_order_m
+                LEFT JOIN customer c ON a.id_customer = c.id_customer
+                WHERE a.no_order = '".$no_order."'";
+
+        $query = $this->db->query($sql);
+        return $query;
+    }
+
+    function add_order_m($data){
+        $input_data = array(
+            'id_customer' => $data['id_customer'],
+            'no_order' => $data['no_order'],
+            'catatan_order' => $data['catatan_order'],
+            'tgl_order' => $data['tgl_order'],
+            'subtotal_order' => $data['subtotal_order'],
+            'ongkir_order'=> $data['ongkir_order'],
+            'is_ongkir_kas'=> $data['is_ongkir_kas'],
+            'diskon_order'=> $data['diskon_order'],
+            'grand_total_order'=> $data['grand_total_order'],
+            'status_order'=> $data['status_order'],
+            'is_paid'=> $data['is_paid'],
+            'payment_detail'=> $data['payment_detail'],
+            'is_in_store'=> $data['is_in_store'],
+            'is_tentative' => $data['is_tentative']
+        );
+
+        $this->db->insert('order_m',$input_data);
+        $insert_id = $this->db->insert_id();
+        return $insert_id;
+    }
+
+    function update_order_m($updated_data, $id_order_m){
+        $this->db->where('id_order_m', $id_order_m);
+        return $this->db->update('order_m',$updated_data);
+    }
+
+    function add_order_s($data){
+        $input_data = array(
+            'id_order_m' => $data['id_order_m'],
+            'id_product' => $data['id_product'],
+            'qty_order' => $data['qty_order'],
+            'harga_order' => $data['harga_order'],
+            'tipe_harga' => $data['tipe_harga'],
+            'total_order' => $data['total_order'],
+            'is_free' => $data['is_free']
+        );
+
+        $this->db->insert('order_s',$input_data);
+        $insert_id = $this->db->insert_id();
+        return $insert_id;
+    }
+
+    function update_order_s($updated_data, $id_order_s){
+        $this->db->where('id_order_s', $id_order_s);
+        return $this->db->update('order_s',$updated_data);
+    }
+
+    function get_product_price($id_product){
+        $sql = "SELECT HJ_product, HP_product, HR_product
+                FROM product
+                WHERE id_product = '".$id_product."'";
+
+        $query = $this->db->query($sql);
+        return $query;
+    }
+
     function get_product_stok_in_out($id_product){
         $sql = "SELECT id_stok_in_out, tipe_in_out, stok_in_out, catatan_in_out,
                     DATE_FORMAT(tgl_in, '%Y-%m-%d') AS custom_tgl_in,
@@ -74,7 +144,7 @@ class Main_model extends CI_Model
                 )c ON a.id_product = c.id_product
                 WHERE a.active_product = '1'";
 
-        if($search != "" || $search == null){
+        if($search != "" || $search != null){
             $sql .= "and a.nama_product LIKE '%$search%'";
         }
 
@@ -182,10 +252,15 @@ class Main_model extends CI_Model
         return $this->db->update('vendor',$updated_data);
     }
 
-    function get_customer(){
+    function get_customer($search = null){
         $sql = "SELECT *
-                FROM customer 
-                ORDER BY nama_customer";
+                FROM customer ";
+
+        if($search != "" || $search != null){
+            $sql .= "WHERE nama_customer LIKE '%$search%'";
+        }
+
+        $sql .= "ORDER BY nama_customer";
 
         $query = $this->db->query($sql);
         return $query;

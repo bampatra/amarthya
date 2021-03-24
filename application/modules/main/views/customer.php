@@ -122,30 +122,36 @@
     function get_customer(){
         $('.loading').css("display", "block");
         $('.Veil-non-hover').fadeIn();
-        $.ajax({
-            type        : 'GET', // define the type of HTTP verb we want to use (POST for our form)
-            url         : admin_url + 'get_customer', // the url where we want to POST// our data object
-            dataType    : 'json',
-            success     : function(data){
-                html = '';
-                data.forEach(function(data){
 
-                    html += '<tr>'+
-                        '<td style="display: none;">'+ data.id_customer +'</td>';
+        $('#dataTable').DataTable().destroy();
+        $('#dataTable').DataTable({
+            processing: true,
+            serverSide: true,
+            responsive: true,
+            lengthChange: false,
+            searching: true,
+            bInfo: false,
+            language: {
+                search: ""
+            },
+            pagingType: "simple",
+            ajax: {
+                url     : admin_url + 'get_customer',
+                type    : 'POST',
+            },
+            createdRow: function ( row, data, index ) {
+                $('td', row).eq(0).css("display", "none");
+            },
+            columns: [
+                {"data": "id_customer"},
+                {"data": "nama_customer"}
 
-                    html += ' <td>'+ data.nama_customer +'</td></tr>';
-                })
-
-                $('#dataTable').DataTable().destroy();
-                $('#main-content').html(html);
-                $('#dataTable').DataTable({
-                    "lengthChange": false
-                });
-
+            ],
+            initComplete: function (settings, json) {
                 $('.loading').css("display", "none");
                 $('.Veil-non-hover').fadeOut();
             }
-        })
+        });
     }
 
 
@@ -153,7 +159,7 @@
         $('.loading').css("display", "block");
         $('.Veil-non-hover').fadeIn();
         $('body').addClass('modal-open');
-        id_customer = $('#dataTable').DataTable().row( this ).data()[0];
+        id_customer = $('#dataTable').DataTable().row( this ).data().id_customer;
         $.ajax({
             type        : 'POST', // define the type of HTTP verb we want to use (POST for our form)
             url         : admin_url + 'get_customer_by_id', // the url where we want to POST// our data object

@@ -192,6 +192,9 @@
             lengthChange: false,
             searching: true,
             bInfo: false,
+            language: {
+                search: ""
+            },
             pagingType: "simple",
             ajax: {
                 url     : admin_url + 'get_product',

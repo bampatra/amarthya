@@ -21,18 +21,197 @@ class Main extends MX_Controller
         $this->load->view('template/admin_footer');
     }
 
+    function order_detail(){
+        $this->load->view('template/admin_header');
+
+        if(isset($_GET['no'])){
+
+            $data_order = $this->Main_model->get_order_detail(htmlentities($_GET['no'], ENT_QUOTES));
+            print_r($data_order->result_object());
+
+
+        } else {
+            // kosong
+        }
+
+        $this->load->view('template/admin_footer');
+    }
+
+    function order_form()
+    {
+
+        $this->load->view('template/admin_header');
+        $this->load->view('order_form');
+        $this->load->view('template/admin_footer');
+    }
+
+    function add_order(){
+
+        date_default_timezone_set('Asia/Singapore');
+
+        if(isset($_REQUEST['id_customer'])){
+            $id_customer = strtoupper(trim(htmlentities($_REQUEST['id_customer'], ENT_QUOTES)));
+        } else {
+            $id_customer = '';
+        }
+
+        $catatan_order = strtoupper(trim(htmlentities($_REQUEST['catatan_order'], ENT_QUOTES)));
+        $tgl_order = strtoupper(trim(htmlentities($_REQUEST['tgl_order'], ENT_QUOTES)));
+        $ongkir_order = strtoupper(trim(htmlentities($_REQUEST['ongkir_order'], ENT_QUOTES)));
+        $is_ongkir_kas = filter_var($_REQUEST['is_ongkir_kas'], FILTER_VALIDATE_BOOLEAN);
+        $diskon_order = strtoupper(trim(htmlentities($_REQUEST['diskon_order'], ENT_QUOTES)));
+        $is_paid = filter_var($_REQUEST['is_paid'], FILTER_VALIDATE_BOOLEAN);
+        $payment_detail = trim(htmlentities($_REQUEST['payment_detail'], ENT_QUOTES));
+        $is_in_store = filter_var($_REQUEST['is_in_store'], FILTER_VALIDATE_BOOLEAN);
+        $is_tentative = filter_var($_REQUEST['is_tentative'], FILTER_VALIDATE_BOOLEAN);
+
+
+        // ERROR    : if online purchase but no customer
+        // OK       : if offline purchase with no customer
+        if(!$is_in_store && empty($id_customer)){
+            $return_arr = array("Status" => 'ERROR', "Message" => 'Customer tidak boleh kosong');
+            echo json_encode($return_arr);
+            return;
+        }
+
+        // ERROR    : if not tentative but no date
+        // OK       : if tentative but no date
+        if(!$is_tentative && empty($tgl_order)){
+            $return_arr = array("Status" => 'ERROR', "Message" => 'Tanggal pesanan tidak boleh kosong');
+            echo json_encode($return_arr);
+            return;
+        }
+
+        // ERROR    : if not order
+        if(!isset($_REQUEST['order_s'])){
+            $return_arr = array("Status" => 'ERROR', "Message" => 'Tidak ada pesanan');
+            echo json_encode($return_arr);
+            return;
+        }
+
+        $no_order = "C".date("Ymdhis").$this->randStr(2);
+        $subtotal_order = 0;
+        $grand_total_order = 0;
+        $status_order = '1';
+
+        $is_ongkir_kas = ($is_ongkir_kas == true ? "1" : "0");
+        $is_paid = ($is_paid == true ? "1" : "0");
+        $is_in_store = ($is_in_store == true ? "1" : "0");
+        $is_tentative = ($is_tentative == true ? "1" : "0");
+
+        $data_m = compact('id_customer', 'no_order', 'catatan_order', 'tgl_order', 'subtotal_order',
+                            'ongkir_order', 'is_ongkir_kas', 'diskon_order', 'grand_total_order', 'status_order',
+                            'is_paid', 'payment_detail', 'is_in_store', 'is_tentative');
+
+        $this->db->trans_begin();
+
+        $id_order_m = $this->Main_model->add_order_m($data_m);
+
+        if(!$id_order_m){
+            $this->db->trans_rollback();
+            $return_arr = array("Status" => 'ERROR', "Message" => 'Terjadi kesalahan sistem. Hubungi Admin (code: form_1)');
+            echo json_encode($return_arr);
+            return;
+        }
+
+
+        foreach($_REQUEST['order_s'] as $order){
+            $is_free = filter_var($order['is_free'], FILTER_VALIDATE_BOOLEAN);
+
+            $id_product = $order['id_product'];
+            $qty_order = $order['qty_order'];
+            $tipe_harga = $order['tipe_harga'];
+
+
+            if(!$is_free){
+                $get_price = $this->Main_model->get_product_price($id_product)->row();
+
+                if($tipe_harga == "HJ"){
+                    $harga_order = $get_price->HJ_product;
+                } else if ($tipe_harga == "HR") {
+                    $harga_order = $get_price->HR_product;
+                } else if ($tipe_harga == "HP") {
+                    $harga_order = $get_price->HP_product;
+                }
+
+                $total_order = floatval($qty_order) * floatval($harga_order);
+            } else {
+                $harga_order = 0;
+                $total_order = 0;
+            }
+
+            $subtotal_order += $total_order;
+
+            $is_free = ($is_free == true ? "1" : "0");
+
+            $data_s = compact('id_order_m', 'id_product', 'qty_order', 'harga_order',
+                                'tipe_harga', 'total_order', 'is_free');
+
+            $id_order_s = $this->Main_model->add_order_s($data_s);
+
+            if(!$id_order_s){
+                $this->db->trans_rollback();
+                $return_arr = array("Status" => 'ERROR', "Message" => 'Terjadi kesalahan sistem. Hubungi Admin (code: form_2)');
+                echo json_encode($return_arr);
+                return;
+            }
+
+        }
+
+
+        // update price
+        if(filter_var($is_ongkir_kas, FILTER_VALIDATE_BOOLEAN)){
+            $grand_total_order = floatval($subtotal_order)  - floatval($diskon_order);
+        } else {
+            $grand_total_order = floatval($subtotal_order) + floatval($ongkir_order) - floatval($diskon_order);
+        }
+
+        $data_m_update = compact('subtotal_order', 'grand_total_order');
+
+        if($this->Main_model->update_order_m($data_m_update, $id_order_m)){
+
+
+            // =========== Extra Features ============
+
+            // Add stok in out after sales => add_stok_in_out
+
+
+            // =======================================
+
+
+
+
+
+            $this->db->trans_commit();
+            $return_arr = array("Status" => 'OK', "Message" => $no_order);
+        } else {
+            $return_arr = array("Status" => 'ERROR', "Message" => 'Terjadi kesalahan sistem. Hubungi Admin (code: form_3)');
+        }
+
+
+        echo json_encode($return_arr);
+
+    }
+
+
     function stok_in_out(){
         $this->load->view('template/admin_header');
 
 
-        $product = $this->Main_model->get_product_by_id($_GET['product']);
+        if(isset($_GET['product'])){
+            $product = $this->Main_model->get_product_by_id(htmlentities($_GET['product'], ENT_QUOTES));
 
-        if($product->num_rows() == 0){
-            // product not found error
-        } else {
-            $data['product'] = $product->result_array();
-            $this->load->view('stok_in_out', $data);
+            if($product->num_rows() == 0){
+                // product not found error
+            } else {
+                $data['product'] = $product->result_array();
+                $this->load->view('stok_in_out', $data);
+            }
         }
+        else {
+
+        }
+
 
         $this->load->view('template/admin_footer');
     }
@@ -354,9 +533,28 @@ class Main extends MX_Controller
     }
 
     function get_customer(){
-        $data = $this->Main_model->get_customer();
-        echo json_encode($data->result_object());
-        return;
+
+        // server-side pagination
+        $draw = $_REQUEST['draw'];
+        $length = $_REQUEST['length'];
+        $start = $_REQUEST['start'];
+        $search = $_REQUEST['search']["value"];
+
+        $total = $this->Main_model->get_customer()->num_rows();
+
+
+        $output = array();
+        $output['draw'] = $draw;
+        $output['recordsTotal'] = $output['recordsFiltered'] = $total;
+        $output['data']=array();
+
+
+        $this->db->limit($length,$start);
+
+        $output['data'] = $this->Main_model->get_customer($search)->result_object();
+
+        echo json_encode($output);
+
     }
 
     function get_customer_by_id(){
@@ -550,7 +748,9 @@ class Main extends MX_Controller
 
     }
 
-
+    function randStr($length = 10) {
+        return substr(str_shuffle(str_repeat($x='ABCDEFGHJKMNPQRSTUVWXYZ', ceil($length/strlen($x)) )),1,$length);
+    }
 
     function logout(){
         unset(

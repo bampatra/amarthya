@@ -567,7 +567,7 @@
             temp_subtotal = parseFloat($('#qty_order').val()) * parseFloat(chosen_price);
         }
 
-        $('#subtotal-item').html(convertToRupiah(temp_subtotal));
+        $('#subtotal-item').html(convertToRupiah(Math.round(temp_subtotal)));
     }
 
 

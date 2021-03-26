@@ -436,7 +436,7 @@
     /* Mobile only */
     @media (max-width: 576px) {
         .desktop-only, .desktop-and-tablet, .desktop-only-tablecell, .desktop-and-tablet-tablecell, .desktop-and-tablet-inlinetable{
-            display: none;
+            display: none !important;
         }
 
         .mobile-only{

@@ -218,46 +218,36 @@
 
 
     $('#dataTable').on( 'click', 'tbody tr', function () {
-        $('.loading').css("display", "block");
-        $('.Veil-non-hover').fadeIn();
         $('body').addClass('modal-open');
-        id_stok_in_out = $('#dataTable').DataTable().row( this ).data().id_stok_in_out;
-        $.ajax({
-            type        : 'POST', // define the type of HTTP verb we want to use (POST for our form)
-            url         : admin_url + 'get_stok_in_out_by_id', // the url where we want to POST// our data object
-            dataType    : 'json',
-            data        : {id_stok_in_out: id_stok_in_out},
-            success     : function(data){
 
-                setTimeout(function() {$('.modal-dialog').scrollTop(0);}, 200);
-
-                $('#id_stok_in_out').val(htmlDecode(data.id_stok_in_out));
-                $('#tipe_in_out').val(htmlDecode(data.tipe_in_out));
-                $('#stok_in_out').val(htmlDecode(data.stok_in_out));
-                $('#tgl_in').val(htmlDecode(data.custom_tgl_in));
-                $('#tgl_out').val(htmlDecode(data.custom_tgl_out));
-                $('#tgl_expired').val(htmlDecode(data.custom_tgl_expired));
-                $('#catatan_in_out').val(htmlDecode(data.catatan_in_out));
+        data = $('#dataTable').DataTable().row( this ).data();
 
 
-                $('.tgl_stok').hide();
-                if(htmlDecode(data.tipe_in_out) == "IN"){
-                    $("#tgl_stok_in").show();
-                } else {
-                    $("#tgl_stok_out").show();
-                }
+        setTimeout(function() {$('.modal-dialog').scrollTop(0);}, 200);
+
+        $('#id_stok_in_out').val(htmlDecode(data.id_stok_in_out));
+        $('#tipe_in_out').val(htmlDecode(data.tipe_in_out));
+        $('#stok_in_out').val(htmlDecode(data.stok_in_out));
+        $('#tgl_in').val(htmlDecode(data.custom_tgl_in));
+        $('#tgl_out').val(htmlDecode(data.custom_tgl_out));
+        $('#tgl_expired').val(htmlDecode(data.custom_tgl_expired));
+        $('#catatan_in_out').val(htmlDecode(data.catatan_in_out));
 
 
-                $('.form-active-control').prop('disabled', true);
+        $('.tgl_stok').hide();
+        if(htmlDecode(data.tipe_in_out) == "IN"){
+            $("#tgl_stok_in").show();
+        } else {
+            $("#tgl_stok_out").show();
+        }
 
-                $('.modal-button-save').css('display', 'none');
-                $('.modal-button-view-only').css('display', 'block');
-                $('#inout-modal').modal('toggle');
 
-                $('.loading').css("display", "none");
-                $('.Veil-non-hover').fadeOut();
-            }
-        })
+        $('.form-active-control').prop('disabled', true);
+
+        $('.modal-button-save').css('display', 'none');
+        $('.modal-button-view-only').css('display', 'block');
+        $('#inout-modal').modal('toggle');
+
     });
 
     $('.add').click(function (e) {

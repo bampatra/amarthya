@@ -153,76 +153,70 @@
 
     get_staff();
 
-    //get all products
     function get_staff(){
         $('.loading').css("display", "block");
         $('.Veil-non-hover').fadeIn();
-        $.ajax({
-            type        : 'GET', // define the type of HTTP verb we want to use (POST for our form)
-            url         : admin_url + 'get_staff', // the url where we want to POST// our data object
-            dataType    : 'json',
-            success     : function(data){
-                html = '';
-                data.forEach(function(data){
 
-                    html += '<tr>'+
-                        '<td style="display: none;">'+ data.id_staff +'</td>';
+        $('#dataTable').DataTable().destroy();
+        $('#dataTable').DataTable({
+            processing: true,
+            serverSide: true,
+            responsive: true,
+            lengthChange: false,
+            searching: true,
+            bInfo: false,
+            language: {
+                search: ""
+            },
+            pagingType: "simple",
+            ajax: {
+                url     : admin_url + 'get_staff',
+                type    : 'POST',
+            },
+            createdRow: function ( row, data, index ) {
+                $('td', row).eq(0).css("display", "none");
+            },
+            columns: [
+                {"data": "id_staff"},
+                {"data": "nama_staff"},
+                {"data": "nama_posisi"}
 
-                    html += ' <td>'+ data.nama_staff +'</td>';
-
-                    html +=  ' <td>'+ data.nama_posisi +'</td>\n'+
-                        '                    </tr>';
-                })
-
-                $('#dataTable').DataTable().destroy();
-                $('#main-content').html(html);
-                $('#dataTable').DataTable({
-                    "lengthChange": false
-                });
-
+            ],
+            initComplete: function (settings, json) {
                 $('.loading').css("display", "none");
                 $('.Veil-non-hover').fadeOut();
             }
-        })
+        });
     }
 
 
     $('#dataTable').on( 'click', 'tbody tr', function () {
-        $('.loading').css("display", "block");
-        $('.Veil-non-hover').fadeIn();
         $('body').addClass('modal-open');
-        id_staff = $('#dataTable').DataTable().row( this ).data()[0];
-        $.ajax({
-            type        : 'POST', // define the type of HTTP verb we want to use (POST for our form)
-            url         : admin_url + 'get_staff_by_id', // the url where we want to POST// our data object
-            dataType    : 'json',
-            data        : {id_staff: id_staff},
-            success     : function(data){
 
-                setTimeout(function() {$('.modal-dialog').scrollTop(0);}, 200);
-                $('#id_staff').val(htmlDecode(data.id_staff));
-                $('#nama_staff').val(htmlDecode(data.nama_staff));
-                $('#tgl_lahir_staff').val(htmlDecode(data.custom_tgl_lahir));
-                $('#alamat_staff').val(htmlDecode(data.alamat_staff));
-                $('#no_hp_staff').val(htmlDecode(data.no_hp_staff));
-                $('#id_posisi').val(htmlDecode(data.id_posisi));
-                $('#salary').val(htmlDecode(data.salary_staff));
-                $('#no_rek_staff').val(htmlDecode(data.no_rek_staff));
-                $('#nama_bank_staff').val(htmlDecode(data.nama_bank_staff));
-                $('#tgl_join_staff').val(htmlDecode(data.custom_tgl_join));
+        data = $('#dataTable').DataTable().row( this ).data()
+
+        setTimeout(function() {$('.modal-dialog').scrollTop(0);}, 200);
+        $('#id_staff').val(htmlDecode(data.id_staff));
+        $('#nama_staff').val(htmlDecode(data.nama_staff));
+        $('#tgl_lahir_staff').val(htmlDecode(data.custom_tgl_lahir));
+        $('#alamat_staff').val(htmlDecode(data.alamat_staff));
+        $('#no_hp_staff').val(htmlDecode(data.no_hp_staff));
+        $('#id_posisi').val(htmlDecode(data.id_posisi));
+        $('#salary').val(htmlDecode(data.salary_staff));
+        $('#no_rek_staff').val(htmlDecode(data.no_rek_staff));
+        $('#nama_bank_staff').val(htmlDecode(data.nama_bank_staff));
+        $('#tgl_join_staff').val(htmlDecode(data.custom_tgl_join));
 
 
-                $('.form-active-control').prop('disabled', true);
+        $('.form-active-control').prop('disabled', true);
 
-                $('.modal-button-save').css('display', 'none');
-                $('.modal-button-view-only').css('display', 'block');
-                $('#staff-modal').modal('toggle');
+        $('.modal-button-save').css('display', 'none');
+        $('.modal-button-view-only').css('display', 'block');
+        $('#staff-modal').modal('toggle');
 
-                $('.selectpicker').selectpicker('refresh')
-                $('.loading').css("display", "none");
-                $('.Veil-non-hover').fadeOut();
-            }
-        })
+        $('.selectpicker').selectpicker('refresh')
+        $('.loading').css("display", "none");
+
     });
 
     $('.add').click(function (e) {

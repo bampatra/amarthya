@@ -156,36 +156,27 @@
 
 
     $('#dataTable').on( 'click', 'tbody tr', function () {
-        $('.loading').css("display", "block");
-        $('.Veil-non-hover').fadeIn();
         $('body').addClass('modal-open');
+
+        data = $('#dataTable').DataTable().row( this ).data()
+
         id_customer = $('#dataTable').DataTable().row( this ).data().id_customer;
-        $.ajax({
-            type        : 'POST', // define the type of HTTP verb we want to use (POST for our form)
-            url         : admin_url + 'get_customer_by_id', // the url where we want to POST// our data object
-            dataType    : 'json',
-            data        : {id_customer: id_customer},
-            success     : function(data){
 
-                setTimeout(function() {$('.modal-dialog').scrollTop(0);}, 200);
-                $('#id_customer').val(htmlDecode(data.id_customer));
-                $('#nama_customer').val(htmlDecode(data.nama_customer));
-                $('#alamat_customer').val(htmlDecode(data.alamat_customer));
-                $('#no_hp_customer').val(htmlDecode(data.no_hp_customer));
-                $('#email_customer').val(htmlDecode(data.email_customer));
-                $('#catatan_customer').val(htmlDecode(data.catatan_customer));
+        setTimeout(function() {$('.modal-dialog').scrollTop(0);}, 200);
+        $('#id_customer').val(htmlDecode(data.id_customer));
+        $('#nama_customer').val(htmlDecode(data.nama_customer));
+        $('#alamat_customer').val(htmlDecode(data.alamat_customer));
+        $('#no_hp_customer').val(htmlDecode(data.no_hp_customer));
+        $('#email_customer').val(htmlDecode(data.email_customer));
+        $('#catatan_customer').val(htmlDecode(data.catatan_customer));
+
+        $('.form-active-control').prop('disabled', true);
+
+        $('.modal-button-save').css('display', 'none');
+        $('.modal-button-view-only').css('display', 'block');
+        $('#customer-modal').modal('toggle');
 
 
-                $('.form-active-control').prop('disabled', true);
-
-                $('.modal-button-save').css('display', 'none');
-                $('.modal-button-view-only').css('display', 'block');
-                $('#customer-modal').modal('toggle');
-
-                $('.loading').css("display", "none");
-                $('.Veil-non-hover').fadeOut();
-            }
-        })
     });
 
     $('.add').click(function (e) {

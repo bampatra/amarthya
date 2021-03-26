@@ -112,7 +112,7 @@
             </div>
             <div class="modal-body">
                 Stok: <span class="stok_product"></span><br>
-                <span class="edit" style="color: blue; text-decoration: underline; font-size: 11px;">Edit Produk</span>
+                <span class="edit link">Edit Produk</span>
                 <br><br>
                 <table>
                     <tr>
@@ -311,42 +311,33 @@
 
 
     $('#dataTable').on( 'click', 'tbody tr', function () {
-        $('.loading').css("display", "block");
-        $('.Veil-non-hover').fadeIn();
         $('body').addClass('modal-open');
-        id_product = $('#dataTable').DataTable().row( this ).data().id_product;
-        $.ajax({
-            type        : 'POST', // define the type of HTTP verb we want to use (POST for our form)
-            url         : admin_url + 'get_product_by_id', // the url where we want to POST// our data object
-            dataType    : 'json',
-            data        : {id_product: id_product},
-            success     : function(data){
 
-                setTimeout(function() {$('.modal-dialog').scrollTop(0);}, 200);
-                $('#id_product').val(htmlDecode(data.id_product));
-                $('#nama_product').val(htmlDecode(data.nama_product));
-                $('#SKU_product').val(htmlDecode(data.SKU_product));
-                $('#satuan_product').val(htmlDecode(data.satuan_product));
-                $('#HP_product').val(htmlDecode(data.HP_product));
-                $('#HJ_product').val(htmlDecode(data.HJ_product));
-                $('#HR_product').val(htmlDecode(data.HR_product));
+        data = $('#dataTable').DataTable().row( this ).data();
 
-                $('.stok_product').html(data.STOK);
+        setTimeout(function() {$('.modal-dialog').scrollTop(0);}, 200);
+        $('#id_product').val(htmlDecode(data.id_product));
+        $('#nama_product').val(htmlDecode(data.nama_product));
+        $('#SKU_product').val(htmlDecode(data.SKU_product));
+        $('#satuan_product').val(htmlDecode(data.satuan_product));
+        $('#HP_product').val(htmlDecode(data.HP_product));
+        $('#HJ_product').val(htmlDecode(data.HJ_product));
+        $('#HR_product').val(htmlDecode(data.HR_product));
 
-                $("#detail_stok_in_out").attr("href", admin_url + 'stok_in_out?product=' + data.id_product)
+        $('.stok_product').html(data.STOK);
 
-                $('#detail-product-modal').modal('toggle');
+        $("#detail_stok_in_out").attr("href", admin_url + 'stok_in_out?product=' + data.id_product)
 
-                //inside detail-product-modal
-                $('.nama_product').html(htmlDecode(data.nama_product));
-                $('.HP_product').html(convertToRupiah(htmlDecode(data.HP_product)));
-                $('.HJ_product').html(convertToRupiah(htmlDecode(data.HJ_product)));
-                $('.HR_product').html(convertToRupiah(htmlDecode(data.HR_product)));
+        $('#detail-product-modal').modal('toggle');
 
-                in_out_init(id_product);
+        //inside detail-product-modal
+        $('.nama_product').html(htmlDecode(data.nama_product));
+        $('.HP_product').html(convertToRupiah(htmlDecode(data.HP_product)));
+        $('.HJ_product').html(convertToRupiah(htmlDecode(data.HJ_product)));
+        $('.HR_product').html(convertToRupiah(htmlDecode(data.HR_product)));
 
-            }
-        })
+        in_out_init(data.id_product);
+
     });
 
     $('.add').click(function (e) {

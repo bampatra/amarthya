@@ -9,11 +9,69 @@ class Main_model extends CI_Model
         return $query;
     }
 
-    function get_order_detail($no_order){
+    function add_delivery($data){
+        $input_data = array(
+            'id_customer' => $data['id_customer'],
+            'alamat_delivery' => $data['alamat_delivery'],
+            'no_hp_delivery' => $data['no_hp_delivery'],
+            'id_order_m' => $data['id_order_m'],
+            'tgl_delivery' => $data['tgl_delivery'],
+            'catatan_delivery' => $data['catatan_delivery'],
+            'status_delivery' => $data['status_delivery'],
+            'id_staff' => $data['id_staff']
+        );
 
+        $this->db->insert('delivery',$input_data);
+        $insert_id = $this->db->insert_id();
+        return $insert_id;
+    }
+
+    function update_delivery(){
+
+    }
+
+
+    function get_order_s($id_order_m){
+        $sql = "SELECT *
+                FROM order_s a
+                INNER JOIN product b ON a.id_product = b.id_product
+                WHERE a.id_order_m = '".$id_order_m."'";
+
+        $query = $this->db->query($sql);
+        return $query;
+    }
+
+    function get_order_m($search = null){
         $sql = "SELECT *
                 FROM order_m a
+                INNER JOIN customer b ON a.id_customer = b.id_customer";
+
+        if($search != "" || $search != null){
+            $sql .= " WHERE CONCAT(b.nama_customer, a.no_order, b.alamat_customer, a.tgl_order) LIKE '%$search%'";
+        }
+
+        $sql .= " ORDER BY a.tgl_order DESC";
+
+        $query = $this->db->query($sql);
+        return $query;
+    }
+
+    function get_order_m_by_no_order($no_order){
+        $sql = "SELECT *, a.id_order_m
+                FROM order_m a
+                LEFT JOIN delivery b ON a.id_order_m = b.id_order_m
+                WHERE a.no_order = '".$no_order."'";
+
+        $query = $this->db->query($sql);
+        return $query;
+    }
+
+    function get_order_detail($no_order){
+
+        $sql = "SELECT *, DATE_FORMAT(a.tgl_order, '%Y-%m-%d') AS custom_tgl_order
+                FROM order_m a
                 INNER JOIN order_s b ON a.id_order_m = b.id_order_m
+                INNER JOIN product d ON b.id_product = d.id_product
                 LEFT JOIN customer c ON a.id_customer = c.id_customer
                 WHERE a.no_order = '".$no_order."'";
 
@@ -36,7 +94,8 @@ class Main_model extends CI_Model
             'is_paid'=> $data['is_paid'],
             'payment_detail'=> $data['payment_detail'],
             'is_in_store'=> $data['is_in_store'],
-            'is_tentative' => $data['is_tentative']
+            'is_tentative' => $data['is_tentative'],
+            'is_changeable' => $data['is_changeable']
         );
 
         $this->db->insert('order_m',$input_data);
@@ -304,14 +363,22 @@ class Main_model extends CI_Model
     }
 
 
-    function get_staff(){
-        $sql = "SELECT staff.*, posisi.nama_posisi
-                FROM staff 
-                INNER JOIN posisi ON staff.id_posisi = posisi.id_posisi
-                ORDER BY staff.nama_staff";
+    function get_staff($search = null){
+        $sql = "SELECT *,
+                DATE_FORMAT(a.tgl_lahir_staff, '%Y-%m-%d') AS custom_tgl_lahir,
+                DATE_FORMAT(a.tgl_join_staff, '%Y-%m-%d') AS custom_tgl_join
+                FROM staff a
+                INNER JOIN posisi b ON a.id_posisi = b.id_posisi";
+
+        if($search != "" || $search != null){
+            $sql .= "WHERE a.nama_staff LIKE '%$search%'";
+        }
+
+        $sql .= " ORDER BY a.nama_staff";
 
         $query = $this->db->query($sql);
-        return $query;
+        return $query;;
+
     }
 
     function get_staff_by_id($id){

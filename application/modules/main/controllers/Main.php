@@ -21,14 +21,195 @@ class Main extends MX_Controller
         $this->load->view('template/admin_footer');
     }
 
+    function delivery_form()
+    {
+
+        $this->load->view('template/admin_header');
+        $this->load->view('delivery_form');
+        $this->load->view('template/admin_footer');
+    }
+
+    function order_list(){
+        $this->load->view('template/admin_header');
+        $this->load->view('order_list');
+        $this->load->view('template/admin_footer');
+    }
+
+    // ================== HALF DONE ====================
+    function add_delivery(){
+
+        // TODO: check if staff exists
+
+        if(!isset($_REQUEST['id_staff'])){
+            $return_arr = array("Status" => 'ERROR', "Message" => 'Staff tidak boleh kosong');
+            echo json_encode($return_arr);
+            return;
+        }
+
+        // TODO: check if order exists
+        // TODO: check if customer and order matches
+
+        if(!isset($_REQUEST['id_order_m'])){
+            $return_arr = array("Status" => 'ERROR', "Message" => 'Order tidak boleh kosong');
+            echo json_encode($return_arr);
+            return;
+        }
+
+        // TODO: check if the chosen order udah ada data delivery (all status except status_delivery 3-dibatalkan)
+        // TODO: check if the chosen order statusnya tidak 0-dibatalkan
+
+
+        date_default_timezone_set('Asia/Singapore');
+
+        $id_customer = strtoupper(trim(htmlentities($_REQUEST['id_customer'], ENT_QUOTES)));
+        $alamat_delivery = strtoupper(trim(htmlentities($_REQUEST['alamat_delivery'], ENT_QUOTES)));
+        $no_hp_delivery = strtoupper(trim(htmlentities($_REQUEST['no_hp_delivery'], ENT_QUOTES)));
+        $id_order_m = strtoupper(trim(htmlentities($_REQUEST['id_order_m'], ENT_QUOTES)));
+        $tgl_delivery = strtoupper(trim(htmlentities($_REQUEST['tgl_delivery'], ENT_QUOTES)));
+        $catatan_delivery = strtoupper(trim(htmlentities($_REQUEST['catatan_delivery'], ENT_QUOTES)));
+        $id_staff = strtoupper(trim(htmlentities($_REQUEST['id_staff'], ENT_QUOTES)));
+
+        $status_delivery = '0';
+
+        if(empty($tgl_delivery)){
+            $return_arr = array("Status" => 'ERROR', "Message" => 'Tanggal delivery tidak boleh kosong');
+            echo json_encode($return_arr);
+            return;
+        }
+
+        $data = compact('id_customer', 'alamat_delivery', 'no_hp_delivery', 'id_order_m',
+                        'tgl_delivery', 'catatan_delivery', 'status_delivery', 'id_staff');
+
+        $this->db->trans_begin();
+
+        if($this->Main_model->add_delivery($data)){
+            $this->db->trans_commit();
+            $return_arr = array("Status" => 'OK', "Message" => 'Berhasil ditambahkan');
+        } else {
+            $this->db->trans_rollback();
+            $return_arr = array("Status" => 'ERROR', "Message" => 'Gagal menambahkan delivery');
+        }
+
+        echo json_encode($return_arr);
+
+    }
+
+    function get_order_s(){
+        $id_order_m = htmlentities($_REQUEST['id_order_m'], ENT_QUOTES);
+        $data = $this->Main_model->get_order_s($id_order_m);
+        echo json_encode($data->result_object());
+        return;
+
+    }
+
+    function get_order_m(){
+        // server-side pagination
+        $draw = $_REQUEST['draw'];
+        $length = $_REQUEST['length'];
+        $start = $_REQUEST['start'];
+        $search = trim(htmlentities($_REQUEST['search']["value"], ENT_QUOTES));
+
+        $total = $this->Main_model->get_order_m()->num_rows();
+
+        $output = array();
+        $output['draw'] = $draw;
+        $output['recordsTotal'] = $output['recordsFiltered'] = $total;
+        $output['data']=array();
+
+
+        $this->db->limit($length,$start);
+
+
+        $output['data'] = $this->Main_model->get_order_m($search)->result_object();
+
+        echo json_encode($output);
+    }
+
+    function update_order_m(){
+
+        $this->db->trans_begin();
+
+        $no_order = strtoupper(trim(htmlentities($_REQUEST['no_order'], ENT_QUOTES)));
+        $catatan_order = trim(htmlentities($_REQUEST['catatan_order'], ENT_QUOTES));
+        $tgl_order = strtoupper(trim(htmlentities($_REQUEST['tgl_order'], ENT_QUOTES)));
+        $is_tentative = filter_var($_REQUEST['is_tentative'], FILTER_VALIDATE_BOOLEAN);
+        $ongkir_order = strtoupper(trim(htmlentities($_REQUEST['ongkir_order'], ENT_QUOTES)));
+        $is_ongkir_kas = filter_var($_REQUEST['is_ongkir_kas'], FILTER_VALIDATE_BOOLEAN);
+        $diskon_order = strtoupper(trim(htmlentities($_REQUEST['diskon_order'], ENT_QUOTES)));
+        $is_paid = filter_var($_REQUEST['is_paid'], FILTER_VALIDATE_BOOLEAN);
+        $payment_detail = trim(htmlentities($_REQUEST['payment_detail'], ENT_QUOTES));
+
+        // ERROR    : if not tentative but no date
+        // OK       : if tentative but no date
+        if(!$is_tentative && empty($tgl_order)){
+            $return_arr = array("Status" => 'ERROR', "Message" => 'Tanggal order tidak boleh kosong');
+            echo json_encode($return_arr);
+            return;
+        }
+
+        $order_m_data = $this->Main_model->get_order_m_by_no_order($no_order)->row();
+
+
+        // cant change if product is on delivery or delivered or deleted
+        if($order_m_data->status_order == '0'){
+            $return_arr = array("Status" => 'ERROR', "Message" => 'Order tidak bisa diupdate karena sudah dibatalkan');
+            echo json_encode($return_arr);
+            return;
+        }
+
+        if($order_m_data->status_delivery != null && $order_m_data->status_delivery == '1'){
+            $return_arr = array("Status" => 'ERROR', "Message" => 'Order tidak bisa diupdate karena sedang diantar ke customer');
+            echo json_encode($return_arr);
+            return;
+        }
+
+        if($order_m_data->status_delivery != null && $order_m_data->status_delivery == '2'){
+            $return_arr = array("Status" => 'ERROR', "Message" => 'Order tidak bisa diupdate karena sudah diantar');
+            echo json_encode($return_arr);
+            return;
+        }
+
+        // process update
+
+        $is_ongkir_kas = ($is_ongkir_kas == true ? "1" : "0");
+        $is_paid = ($is_paid == true ? "1" : "0");
+        $is_tentative = ($is_tentative == true ? "1" : "0");
+
+        // update price
+        if(filter_var($is_ongkir_kas, FILTER_VALIDATE_BOOLEAN)){
+            $grand_total_order = floatval($order_m_data->subtotal_order)  - floatval($diskon_order);
+        } else {
+            $grand_total_order = floatval($order_m_data->subtotal_order) + floatval($ongkir_order) - floatval($diskon_order);
+        }
+
+        $data = compact('catatan_order', 'tgl_order', 'is_tentative', 'ongkir_order', 'is_ongkir_kas',
+                        'diskon_order', 'is_paid', 'payment_detail', 'grand_total_order');
+
+
+
+        if($this->Main_model->update_order_m($data, $order_m_data->id_order_m)){
+            $this->db->trans_commit();
+            $return_arr = array("Status" => 'OK', "Message" => '');
+        } else {
+            $this->db->trans_rollback();
+            $return_arr = array("Status" => 'ERROR', "Message" => 'Gagal mengupdate data');
+        }
+
+        echo json_encode($return_arr);
+
+    }
+    
+
     function order_detail(){
         $this->load->view('template/admin_header');
 
         if(isset($_GET['no'])){
 
             $data_order = $this->Main_model->get_order_detail(htmlentities($_GET['no'], ENT_QUOTES));
-            print_r($data_order->result_object());
+            $data['orders'] = $data_order->result_object();
 
+//            print_r($data['orders'][0]->catatan_order);
+            $this->load->view('order_detail', $data);
 
         } else {
             // kosong
@@ -45,6 +226,7 @@ class Main extends MX_Controller
         $this->load->view('template/admin_footer');
     }
 
+    // ================== HALF DONE ====================
     function add_order(){
 
         date_default_timezone_set('Asia/Singapore');
@@ -55,7 +237,7 @@ class Main extends MX_Controller
             $id_customer = '';
         }
 
-        $catatan_order = strtoupper(trim(htmlentities($_REQUEST['catatan_order'], ENT_QUOTES)));
+        $catatan_order = trim(htmlentities($_REQUEST['catatan_order'], ENT_QUOTES));
         $tgl_order = strtoupper(trim(htmlentities($_REQUEST['tgl_order'], ENT_QUOTES)));
         $ongkir_order = strtoupper(trim(htmlentities($_REQUEST['ongkir_order'], ENT_QUOTES)));
         $is_ongkir_kas = filter_var($_REQUEST['is_ongkir_kas'], FILTER_VALIDATE_BOOLEAN);
@@ -64,6 +246,7 @@ class Main extends MX_Controller
         $payment_detail = trim(htmlentities($_REQUEST['payment_detail'], ENT_QUOTES));
         $is_in_store = filter_var($_REQUEST['is_in_store'], FILTER_VALIDATE_BOOLEAN);
         $is_tentative = filter_var($_REQUEST['is_tentative'], FILTER_VALIDATE_BOOLEAN);
+        $is_changeable = '1';
 
 
         // ERROR    : if online purchase but no customer
@@ -101,7 +284,7 @@ class Main extends MX_Controller
 
         $data_m = compact('id_customer', 'no_order', 'catatan_order', 'tgl_order', 'subtotal_order',
                             'ongkir_order', 'is_ongkir_kas', 'diskon_order', 'grand_total_order', 'status_order',
-                            'is_paid', 'payment_detail', 'is_in_store', 'is_tentative');
+                            'is_paid', 'payment_detail', 'is_in_store', 'is_tentative', 'is_changeable');
 
         $this->db->trans_begin();
 
@@ -224,7 +407,7 @@ class Main extends MX_Controller
         $draw = $_REQUEST['draw'];
         $length = $_REQUEST['length'];
         $start = $_REQUEST['start'];
-        $search = $_REQUEST['search']["value"];
+        $search = trim(htmlentities($_REQUEST['search']["value"], ENT_QUOTES));
 
         $total = $this->Main_model->get_product_stok_in_out($id_product)->num_rows();
 
@@ -340,7 +523,7 @@ class Main extends MX_Controller
         $draw = $_REQUEST['draw'];
         $length = $_REQUEST['length'];
         $start = $_REQUEST['start'];
-        $search = $_REQUEST['search']["value"];
+        $search = trim(htmlentities($_REQUEST['search']["value"], ENT_QUOTES));
 
         $total = $this->Main_model->get_product()->num_rows();
 
@@ -538,7 +721,7 @@ class Main extends MX_Controller
         $draw = $_REQUEST['draw'];
         $length = $_REQUEST['length'];
         $start = $_REQUEST['start'];
-        $search = $_REQUEST['search']["value"];
+        $search = trim(htmlentities($_REQUEST['search']["value"], ENT_QUOTES));
 
         $total = $this->Main_model->get_customer()->num_rows();
 
@@ -571,7 +754,7 @@ class Main extends MX_Controller
         $alamat_customer = strtoupper(trim(htmlentities($_REQUEST['alamat_customer'], ENT_QUOTES)));
         $no_hp_customer = strtoupper(trim(htmlentities($_REQUEST['no_hp_customer'], ENT_QUOTES)));
         $email_customer = strtoupper(trim(htmlentities($_REQUEST['email_customer'], ENT_QUOTES)));
-        $catatan_customer = strtoupper(trim(htmlentities($_REQUEST['catatan_customer'], ENT_QUOTES)));
+        $catatan_customer = trim(htmlentities($_REQUEST['catatan_customer'], ENT_QUOTES));
 
         //validation
         $error = array();
@@ -640,9 +823,25 @@ class Main extends MX_Controller
 
 
     function get_staff(){
-        $data = $this->Main_model->get_staff();
-        echo json_encode($data->result_object());
-        return;
+        // server-side pagination
+        $draw = $_REQUEST['draw'];
+        $length = $_REQUEST['length'];
+        $start = $_REQUEST['start'];
+        $search = trim(htmlentities($_REQUEST['search']["value"], ENT_QUOTES));
+
+        $total = $this->Main_model->get_staff()->num_rows();
+
+        $output = array();
+        $output['draw'] = $draw;
+        $output['recordsTotal'] = $output['recordsFiltered'] = $total;
+        $output['data']=array();
+
+
+        $this->db->limit($length,$start);
+
+        $output['data'] = $this->Main_model->get_staff($search)->result_object();
+
+        echo json_encode($output);
     }
 
     function get_staff_by_id(){

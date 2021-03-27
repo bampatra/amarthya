@@ -146,7 +146,7 @@
 
                         html = '<div class="detail-row">' +
                                 '<div class="detail-column">' +
-                            '       <span>'+ (temp_date.getDate() + 1) + '/' + temp_date.getMonth() + '/' + temp_date.getFullYear() +'</span><br>' +
+                            '       <span>'+ temp_date.getDate() + '/' + (temp_date.getMonth() + 1) + '/' + temp_date.getFullYear() +'</span><br>' +
                                     '<strong>'+ data.no_order +'</strong>\n' +
                                     '<p>'+ data.nama_customer +'</p>' +
                                 '</div>' +
@@ -195,7 +195,7 @@
 
         var temp_date = new Date(rowData.tgl_order);
 
-        html_info_customer = '<span>'+ (temp_date.getDate() + 1) + '/' + temp_date.getMonth() + '/' + temp_date.getFullYear() +'</span><br>\n' +
+        html_info_customer = '<span>'+ temp_date.getDate() + '/' + (temp_date.getMonth() + 1) + '/' + temp_date.getFullYear() +'</span><br>\n' +
             '                <strong>'+ rowData.no_order +'</strong><br>\n' +
             '                <span>'+ rowData.nama_customer +' ('+ rowData.no_hp_customer +')</span><br>\n' +
                             '<span>'+ rowData.alamat_customer +'</span><br>';

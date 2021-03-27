@@ -13,8 +13,11 @@
             <h6> Staff </h6>
             <div class="green-line"></div>
             <div id="staff_info" style="font-size: 14px">
+                <input type="hidden" id="id_staff" value="<?php echo $delivery[0]->id_staff ?>">
+                <strong> <?php echo $delivery[0]->nama_staff ?> (<?php echo $delivery[0]->no_hp_staff ?>)</strong><br>
+                <span style="font-size: 12px"><?php echo $delivery[0]->alamat_staff ?></span>
             </div>
-            <span class="link pilih-staff"> Pilih Staff Delivery </span>
+            <?php if ($delivery[0]->status_delivery == '0') echo "<span class=\"link pilih-staff\"> Edit Staff Delivery </span>" ?>
             
 
 
@@ -24,35 +27,71 @@
             <div class="green-line"></div>
             <div class="form-group row">
                 <label class="col-sm-12 col-form-label col-form-label-sm">
-                    <div class="alert alert-info alert-payment" role="alert">
-                        <strong>BARU</strong>
+                    <?php if ($delivery[0]->status_delivery == '0'){?>
+                    <div class="alert alert-danger alert-payment" role="alert">
+                        <strong>BELUM DIANTAR</strong>
                     </div>
+                    <?php } else if ($delivery[0]->status_delivery == '1'){?>
+                    <div class="alert alert-warning alert-payment" role="alert">
+                        <strong>OTW SIS</strong>
+                    </div>
+                    <?php } else if ($delivery[0]->status_delivery == '2'){?>
+                    <div class="alert alert-success alert-payment" role="alert">
+                        <strong>SELESAI</strong>
+                    </div>
+                    <?php } else if ($delivery[0]->status_delivery == '3'){?>
+                    <div class="alert alert-dark alert-payment" role="alert">
+                        <strong>DIBATALKAN</strong>
+                    </div>
+                    <?php } ?>
                 </label>
             </div>
+
+            <?php if ($delivery[0]->timestamp_otw != '0000-00-00 00:00:00'){?>
+            <div class="form-group row">
+                <label class="col-sm-3 col-form-label col-form-label-sm">Waktu OTW</label>
+                <label class="col-sm-9 col-form-label col-form-label-sm"><?php echo $delivery[0]->timestamp_otw ?></label>
+            </div>
+            <?php }?>
+
+            <?php if ($delivery[0]->timestamp_delivery != ''){?>
+            <div class="form-group row">
+                <label class="col-sm-3 col-form-label col-form-label-sm">Waktu Sampai</label>
+                <label class="col-sm-9 col-form-label col-form-label-sm"><?php echo $delivery[0]->timestamp_delivery ?></label>
+            </div>
+            <?php }?>
 
         </div>
     </div>
 
 
-    <div class="three" >
+    <div class="three">
         <h6> Detail Order </h6>
-        <div id="order-data"></div><br>
-        <div id="item-lists"></div>
-        <span class="link pilih-order"> Pilih Order </span>
+        <input type="hidden" value="<?php echo $delivery[0]->id_order_m ?>" id="id_order_m">
+        <input type="hidden" value="<?php echo $delivery[0]->id_delivery ?>" id="id_delivery">
+        <div id="order-data">
+            <span style="font-size: 12px"><?php echo $delivery[0]->custom_tgl_order ?></span><br>
+            <strong><?php echo $delivery[0]->no_order ?></strong><br>
+            <span><?php echo $delivery[0]->nama_customer ?></span><br>
+            <span>Total Order: <?php echo "Rp. " . number_format($delivery[0]->grand_total_order,2,',','.'); ?> || Ongkir: <?php echo "Rp. " . number_format($delivery[0]->ongkir_order,2,',','.'); ?></span>
+            <br><span>Catatan Order: <?php echo $delivery[0]->catatan_order ?></span>
 
- </div>
+        </div><br>
+        <div id="item-lists">Memuat...</div>
+
+    </div>
 
     <div class="wrapper" style="margin-top: 10px">
         <div class="one">
             <div class="form-group" >
                 <label class="col-form-label">Catatan Delivery</label>
-                <textarea id="catatan_delivery" name="catatan_delivery" class="form-control form-active-control"> </textarea>
+                <textarea id="catatan_delivery" name="catatan_delivery" class="form-control form-active-control" <?php if ($delivery[0]->status_delivery != '0') echo "disabled" ?> > <?php echo $delivery[0]->catatan_delivery ?></textarea>
             </div>
             <br>
             <div class="form-group row">
                 <label class="col-sm-3 col-form-label col-form-label-sm">Tgl Delivery</label>
                 <div class="col-sm-9">
-                    <input type="date" id="tgl_delivery" name="tgl_delivery" class="form-control form-control-sm form-active-control">
+                    <input type="date" id="tgl_delivery" name="tgl_delivery" class="form-control form-control-sm form-active-control" value="<?php echo $delivery[0]->custom_tgl_delivery ?>" <?php if ($delivery[0]->status_delivery != '0') echo "disabled" ?> >
                 </div>
             </div>
         </div>
@@ -60,21 +99,23 @@
         <div class="two">
             <div class="form-group" >
                 <label class="col-form-label">Alamat Delivery</label>
-                <textarea id="alamat_delivery" name="alamat_delivery" class="form-control form-active-control"> </textarea>
+                <textarea id="alamat_delivery" name="alamat_delivery" class="form-control form-active-control" <?php if ($delivery[0]->status_delivery != '0') echo "disabled" ?> ><?php echo $delivery[0]->alamat_delivery ?></textarea>
             </div>
             <br>
             <div class="form-group row">
                 <label class="col-sm-2 col-form-label col-form-label-sm">No HP</label>
                 <div class="col-sm-10">
-                    <input type="number" id="no_hp_delivery" name="no_hp_delivery" class="form-control form-control-sm form-active-control">
+                    <input type="number" id="no_hp_delivery" name="no_hp_delivery" class="form-control form-control-sm form-active-control" value="<?php echo $delivery[0]->no_hp_delivery ?>" <?php if ($delivery[0]->status_delivery != '0') echo "disabled" ?> >
                 </div>
             </div>
         </div>
 
     </div>
+
     <br>
-    <button class="btn btn-primary save" style="width: 100%;  font-size: 14px;">Simpan Delivery</button>
-    <br><br><br><br><br>
+    <?php if ($delivery[0]->status_delivery == '0') echo "<button class=\"btn btn-primary save\" style=\"width: 100%;  font-size: 14px;\">Update Delivery</button><br><br>" ?>
+
+    <br><br><br>
 
 
     <div class="modal fade" tabindex="-1" role="dialog" id="staff-modal" style="z-index: 5000">
@@ -106,32 +147,6 @@
         </div>
     </div>
 
-    <div class="modal fade" tabindex="-1" role="dialog" id="order-modal" style="z-index: 5000">
-        <div class="modal-dialog" role="document">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                        <span aria-hidden="true">&times;</span>
-                    </button>
-                </div>
-                <div class="modal-body">
-                    <div class="table-responsive">
-                        <table class="table table-bordered" id="orderDataTable" width="100%" cellspacing="0">
-                            <thead>
-                            <tr>
-                                <th> Order </th>
-                            </tr>
-                            </thead>
-                            <tbody id="main-content">
-
-                            </tbody>
-                        </table>
-                    </div>
-                </div>
-
-            </div>
-        </div>
-    </div>
 
 
 
@@ -177,12 +192,13 @@
 
 <script>
 
-    var selected_order, selected_staff, selected_customer;
+    var selected_staff = $('#id_staff').val();
 
 
     $('#collapseUser').addClass('show');
     $('#navbar-user').addClass('active');
 
+    load_items($('#id_order_m').val());
 
     $('.save').click(function(e){
 
@@ -192,20 +208,19 @@
 
             $.ajax({
                 type: 'POST', // define the type of HTTP verb we want to use (POST for our form)
-                url: admin_url + 'add_delivery', // the url where we want to POST// our data object
+                url: admin_url + 'update_delivery', // the url where we want to POST// our data object
                 dataType: 'json',
                 data: {
-                    id_customer: selected_customer,
+                    id_delivery: $('#id_delivery').val(),
                     alamat_delivery: $('#alamat_delivery').val(),
                     no_hp_delivery: $('#no_hp_delivery').val(),
-                    id_order_m: selected_order,
                     tgl_delivery: $('#tgl_delivery').val(),
                     catatan_delivery: $('#catatan_delivery').val(),
                     id_staff: selected_staff
                 },
                 success: function (response) {
                     if(response.Status == "OK"){
-                        window.location.href = admin_url + 'delivery';
+                        window.location.href = admin_url + 'delivery_list';
                     } else if(response.Status == "ERROR" ){
                         show_snackbar(response.Message);
 
@@ -222,101 +237,6 @@
     $('.pilih-staff').click(function(){
         get_staff();
     })
-
-    $('.pilih-order').click(function(){
-        get_order();
-    })
-
-    // ======== ONLY SHOW ORDER WITH STATUS 1-ACTIVE ========
-    function get_order(){
-        $('.loading').css("display", "block");
-        $('.Veil-non-hover').fadeIn();
-
-        $('#orderDataTable').DataTable().destroy();
-        $('#orderDataTable').DataTable({
-            processing: true,
-            serverSide: true,
-            responsive: true,
-            lengthChange: false,
-            searching: true,
-            bInfo: false,
-            language: {
-                search: ""
-            },
-            pagingType: "simple",
-            ajax: {
-                url     : admin_url + 'get_order_m',
-                type    : 'POST',
-            },
-            createdRow: function ( row, data, index ) {
-                // $('td', row).eq(0).css("display", "none");
-            },
-            columns: [
-                {
-                    "data": {
-                        "id_order_m":"id_order_m",
-                        "no_order":"no_order",
-                        "nama_customer":"nama_customer",
-                        "tgl_order":"tgl_order",
-                        "grand_total_order":"grand_total_order",
-                        "ongkir_order":"ongkir_order"
-                    },
-                    mRender : function(data, type, full) {
-                        var temp_date = new Date(data.tgl_order);
-
-                        html = '<span style="font-size: 12px">'+ (temp_date.getDate() + 1) + '/' + temp_date.getMonth() + '/' + temp_date.getFullYear() +'</span><br>' +
-                            '   <strong>'+ data.no_order +'</strong><br>' +
-                            '<span>'+ data.nama_customer +'</span><br>' +
-                            '<span>Total Order: '+ convertToRupiah(data.grand_total_order) +' || Ongkir: '+ convertToRupiah(data.ongkir_order) +'</span>';
-                        return html;
-                    }
-                }
-
-            ],
-            initComplete: function (settings, json) {
-                $('#order-modal').modal('toggle');
-                $('.loading').css("display", "none");
-                $('.Veil-non-hover').fadeOut();
-            }
-        });
-    }
-
-
-    $('#orderDataTable').on( 'click', 'tbody tr', function () {
-
-        id_order_m = $('#orderDataTable').DataTable().row( this ).data().id_order_m;
-        id_customer = $('#orderDataTable').DataTable().row( this ).data().id_customer;
-
-        no_order = $('#orderDataTable').DataTable().row( this ).data().no_order;
-        tgl_order = $('#orderDataTable').DataTable().row( this ).data().tgl_order;
-        grand_total_order = $('#orderDataTable').DataTable().row( this ).data().grand_total_order;
-        ongkir_order = $('#orderDataTable').DataTable().row( this ).data().ongkir_order;
-        catatan_order = $('#orderDataTable').DataTable().row( this ).data().catatan_order;
-        nama_customer = $('#orderDataTable').DataTable().row( this ).data().nama_customer;
-        no_hp_customer = $('#orderDataTable').DataTable().row( this ).data().no_hp_customer;
-        alamat_customer = $('#orderDataTable').DataTable().row( this ).data().alamat_customer;
-
-
-        selected_order = id_order_m;
-        selected_customer = id_customer;
-
-        $('#item-lists').html("Memuat...");
-        load_items(selected_order);
-
-        $('#no_hp_delivery').val(no_hp_customer);
-        $('#alamat_delivery').val(alamat_customer);
-
-        var temp_date = new Date(tgl_order);
-
-        html = '<span style="font-size: 12px">'+ (temp_date.getDate() + 1) + '/' + temp_date.getMonth() + '/' + temp_date.getFullYear() +'</span><br>' +
-            '   <strong>'+ no_order +'</strong><br>' +
-            '<span>'+ nama_customer +'</span><br>' +
-            '<span>Total Order: '+ convertToRupiah(grand_total_order) +' || Ongkir: '+ convertToRupiah(ongkir_order) +'</span>' +
-            '<br><span>Catatan Order: ' + catatan_order + '</span>';
-
-        $('#order-data').html(html)
-        $('#order-modal').modal('hide');
-    });
 
     function load_items(id_order_m){
         $.ajax({

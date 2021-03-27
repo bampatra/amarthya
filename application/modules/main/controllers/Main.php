@@ -21,6 +21,176 @@ class Main extends MX_Controller
         $this->load->view('template/admin_footer');
     }
 
+    function update_delivery(){
+        $alamat_delivery = strtoupper(trim(htmlentities($_REQUEST['alamat_delivery'], ENT_QUOTES)));
+        $no_hp_delivery = strtoupper(trim(htmlentities($_REQUEST['no_hp_delivery'], ENT_QUOTES)));
+        $tgl_delivery = strtoupper(trim(htmlentities($_REQUEST['tgl_delivery'], ENT_QUOTES)));
+        $catatan_delivery = trim(htmlentities($_REQUEST['catatan_delivery'], ENT_QUOTES));
+        $id_staff = strtoupper(trim(htmlentities($_REQUEST['id_staff'], ENT_QUOTES)));
+        $id_delivery = strtoupper(trim(htmlentities($_REQUEST['id_delivery'], ENT_QUOTES)));
+
+        if(empty($tgl_delivery)){
+            $return_arr = array("Status" => 'ERROR', "Message" => 'Tanggal delivery tidak boleh kosong');
+            echo json_encode($return_arr);
+            return;
+        }
+
+        //Check if editable
+        $delivery_data = $this->Main_model->get_delivery_by_id($id_delivery);
+
+        if($delivery_data->num_rows() == 0){
+            $return_arr = array("Status" => 'ERROR', "Message" => 'Data tidak ditemukan');
+            echo json_encode($return_arr);
+            return;
+        }
+
+        if($delivery_data->row()->status_delivery != '0'){
+            $return_arr = array("Status" => 'ERROR', "Message" => 'Data tidak bisa diupdate karena sedang dikirim atau sudah dikirm');
+            echo json_encode($return_arr);
+            return;
+        }
+
+        $updated_data = compact('alamat_delivery', 'no_hp_delivery', 'tgl_delivery', 'catatan_delivery', 'id_staff');
+
+        $this->db->trans_begin();
+
+        if($this->Main_model->update_delivery($updated_data, $id_delivery)){
+            $this->db->trans_commit();
+            $return_arr = array("Status" => 'OK', "Message" => 'Berhasil diupdate');
+        } else {
+            $this->db->trans_rollback();
+            $return_arr = array("Status" => 'ERROR', "Message" => 'Gagal mengupdate data');
+        }
+
+        echo json_encode($return_arr);
+
+    }
+
+    function delivery_detail(){
+        $this->load->view('template/admin_header');
+
+        if(isset($_GET['id'])){
+
+            $data_delivery = $this->Main_model->get_delivery_by_id(htmlentities($_GET['id'], ENT_QUOTES));
+
+            if($data_delivery->num_rows() == 0){
+
+            } else {
+                $data['delivery'] = $data_delivery->result_object();
+                $this->load->view('delivery_detail', $data);
+            }
+
+
+        } else {
+            // kosong
+        }
+
+        $this->load->view('template/admin_footer');
+    }
+
+    function delivery_list(){
+        $this->load->view('template/admin_header');
+        $this->load->view('delivery_list');
+        $this->load->view('template/admin_footer');
+    }
+
+    function get_delivery(){
+        // server-side pagination
+        $draw = $_REQUEST['draw'];
+        $length = $_REQUEST['length'];
+        $start = $_REQUEST['start'];
+        $search = trim(htmlentities($_REQUEST['search']["value"], ENT_QUOTES));
+
+        $total = $this->Main_model->get_delivery()->num_rows();
+
+        $output = array();
+        $output['draw'] = $draw;
+        $output['recordsTotal'] = $output['recordsFiltered'] = $total;
+        $output['data']=array();
+
+
+        $this->db->limit($length,$start);
+
+
+        $output['data'] = $this->Main_model->get_delivery($search)->result_object();
+
+        echo json_encode($output);
+    }
+
+    function update_delivery_status(){
+        date_default_timezone_set('Asia/Singapore');
+
+        $id_delivery = trim(htmlentities($_REQUEST['id_delivery'], ENT_QUOTES));
+        $status_delivery = trim(htmlentities($_REQUEST['status'], ENT_QUOTES));
+
+        $delivery_data = $this->Main_model->get_delivery_by_id($id_delivery);
+
+        if($delivery_data->num_rows() > 0){
+
+            // If OTW is chosen (from NEW to OTW)
+            if($status_delivery == '1'){
+                if($delivery_data->row()->status_delivery != '0'){
+                    $return_arr = array("Status" => 'ERROR', "Message" => 'Tidak dapat mengubah data karena delivery sedang diantar, sudah sampai atau dibatalkan');
+                    echo json_encode($return_arr);
+                    return;
+                }
+                else {
+                    $timestamp_otw = date('Y-m-d H:i:s');
+                    $updated_data = compact('status_delivery', 'timestamp_otw');
+
+                    if($this->Main_model->update_delivery($updated_data, $id_delivery)){
+                        $return_arr = array("Status" => 'OK', "Message" => 'Berhasil! Status delivery: OTW');
+                    } else {
+                        $return_arr = array("Status" => 'ERROR', "Message" => 'Gagal mengupdate data. Hubungi admin (code: updateError1)');
+                    }
+                }
+            }
+            // If SELESAI is chosen (from OTW to SELESAI)
+            else if ($status_delivery == '2') {
+                if($delivery_data->row()->status_delivery != '1'){
+                    $return_arr = array("Status" => 'ERROR', "Message" => 'Tidak dapat mengubah data karena delivery belum diantar, sudah sampai atau dibatalkan');
+                    echo json_encode($return_arr);
+                    return;
+                } else {
+                    $timestamp_delivery = date('Y-m-d H:i:s');
+                    $updated_data = compact('status_delivery', 'timestamp_delivery');
+
+                    if($this->Main_model->update_delivery($updated_data, $id_delivery)){
+                        $return_arr = array("Status" => 'OK', "Message" => 'Berhasil! Status delivery: Selesai');
+                    } else {
+                        $return_arr = array("Status" => 'ERROR', "Message" => 'Gagal mengupdate data. Hubungi admin (code: updateError2)');
+                    }
+                }
+            }
+            // If BATAL is chosen (from OTW to NEW)
+            else if ($status_delivery == '0') {
+                if($delivery_data->row()->status_delivery != '1'){
+                    $return_arr = array("Status" => 'ERROR', "Message" => 'Tidak dapat mengubah data karena delivery sudah sampai atau dibatalkan');
+                    echo json_encode($return_arr);
+                    return;
+                }
+                // If from OTW to NEW
+                else{
+                    $timestamp_otw = '';
+                    $updated_data = compact('status_delivery', 'timestamp_otw');
+
+                    if($this->Main_model->update_delivery($updated_data, $id_delivery)){
+                        $return_arr = array("Status" => 'OK', "Message" => 'Delivery berhasil dibatalkan');
+                    } else {
+                        $return_arr = array("Status" => 'ERROR', "Message" => 'Gagal mengupdate data. Hubungi admin (code: updateError3)');
+                    }
+                }
+
+            }
+        } else {
+            $return_arr = array("Status" => 'ERROR', "Message" => 'Data delivery tidak ditemukan');
+        }
+
+        echo json_encode($return_arr);
+
+
+    }
+
     function delivery_form()
     {
 
@@ -66,7 +236,7 @@ class Main extends MX_Controller
         $no_hp_delivery = strtoupper(trim(htmlentities($_REQUEST['no_hp_delivery'], ENT_QUOTES)));
         $id_order_m = strtoupper(trim(htmlentities($_REQUEST['id_order_m'], ENT_QUOTES)));
         $tgl_delivery = strtoupper(trim(htmlentities($_REQUEST['tgl_delivery'], ENT_QUOTES)));
-        $catatan_delivery = strtoupper(trim(htmlentities($_REQUEST['catatan_delivery'], ENT_QUOTES)));
+        $catatan_delivery = trim(htmlentities($_REQUEST['catatan_delivery'], ENT_QUOTES));
         $id_staff = strtoupper(trim(htmlentities($_REQUEST['id_staff'], ENT_QUOTES)));
 
         $status_delivery = '0';
@@ -198,7 +368,6 @@ class Main extends MX_Controller
         echo json_encode($return_arr);
 
     }
-    
 
     function order_detail(){
         $this->load->view('template/admin_header');
@@ -206,10 +375,13 @@ class Main extends MX_Controller
         if(isset($_GET['no'])){
 
             $data_order = $this->Main_model->get_order_detail(htmlentities($_GET['no'], ENT_QUOTES));
-            $data['orders'] = $data_order->result_object();
 
-//            print_r($data['orders'][0]->catatan_order);
-            $this->load->view('order_detail', $data);
+            if($data_order->num_rows() == 0){
+                // kosong
+            } else {
+                $data['orders'] = $data_order->result_object();
+                $this->load->view('order_detail', $data);
+            }
 
         } else {
             // kosong

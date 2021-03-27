@@ -9,6 +9,38 @@ class Main_model extends CI_Model
         return $query;
     }
 
+    function get_delivery_by_id($id){
+        $sql = "SELECT *, 
+                DATE_FORMAT(a.tgl_delivery, '%Y-%m-%d') AS custom_tgl_delivery,
+                DATE_FORMAT(c.tgl_order, '%d/%m/%Y') AS custom_tgl_order
+                FROM delivery a
+                INNER JOIN customer b ON a.id_customer = b.id_customer
+                INNER JOIN order_m c ON a.id_order_m = c.id_order_m
+                INNER JOIN staff d ON a.id_staff = d.id_staff
+                WHERE a.id_delivery = '".$id."'";
+
+        $query = $this->db->query($sql);
+        return $query;
+
+    }
+
+    function get_delivery($search = null){
+        $sql = "SELECT *
+                FROM delivery a
+                INNER JOIN customer b ON a.id_customer = b.id_customer
+                INNER JOIN order_m c ON a.id_order_m = c.id_order_m
+                INNER JOIN staff d ON a.id_staff = d.id_staff";
+
+        if($search != "" || $search != null){
+            $sql .= " WHERE CONCAT(b.nama_customer, c.no_order, a.alamat_deliver, c.tgl_order) LIKE '%$search%'";
+        }
+
+        $sql .= " ORDER BY a.tgl_delivery DESC";
+
+        $query = $this->db->query($sql);
+        return $query;
+    }
+
     function add_delivery($data){
         $input_data = array(
             'id_customer' => $data['id_customer'],
@@ -26,8 +58,9 @@ class Main_model extends CI_Model
         return $insert_id;
     }
 
-    function update_delivery(){
-
+    function update_delivery($updated_data, $id_delivery){
+        $this->db->where('id_delivery', $id_delivery);
+        return $this->db->update('delivery',$updated_data);
     }
 
 

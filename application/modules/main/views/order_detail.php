@@ -28,7 +28,7 @@
             <div class="form-group row">
                 <label class="col-sm-3 col-form-label col-form-label-sm">Tgl Order</label>
                 <div class="col-sm-9">
-                    <input value="<?php echo $orders[0]->custom_tgl_order; ?>" type="date" id="tgl_order" name="tgl_order" class="form-control form-control-sm form-active-control">
+                    <input value="<?php echo $orders[0]->custom_tgl_order; ?>" type="date" id="tgl_order" name="tgl_order" class="form-control form-control-sm form-active-control" <?php if($orders[0]->status_delivery == '0' || $orders[0]->status_delivery == '1' || $orders[0]->status_delivery == '2'){ echo "disabled"; } ?>>
                 </div>
             </div>
             <div class="form-group row">
@@ -66,11 +66,11 @@
         <div class="one">
             <div class="form-group" >
                 <label class="col-form-label">Catatan</label>
-                <textarea id="catatan_order" name="catatan_order" class="form-control form-active-control"> <?php echo $orders[0]->catatan_order; ?> </textarea>
+                <textarea id="catatan_order" name="catatan_order" class="form-control form-active-control" <?php if($orders[0]->status_delivery == '0' || $orders[0]->status_delivery == '1' || $orders[0]->status_delivery == '2'){ echo "disabled"; } ?>> <?php echo $orders[0]->catatan_order; ?> </textarea>
             </div>
             <div class="form-group row">
                 <div class="col-sm-9">
-                    <input type="checkbox" id="is_tentative" <?php if($orders[0]->is_tentative == '1'){ echo "checked"; } ?>>
+                    <input type="checkbox" id="is_tentative" <?php if($orders[0]->is_tentative == '1'){ echo "checked"; } ?> <?php if($orders[0]->status_delivery == '0' || $orders[0]->status_delivery == '1' || $orders[0]->status_delivery == '2'){ echo "disabled"; } ?>>
                     TENTATIVE
                 </div>
 
@@ -144,7 +144,7 @@
                     <div class="form-group row">
                         <label class="col-sm-3 col-form-label col-form-label-sm">Ongkos Kirim</label>
                         <div class="col-sm-9">
-                            <input type="number" id="ongkir_order" name="ongkir_order" class="form-control form-control-sm form-active-control" value="<?php echo $orders[0]->ongkir_order; ?>">
+                            <input type="number" id="ongkir_order" name="ongkir_order" class="form-control form-control-sm form-active-control" value="<?php echo $orders[0]->ongkir_order; ?>" <?php if($orders[0]->status_delivery == '0' || $orders[0]->status_delivery == '1' || $orders[0]->status_delivery == '2'){ echo "disabled"; } ?>>
                         </div>
                     </div>
 
@@ -152,7 +152,7 @@
                     <div class="form-group row">
                         <label class="col-sm-3 col-form-label col-form-label-sm"></label>
                         <div class="col-sm-9">
-                            <input type="checkbox" id="is_ongkir_kas" <?php if($orders[0]->is_ongkir_kas == '1'){ echo "checked"; } ?>>
+                            <input type="checkbox" id="is_ongkir_kas" <?php if($orders[0]->is_ongkir_kas == '1'){ echo "checked"; } ?> <?php if($orders[0]->status_delivery == '0' || $orders[0]->status_delivery == '1' || $orders[0]->status_delivery == '2'){ echo "disabled"; } ?>>
                             Ongkir dari Kas
                         </div>
 
@@ -161,7 +161,7 @@
                     <div class="form-group row">
                         <label class="col-sm-3 col-form-label col-form-label-sm">Diskon</label>
                         <div class="col-sm-9">
-                            <input type="number" id="diskon_order" name="diskon_order" class="form-control form-control-sm form-active-control" value="<?php echo $orders[0]->diskon_order; ?>" >
+                            <input type="number" id="diskon_order" name="diskon_order" class="form-control form-control-sm form-active-control" value="<?php echo $orders[0]->diskon_order; ?>" <?php if($orders[0]->status_delivery == '0' || $orders[0]->status_delivery == '1' || $orders[0]->status_delivery == '2'){ echo "disabled"; } ?>>
                         </div>
                     </div>
 

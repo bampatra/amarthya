@@ -122,64 +122,58 @@
     function get_vendor(){
         $('.loading').css("display", "block");
         $('.Veil-non-hover').fadeIn();
-        $.ajax({
-            type        : 'GET', // define the type of HTTP verb we want to use (POST for our form)
-            url         : admin_url + 'get_vendor', // the url where we want to POST// our data object
-            dataType    : 'json',
-            success     : function(data){
-                html = '';
-                data.forEach(function(data){
 
-                    html += '<tr>'+
-                        '<td style="display: none;">'+ data.id_vendor +'</td>';
+        $('#dataTable').DataTable().destroy();
+        $('#dataTable').DataTable({
+            processing: true,
+            serverSide: true,
+            responsive: true,
+            lengthChange: false,
+            searching: true,
+            bInfo: false,
+            language: {
+                search: ""
+            },
+            pagingType: "simple",
+            ajax: {
+                url     : admin_url + 'get_vendor',
+                type    : 'POST',
+            },
+            createdRow: function ( row, data, index ) {
+                $('td', row).eq(0).css("display", "none");
+            },
+            columns: [
+                {"data": "id_vendor"},
+                {"data": "nama_vendor"}
 
-                    html += ' <td>'+ data.nama_vendor +'</td></tr>';
-                })
-
-                $('#dataTable').DataTable().destroy();
-                $('#main-content').html(html);
-                $('#dataTable').DataTable({
-                    "lengthChange": false
-                });
-
+            ],
+            initComplete: function (settings, json) {
                 $('.loading').css("display", "none");
                 $('.Veil-non-hover').fadeOut();
             }
-        })
+        });
     }
 
 
     $('#dataTable').on( 'click', 'tbody tr', function () {
-        $('.loading').css("display", "block");
-        $('.Veil-non-hover').fadeIn();
         $('body').addClass('modal-open');
-        id_vendor = $('#dataTable').DataTable().row( this ).data()[0];
-        $.ajax({
-            type        : 'POST', // define the type of HTTP verb we want to use (POST for our form)
-            url         : admin_url + 'get_vendor_by_id', // the url where we want to POST// our data object
-            dataType    : 'json',
-            data        : {id_vendor: id_vendor},
-            success     : function(data){
 
-                setTimeout(function() {$('.modal-dialog').scrollTop(0);}, 200);
-                $('#id_vendor').val(htmlDecode(data.id_vendor));
-                $('#nama_vendor').val(htmlDecode(data.nama_vendor));
-                $('#alamat_vendor').val(htmlDecode(data.alamat_vendor));
-                $('#no_hp_vendor').val(htmlDecode(data.no_hp_vendor));
-                $('#email_vendor').val(htmlDecode(data.email_vendor));
-                $('#catatan_vendor').val(htmlDecode(data.catatan_vendor));
+        data = $('#dataTable').DataTable().row( this ).data()
+
+        setTimeout(function() {$('.modal-dialog').scrollTop(0);}, 200);
+        $('#id_vendor').val(htmlDecode(data.id_vendor));
+        $('#nama_vendor').val(htmlDecode(data.nama_vendor));
+        $('#alamat_vendor').val(htmlDecode(data.alamat_vendor));
+        $('#no_hp_vendor').val(htmlDecode(data.no_hp_vendor));
+        $('#email_vendor').val(htmlDecode(data.email_vendor));
+        $('#catatan_vendor').val(htmlDecode(data.catatan_vendor));
 
 
-                $('.form-active-control').prop('disabled', true);
+        $('.form-active-control').prop('disabled', true);
 
-                $('.modal-button-save').css('display', 'none');
-                $('.modal-button-view-only').css('display', 'block');
-                $('#vendor-modal').modal('toggle');
-
-                $('.loading').css("display", "none");
-                $('.Veil-non-hover').fadeOut();
-            }
-        })
+        $('.modal-button-save').css('display', 'none');
+        $('.modal-button-view-only').css('display', 'block');
+        $('#vendor-modal').modal('toggle');
     });
 
     $('.add').click(function (e) {

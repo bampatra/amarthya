@@ -21,6 +21,225 @@ class Main extends MX_Controller
         $this->load->view('template/admin_footer');
     }
 
+    function order_vendor_detail(){
+        $this->load->view('template/admin_header');
+
+        if(isset($_GET['no'])){
+
+            $data_order = $this->Main_model->get_order_vendor_detail(htmlentities($_GET['no'], ENT_QUOTES));
+
+            if($data_order->num_rows() == 0){
+                // kosong
+            } else {
+                $data['orders'] = $data_order->result_object();
+                $this->load->view('order_vendor_detail', $data);
+            }
+
+        } else {
+            // kosong
+        }
+
+        $this->load->view('template/admin_footer');
+    }
+
+    function order_vendor_list(){
+        $this->load->view('template/admin_header');
+        $this->load->view('order_vendor_list');
+        $this->load->view('template/admin_footer');
+    }
+
+    function get_order_vendor_s(){
+        $id_order_vendor_m = htmlentities($_REQUEST['id_order_vendor_m'], ENT_QUOTES);
+        $data = $this->Main_model->get_order_vendor_s($id_order_vendor_m);
+        echo json_encode($data->result_object());
+        return;
+
+    }
+
+    function get_order_vendor_m(){
+        // server-side pagination
+        $draw = $_REQUEST['draw'];
+        $length = $_REQUEST['length'];
+        $start = $_REQUEST['start'];
+        $search = trim(htmlentities($_REQUEST['search']["value"], ENT_QUOTES));
+
+        $total = $this->Main_model->get_order_vendor_m()->num_rows();
+
+        $output = array();
+        $output['draw'] = $draw;
+        $output['recordsTotal'] = $output['recordsFiltered'] = $total;
+        $output['data']=array();
+
+
+        $this->db->limit($length,$start);
+
+
+        $output['data'] = $this->Main_model->get_order_vendor_m($search)->result_object();
+
+        echo json_encode($output);
+    }
+
+    function update_order_vendor(){
+
+        $no_order = strtoupper(trim(htmlentities($_REQUEST['no_order'], ENT_QUOTES)));
+        $catatan_order_vendor = strtoupper(trim(htmlentities($_REQUEST['catatan_order_vendor'], ENT_QUOTES)));
+        $tgl_order_vendor = strtoupper(trim(htmlentities($_REQUEST['tgl_order_vendor'], ENT_QUOTES)));
+        $is_paid_vendor = strtoupper(trim(htmlentities($_REQUEST['is_paid_vendor'], ENT_QUOTES)));
+        $payment_detail = strtoupper(trim(htmlentities($_REQUEST['payment_detail'], ENT_QUOTES)));
+
+
+        if(empty($tgl_order_vendor)){
+            $return_arr = array("Status" => 'ERROR', "Message" => 'Tanggal order tidak boleh kosong');
+            echo json_encode($return_arr);
+            return;
+        }
+
+        $order_vendor_m_data = $this->Main_model->get_order_vendor_detail($no_order)->row();
+
+
+        $is_paid_vendor = ($is_paid_vendor == true ? "1" : "0");
+
+        // cant change if product is on delivery or delivered or deleted, but can change payment
+        if($order_vendor_m_data->status_pick_up == '0' || $order_vendor_m_data->status_pick_up == '1' || $order_vendor_m_data->status_order_vendor == '0'){
+            $updated_data = compact('is_paid_vendor', 'payment_detail');
+        } else {
+            $updated_data = compact('catatan_order_vendor', 'tgl_order_vendor', 'is_paid_vendor', 'payment_detail');
+        }
+
+
+
+        if($this->Main_model->update_order_vendor_m($updated_data, $order_vendor_m_data->id_order_vendor_m)){
+            $this->db->trans_commit();
+            $return_arr = array("Status" => 'OK', "Message" => '');
+        } else {
+            $this->db->trans_rollback();
+            $return_arr = array("Status" => 'ERROR', "Message" => 'Gagal mengupdate data');
+        }
+
+        echo json_encode($return_arr);
+
+
+    }
+
+    function add_order_vendor(){
+
+        if(isset($_REQUEST['id_vendor'])){
+            $id_vendor = strtoupper(trim(htmlentities($_REQUEST['id_vendor'], ENT_QUOTES)));
+        } else {
+            $id_vendor = '';
+        }
+
+        date_default_timezone_set('Asia/Singapore');
+
+        $catatan_order_vendor = trim(htmlentities($_REQUEST['catatan_order_vendor'], ENT_QUOTES));
+        $tgl_order_vendor = strtoupper(trim(htmlentities($_REQUEST['tgl_order_vendor'], ENT_QUOTES)));
+        $is_paid_vendor = filter_var($_REQUEST['is_paid_vendor'], FILTER_VALIDATE_BOOLEAN);
+        $payment_detail = trim(htmlentities($_REQUEST['payment_detail'], ENT_QUOTES));
+        $is_in_store = filter_var($_REQUEST['is_in_store'], FILTER_VALIDATE_BOOLEAN);
+
+        // ERROR    : if online purchase but no customer
+        // OK       : if offline purchase with no customer
+        if(!$is_in_store && empty($id_vendor)){
+            $return_arr = array("Status" => 'ERROR', "Message" => 'Vendor tidak boleh kosong');
+            echo json_encode($return_arr);
+            return;
+        }
+
+        if(empty($tgl_order_vendor)){
+            $return_arr = array("Status" => 'ERROR', "Message" => 'Tanggal pesanan tidak boleh kosong');
+            echo json_encode($return_arr);
+            return;
+        }
+
+        // ERROR    : if not order
+        if(!isset($_REQUEST['order_vendor_s'])){
+            $return_arr = array("Status" => 'ERROR', "Message" => 'Tidak ada pesanan');
+            echo json_encode($return_arr);
+            return;
+        }
+
+        $no_order_vendor = "V".date("Ymdhis").$this->randStr(2);
+        $grand_total_order = 0;
+        $status_order_vendor = '1';
+
+        $is_paid_vendor = ($is_paid_vendor == true ? "1" : "0");
+        $is_in_store = ($is_in_store == true ? "1" : "0");
+
+        $data_m = compact('id_vendor', 'no_order_vendor', 'catatan_order_vendor', 'tgl_order_vendor',
+                            'grand_total_order', 'status_order_vendor', 'is_paid_vendor', 'payment_detail', 'is_in_store');
+
+        $this->db->trans_begin();
+
+
+        $id_order_vendor_m = $this->Main_model->add_order_vendor_m($data_m);
+
+        if(!$id_order_vendor_m){
+            $this->db->trans_rollback();
+            $return_arr = array("Status" => 'ERROR', "Message" => 'Terjadi kesalahan sistem. Hubungi Admin (code: form_1)');
+            echo json_encode($return_arr);
+            return;
+        }
+
+        foreach($_REQUEST['order_vendor_s'] as $order){
+
+            $id_product = $order['id_product'];
+            $qty_order_vendor = $order['qty_order'];
+
+
+            $get_price = $this->Main_model->get_product_price($id_product)->row();
+            $harga_order_vendor = $get_price->HP_product;
+            $total_order_vendor = floatval($qty_order_vendor) * floatval($harga_order_vendor);
+
+            $grand_total_order += $total_order_vendor;
+
+
+            $data_s = compact('id_order_vendor_m', 'id_product', 'qty_order_vendor', 'harga_order_vendor','total_order_vendor');
+
+            $id_order_vendor_s = $this->Main_model->add_order_vendor_s($data_s);
+
+            if(!$id_order_vendor_s){
+                $this->db->trans_rollback();
+                $return_arr = array("Status" => 'ERROR', "Message" => 'Terjadi kesalahan sistem. Hubungi Admin (code: form_2)');
+                echo json_encode($return_arr);
+                return;
+            }
+
+        }
+
+        $data_m_update = compact('grand_total_order');
+
+        if($this->Main_model->update_order_vendor_m($data_m_update, $id_order_vendor_m)){
+
+
+            // =========== Extra Features ============
+
+            // Add stok in out after order => add_stok_in_out
+
+
+            // =======================================
+
+
+            $this->db->trans_commit();
+            $return_arr = array("Status" => 'OK', "Message" => $no_order_vendor);
+        } else {
+            $return_arr = array("Status" => 'ERROR', "Message" => 'Terjadi kesalahan sistem. Hubungi Admin (code: form_3)');
+        }
+
+
+        echo json_encode($return_arr);
+
+
+
+    }
+
+    function order_vendor_form()
+    {
+
+        $this->load->view('template/admin_header');
+        $this->load->view('order_vendor_form');
+        $this->load->view('template/admin_footer');
+    }
+
     function update_delivery(){
         $alamat_delivery = strtoupper(trim(htmlentities($_REQUEST['alamat_delivery'], ENT_QUOTES)));
         $no_hp_delivery = strtoupper(trim(htmlentities($_REQUEST['no_hp_delivery'], ENT_QUOTES)));
@@ -279,18 +498,23 @@ class Main extends MX_Controller
         $start = $_REQUEST['start'];
         $search = trim(htmlentities($_REQUEST['search']["value"], ENT_QUOTES));
 
-        $total = $this->Main_model->get_order_m()->num_rows();
-
         $output = array();
         $output['draw'] = $draw;
-        $output['recordsTotal'] = $output['recordsFiltered'] = $total;
         $output['data']=array();
 
 
         $this->db->limit($length,$start);
 
 
-        $output['data'] = $this->Main_model->get_order_m($search)->result_object();
+        if(!isset($_GET['delivery'])){
+            $total = $this->Main_model->get_order_m()->num_rows();
+            $output['data'] = $this->Main_model->get_order_m($search)->result_object();
+        } else {
+            $total = $this->Main_model->get_order_m_deliv()->num_rows();
+            $output['data'] = $this->Main_model->get_order_m_deliv($search)->result_object();
+        }
+
+        $output['recordsTotal'] = $output['recordsFiltered'] = $total;
 
         echo json_encode($output);
     }
@@ -320,24 +544,13 @@ class Main extends MX_Controller
         $order_m_data = $this->Main_model->get_order_m_by_no_order($no_order)->row();
 
 
-        // cant change if product is on delivery or delivered or deleted
+        // cant change if product is on delivery or delivered or deleted, except payment
         if($order_m_data->status_order == '0'){
             $return_arr = array("Status" => 'ERROR', "Message" => 'Order tidak bisa diupdate karena sudah dibatalkan');
             echo json_encode($return_arr);
             return;
         }
 
-        if($order_m_data->status_delivery != null && $order_m_data->status_delivery == '1'){
-            $return_arr = array("Status" => 'ERROR', "Message" => 'Order tidak bisa diupdate karena sedang diantar ke customer');
-            echo json_encode($return_arr);
-            return;
-        }
-
-        if($order_m_data->status_delivery != null && $order_m_data->status_delivery == '2'){
-            $return_arr = array("Status" => 'ERROR', "Message" => 'Order tidak bisa diupdate karena sudah diantar');
-            echo json_encode($return_arr);
-            return;
-        }
 
         // process update
 
@@ -352,8 +565,15 @@ class Main extends MX_Controller
             $grand_total_order = floatval($order_m_data->subtotal_order) + floatval($ongkir_order) - floatval($diskon_order);
         }
 
-        $data = compact('catatan_order', 'tgl_order', 'is_tentative', 'ongkir_order', 'is_ongkir_kas',
-                        'diskon_order', 'is_paid', 'payment_detail', 'grand_total_order');
+
+        if($order_m_data->status_delivery != null && ($order_m_data->status_delivery == '1' || $order_m_data->status_delivery == '2')){
+            $data = compact('is_paid', 'payment_detail');
+        } else {
+            $data = compact('catatan_order', 'tgl_order', 'is_tentative', 'ongkir_order', 'is_ongkir_kas',
+                'diskon_order', 'is_paid', 'payment_detail', 'grand_total_order');
+        }
+
+
 
 
 
@@ -803,9 +1023,27 @@ class Main extends MX_Controller
     }
 
     function get_vendor(){
-        $data = $this->Main_model->get_vendor();
-        echo json_encode($data->result_object());
-        return;
+
+        // server-side pagination
+        $draw = $_REQUEST['draw'];
+        $length = $_REQUEST['length'];
+        $start = $_REQUEST['start'];
+        $search = trim(htmlentities($_REQUEST['search']["value"], ENT_QUOTES));
+
+        $total = $this->Main_model->get_vendor()->num_rows();
+
+
+        $output = array();
+        $output['draw'] = $draw;
+        $output['recordsTotal'] = $output['recordsFiltered'] = $total;
+        $output['data']=array();
+
+
+        $this->db->limit($length,$start);
+
+        $output['data'] = $this->Main_model->get_vendor($search)->result_object();
+
+        echo json_encode($output);
     }
 
     function get_vendor_by_id(){

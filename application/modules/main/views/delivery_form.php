@@ -245,8 +245,8 @@
             },
             pagingType: "simple",
             ajax: {
-                url     : admin_url + 'get_order_m',
-                type    : 'POST',
+                url     : admin_url + 'get_order_m?delivery=true',
+                type    : 'POST'
             },
             createdRow: function ( row, data, index ) {
                 // $('td', row).eq(0).css("display", "none");

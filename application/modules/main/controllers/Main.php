@@ -21,6 +21,206 @@ class Main extends MX_Controller
         $this->load->view('template/admin_footer');
     }
 
+    function update_pick_up(){
+
+        $alamat_pick_up = strtoupper(trim(htmlentities($_REQUEST['alamat_pick_up'], ENT_QUOTES)));
+        $no_hp_pick_up = strtoupper(trim(htmlentities($_REQUEST['no_hp_pick_up'], ENT_QUOTES)));
+        $tgl_pick_up = strtoupper(trim(htmlentities($_REQUEST['tgl_pick_up'], ENT_QUOTES)));
+        $catatan_pick_up = trim(htmlentities($_REQUEST['catatan_pick_up'], ENT_QUOTES));
+        $id_staff = strtoupper(trim(htmlentities($_REQUEST['id_staff'], ENT_QUOTES)));
+        $id_pick_up = strtoupper(trim(htmlentities($_REQUEST['id_pick_up'], ENT_QUOTES)));
+
+        if(empty($tgl_pick_up)){
+            $return_arr = array("Status" => 'ERROR', "Message" => 'Tanggal pick up tidak boleh kosong');
+            echo json_encode($return_arr);
+            return;
+        }
+
+        //Check if editable
+        $pick_up_data = $this->Main_model->get_pick_up_by_id($id_pick_up);
+
+        if($pick_up_data->num_rows() == 0){
+            $return_arr = array("Status" => 'ERROR', "Message" => 'Data pick up tidak ditemukan');
+            echo json_encode($return_arr);
+            return;
+        }
+
+        if($pick_up_data->row()->status_pick_up != '0'){
+            $return_arr = array("Status" => 'ERROR', "Message" => 'Data tidak bisa diupdate karena sudah selesai pick up');
+            echo json_encode($return_arr);
+            return;
+        }
+
+        $updated_data = compact('alamat_pick_up', 'no_hp_pick_up', 'tgl_pick_up', 'catatan_pick_up', 'id_staff');
+
+        $this->db->trans_begin();
+
+        if($this->Main_model->update_pick_up($updated_data, $id_pick_up)){
+            $this->db->trans_commit();
+            $return_arr = array("Status" => 'OK', "Message" => 'Berhasil diupdate');
+        } else {
+            $this->db->trans_rollback();
+            $return_arr = array("Status" => 'ERROR', "Message" => 'Gagal mengupdate data');
+        }
+
+        echo json_encode($return_arr);
+
+    }
+
+    function pick_up_detail(){
+        $this->load->view('template/admin_header');
+
+        if(isset($_GET['id'])){
+
+            $data_pick_up = $this->Main_model->get_pick_up_by_id(htmlentities($_GET['id'], ENT_QUOTES));
+
+            if($data_pick_up->num_rows() == 0){
+
+            } else {
+                $data['pick_up'] = $data_pick_up->result_object();
+                $this->load->view('pick_up_detail', $data);
+            }
+
+
+        } else {
+            // kosong
+        }
+
+        $this->load->view('template/admin_footer');
+    }
+
+    function get_pick_up(){
+        // server-side pagination
+        $draw = $_REQUEST['draw'];
+        $length = $_REQUEST['length'];
+        $start = $_REQUEST['start'];
+        $search = trim(htmlentities($_REQUEST['search']["value"], ENT_QUOTES));
+
+        $total = $this->Main_model->get_pick_up()->num_rows();
+
+        $output = array();
+        $output['draw'] = $draw;
+        $output['recordsTotal'] = $output['recordsFiltered'] = $total;
+        $output['data']=array();
+
+
+        $this->db->limit($length,$start);
+
+
+        $output['data'] = $this->Main_model->get_pick_up($search)->result_object();
+
+        echo json_encode($output);
+    }
+
+    function update_pick_up_status(){
+        date_default_timezone_set('Asia/Singapore');
+
+        $id_pick_up = trim(htmlentities($_REQUEST['id_pick_up'], ENT_QUOTES));
+        $status_pick_up = trim(htmlentities($_REQUEST['status'], ENT_QUOTES));
+
+        $pick_up_data = $this->Main_model->get_pick_up_by_id($id_pick_up);
+
+        if($pick_up_data->num_rows() > 0){
+            // If OTW is chosen (from NEW to OTW)
+            if($status_pick_up == '1'){
+                if($pick_up_data->row()->status_pick_up != '0'){
+                    $return_arr = array("Status" => 'ERROR', "Message" => 'Tidak dapat mengubah data karena pick up sudah selesai');
+                    echo json_encode($return_arr);
+                    return;
+                }
+                else {
+                    $timestamp_pick_up = date('Y-m-d H:i:s');
+                    $updated_data = compact('status_pick_up', 'timestamp_pick_up');
+
+                    if($this->Main_model->update_pick_up($updated_data, $id_pick_up)){
+                        $return_arr = array("Status" => 'OK', "Message" => 'Berhasil! Status pick up: SELESAI');
+                    } else {
+                        $return_arr = array("Status" => 'ERROR', "Message" => 'Gagal mengupdate data. Hubungi admin (code: updateError1)');
+                    }
+                }
+            }
+
+        } else {
+            $return_arr = array("Status" => 'ERROR', "Message" => 'Data pick up tidak ditemukan');
+        }
+
+        echo json_encode($return_arr);
+
+    }
+
+    function pick_up_list(){
+        $this->load->view('template/admin_header');
+        $this->load->view('pickup_list');
+        $this->load->view('template/admin_footer');
+    }
+
+    function pick_up_form()
+    {
+
+        $this->load->view('template/admin_header');
+        $this->load->view('pickup_form');
+        $this->load->view('template/admin_footer');
+    }
+
+    // ================== HALF DONE ====================
+    function add_pick_up(){
+
+        // TODO: check if staff exists
+
+        if(!isset($_REQUEST['id_staff'])){
+            $return_arr = array("Status" => 'ERROR', "Message" => 'Staff tidak boleh kosong');
+            echo json_encode($return_arr);
+            return;
+        }
+
+        // TODO: check if order exists
+        // TODO: check if vendor and order matches
+
+        if(!isset($_REQUEST['id_order_vendor_m'])){
+            $return_arr = array("Status" => 'ERROR', "Message" => 'Order tidak boleh kosong');
+            echo json_encode($return_arr);
+            return;
+        }
+
+        // TODO: check if the chosen order udah ada data pickup (all status except status_pick_up 2-dibatalkan)
+        // TODO: check if the chosen order statusnya tidak 0-dibatalkan
+
+
+        date_default_timezone_set('Asia/Singapore');
+
+        $id_vendor = strtoupper(trim(htmlentities($_REQUEST['id_vendor'], ENT_QUOTES)));
+        $alamat_pick_up = strtoupper(trim(htmlentities($_REQUEST['alamat_pick_up'], ENT_QUOTES)));
+        $no_hp_pick_up = strtoupper(trim(htmlentities($_REQUEST['no_hp_pick_up'], ENT_QUOTES)));
+        $id_order_vendor_m = strtoupper(trim(htmlentities($_REQUEST['id_order_vendor_m'], ENT_QUOTES)));
+        $tgl_pick_up = strtoupper(trim(htmlentities($_REQUEST['tgl_pick_up'], ENT_QUOTES)));
+        $catatan_pick_up = trim(htmlentities($_REQUEST['catatan_pick_up'], ENT_QUOTES));
+        $id_staff = strtoupper(trim(htmlentities($_REQUEST['id_staff'], ENT_QUOTES)));
+
+        $status_pick_up = '0';
+
+        if(empty($tgl_pick_up)){
+            $return_arr = array("Status" => 'ERROR', "Message" => 'Tanggal pick up tidak boleh kosong');
+            echo json_encode($return_arr);
+            return;
+        }
+
+        $data = compact('id_vendor', 'alamat_pick_up', 'no_hp_pick_up', 'id_order_vendor_m', 'tgl_pick_up',
+                        'catatan_pick_up', 'id_staff', 'status_pick_up');
+
+        $this->db->trans_begin();
+
+        if($this->Main_model->add_pick_up($data)){
+            $this->db->trans_commit();
+            $return_arr = array("Status" => 'OK', "Message" => 'Berhasil ditambahkan');
+        } else {
+            $this->db->trans_rollback();
+            $return_arr = array("Status" => 'ERROR', "Message" => 'Gagal menambahkan pick up');
+        }
+
+        echo json_encode($return_arr);
+
+    }
+
     function order_vendor_detail(){
         $this->load->view('template/admin_header');
 
@@ -63,18 +263,23 @@ class Main extends MX_Controller
         $start = $_REQUEST['start'];
         $search = trim(htmlentities($_REQUEST['search']["value"], ENT_QUOTES));
 
-        $total = $this->Main_model->get_order_vendor_m()->num_rows();
-
         $output = array();
         $output['draw'] = $draw;
-        $output['recordsTotal'] = $output['recordsFiltered'] = $total;
+
         $output['data']=array();
 
 
         $this->db->limit($length,$start);
 
+        if(!isset($_GET['pick_up'])){
+            $total = $this->Main_model->get_order_vendor_m()->num_rows();
+            $output['data'] = $this->Main_model->get_order_vendor_m($search)->result_object();
+        } else {
+            $total = $this->Main_model->get_order_vendor_m_pickup()->num_rows();
+            $output['data'] = $this->Main_model->get_order_vendor_m_pickup($search)->result_object();
+        }
 
-        $output['data'] = $this->Main_model->get_order_vendor_m($search)->result_object();
+        $output['recordsTotal'] = $output['recordsFiltered'] = $total;
 
         echo json_encode($output);
     }
@@ -767,7 +972,6 @@ class Main extends MX_Controller
         echo json_encode($return_arr);
 
     }
-
 
     function stok_in_out(){
         $this->load->view('template/admin_header');

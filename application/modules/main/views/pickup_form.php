@@ -4,7 +4,7 @@
 <div class="container-fluid">
 
     <!-- Page Heading -->
-    <h1 class="h3 mb-2 text-gray-800">Formulir Delivery</h1>
+    <h1 class="h3 mb-2 text-gray-800">Formulir Pick Up</h1>
     <br>
     <!-- DataTales Example -->
 
@@ -14,13 +14,13 @@
             <div class="green-line"></div>
             <div id="staff_info" style="font-size: 14px">
             </div>
-            <span class="link pilih-staff"> Pilih Staff Delivery </span>
+            <span class="link pilih-staff"> Pilih Staff Pick Up </span>
             
 
 
         </div>
         <div class="two">
-            <h6> Status Delivery </h6>
+            <h6> Status Pick Up </h6>
             <div class="green-line"></div>
             <div class="form-group row">
                 <label class="col-sm-12 col-form-label col-form-label-sm">
@@ -45,35 +45,35 @@
     <div class="wrapper" style="margin-top: 10px">
         <div class="one">
             <div class="form-group" >
-                <label class="col-form-label">Catatan Delivery</label>
-                <textarea id="catatan_delivery" name="catatan_delivery" class="form-control form-active-control"> </textarea>
+                <label class="col-form-label">Catatan Pick Up</label>
+                <textarea id="catatan_pick_up" name="catatan_pick_up" class="form-control form-active-control"> </textarea>
             </div>
             <br>
             <div class="form-group row">
-                <label class="col-sm-3 col-form-label col-form-label-sm">Tgl Delivery</label>
+                <label class="col-sm-3 col-form-label col-form-label-sm">Tgl Pick Up</label>
                 <div class="col-sm-9">
-                    <input type="date" id="tgl_delivery" name="tgl_delivery" class="form-control form-control-sm form-active-control">
+                    <input type="date" id="tgl_pick_up" name="tgl_pick_up" class="form-control form-control-sm form-active-control">
                 </div>
             </div>
         </div>
 
         <div class="two">
             <div class="form-group" >
-                <label class="col-form-label">Alamat Delivery</label>
-                <textarea id="alamat_delivery" name="alamat_delivery" class="form-control form-active-control"> </textarea>
+                <label class="col-form-label">Alamat Pick Up</label>
+                <textarea id="alamat_pick_up" name="alamat_pick_up" class="form-control form-active-control"> </textarea>
             </div>
             <br>
             <div class="form-group row">
                 <label class="col-sm-2 col-form-label col-form-label-sm">No HP</label>
                 <div class="col-sm-10">
-                    <input type="number" id="no_hp_delivery" name="no_hp_delivery" class="form-control form-control-sm form-active-control">
+                    <input type="number" id="no_hp_pick_up" name="no_hp_pick_up" class="form-control form-control-sm form-active-control">
                 </div>
             </div>
         </div>
 
     </div>
     <br>
-    <button class="btn btn-primary save" style="width: 100%;  font-size: 14px;">Simpan Delivery</button>
+    <button class="btn btn-primary save" style="width: 100%;  font-size: 14px;">Simpan Pick Up</button>
     <br><br><br><br><br>
 
 
@@ -177,7 +177,7 @@
 
 <script>
 
-    var selected_order, selected_staff, selected_customer;
+    var selected_order, selected_staff, selected_vendor;
 
 
     $('#collapseUser').addClass('show');
@@ -192,20 +192,20 @@
 
             $.ajax({
                 type: 'POST', // define the type of HTTP verb we want to use (POST for our form)
-                url: admin_url + 'add_delivery', // the url where we want to POST// our data object
+                url: admin_url + 'add_pick_up', // the url where we want to POST// our data object
                 dataType: 'json',
                 data: {
-                    id_customer: selected_customer,
-                    alamat_delivery: $('#alamat_delivery').val(),
-                    no_hp_delivery: $('#no_hp_delivery').val(),
-                    id_order_m: selected_order,
-                    tgl_delivery: $('#tgl_delivery').val(),
-                    catatan_delivery: $('#catatan_delivery').val(),
+                    id_vendor: selected_vendor,
+                    alamat_pick_up: $('#alamat_pick_up').val(),
+                    no_hp_pick_up: $('#no_hp_pick_up').val(),
+                    id_order_vendor_m: selected_order,
+                    tgl_pick_up: $('#tgl_pick_up').val(),
+                    catatan_pick_up: $('#catatan_pick_up').val(),
                     id_staff: selected_staff
                 },
                 success: function (response) {
                     if(response.Status == "OK"){
-                        window.location.href = admin_url + 'delivery_list';
+                        window.location.href = admin_url + 'pick_up_list';
                     } else if(response.Status == "ERROR" ){
                         show_snackbar(response.Message);
 
@@ -245,7 +245,7 @@
             },
             pagingType: "simple",
             ajax: {
-                url     : admin_url + 'get_order_m?delivery=true',
+                url     : admin_url + 'get_order_vendor_m?pick_up=true',
                 type    : 'POST'
             },
             createdRow: function ( row, data, index ) {
@@ -254,20 +254,19 @@
             columns: [
                 {
                     "data": {
-                        "id_order_m":"id_order_m",
-                        "no_order":"no_order",
-                        "nama_customer":"nama_customer",
-                        "tgl_order":"tgl_order",
-                        "grand_total_order":"grand_total_order",
-                        "ongkir_order":"ongkir_order"
+                        "id_order_vendor_m":"id_order_vendor_m",
+                        "no_order_vendor":"no_order_vendor",
+                        "nama_vendor":"nama_vendor",
+                        "tgl_order_vendor":"tgl_order_vendor",
+                        "grand_total_order":"grand_total_order"
                     },
                     mRender : function(data, type, full) {
-                        var temp_date = new Date(data.tgl_order);
+                        var temp_date = new Date(data.tgl_order_vendor);
 
                         html = '<span style="font-size: 12px">'+ (temp_date.getDate() + 1) + '/' + temp_date.getMonth() + '/' + temp_date.getFullYear() +'</span><br>' +
-                            '   <strong>'+ data.no_order +'</strong><br>' +
-                            '<span>'+ data.nama_customer +'</span><br>' +
-                            '<span>Total Order: '+ convertToRupiah(data.grand_total_order) +' || Ongkir: '+ convertToRupiah(data.ongkir_order) +'</span>';
+                            '   <strong>'+ data.no_order_vendor +'</strong><br>' +
+                            '<span>'+ data.nama_vendor +'</span><br>' +
+                            '<span>Total Order: '+ convertToRupiah(data.grand_total_order) +'</span>';
                         return html;
                     }
                 }
@@ -284,46 +283,45 @@
 
     $('#orderDataTable').on( 'click', 'tbody tr', function () {
 
-        id_order_m = $('#orderDataTable').DataTable().row( this ).data().id_order_m;
-        id_customer = $('#orderDataTable').DataTable().row( this ).data().id_customer;
+        id_order_vendor_m = $('#orderDataTable').DataTable().row( this ).data().id_order_vendor_m;
+        id_vendor = $('#orderDataTable').DataTable().row( this ).data().id_vendor;
 
-        no_order = $('#orderDataTable').DataTable().row( this ).data().no_order;
-        tgl_order = $('#orderDataTable').DataTable().row( this ).data().tgl_order;
+        no_order = $('#orderDataTable').DataTable().row( this ).data().no_order_vendor;
+        tgl_order_vendor = $('#orderDataTable').DataTable().row( this ).data().tgl_order_vendor;
         grand_total_order = $('#orderDataTable').DataTable().row( this ).data().grand_total_order;
-        ongkir_order = $('#orderDataTable').DataTable().row( this ).data().ongkir_order;
-        catatan_order = $('#orderDataTable').DataTable().row( this ).data().catatan_order;
-        nama_customer = $('#orderDataTable').DataTable().row( this ).data().nama_customer;
-        no_hp_customer = $('#orderDataTable').DataTable().row( this ).data().no_hp_customer;
-        alamat_customer = $('#orderDataTable').DataTable().row( this ).data().alamat_customer;
+        catatan_order = $('#orderDataTable').DataTable().row( this ).data().catatan_order_vendor;
+        nama_vendor = $('#orderDataTable').DataTable().row( this ).data().nama_vendor;
+        no_hp_vendor = $('#orderDataTable').DataTable().row( this ).data().no_hp_vendor;
+        alamat_vendor = $('#orderDataTable').DataTable().row( this ).data().alamat_vendor;
 
 
-        selected_order = id_order_m;
-        selected_customer = id_customer;
+        selected_order = id_order_vendor_m;
+        selected_vendor = id_vendor;
 
         $('#item-lists').html("Memuat...");
         load_items(selected_order);
 
-        $('#no_hp_delivery').val(no_hp_customer);
-        $('#alamat_delivery').val(alamat_customer);
+        $('#no_hp_pick_up').val(no_hp_vendor);
+        $('#alamat_pick_up').val(alamat_vendor);
 
-        var temp_date = new Date(tgl_order);
+        var temp_date = new Date(tgl_order_vendor);
 
         html = '<span style="font-size: 12px">'+ (temp_date.getDate() + 1) + '/' + temp_date.getMonth() + '/' + temp_date.getFullYear() +'</span><br>' +
             '   <strong>'+ no_order +'</strong><br>' +
-            '<span>'+ nama_customer +'</span><br>' +
-            '<span>Total Order: '+ convertToRupiah(grand_total_order) +' || Ongkir: '+ convertToRupiah(ongkir_order) +'</span>' +
+            '<span>'+ nama_vendor +'</span><br>' +
+            '<span>Total Order: '+ convertToRupiah(grand_total_order) +'</span>' +
             '<br><span>Catatan Order: ' + catatan_order + '</span>';
 
         $('#order-data').html(html)
         $('#order-modal').modal('hide');
     });
 
-    function load_items(id_order_m){
+    function load_items(id_order_vendor_m){
         $.ajax({
             type        : 'POST', // define the type of HTTP verb we want to use (POST for our form)
-            url         : admin_url + 'get_order_s', // the url where we want to POST// our data object
+            url         : admin_url + 'get_order_vendor_s', // the url where we want to POST// our data object
             dataType    : 'json',
-            data        : {id_order_m: id_order_m},
+            data        : {id_order_vendor_m: id_order_vendor_m},
             success     : function(data){
                 html_info_items = "";
 
@@ -332,20 +330,12 @@
                     html_info_items += '<div class="product-item">\n' +
                         '                    <table width="100%">\n' +
                         '                        <tr class="no-hover-style">\n' +
-                        '                            <td>\n';
-
-                    if(data.is_free == "1"){
-                        html_info_items += data.nama_product + ' (FREE)';
-                    } else {
-                        html_info_items += data.nama_product;
-                    }
-
-
-
-                    html_info_items +=  '            </td>\n' +
+                        '                            <td>\n' +
+                                    data.nama_product +
+                        '            </td>\n' +
                         '                            <td style="text-align: right">\n' +
-                        '                                <span style="font-size: 9px;">'+ data.qty_order +' x '+ convertToRupiah(data.harga_order) +' </span> <br>\n' +
-                        '                                <strong style="font-size: 13px;">'+ convertToRupiah(data.total_order) +'</strong>\n' +
+                        '                                <span style="font-size: 9px;">'+ data.qty_order_vendor +' x '+ convertToRupiah(data.harga_order_vendor) +' </span> <br>\n' +
+                        '                                <strong style="font-size: 13px;">'+ convertToRupiah(data.total_order_vendor) +'</strong>\n' +
                         '                            </td>\n' +
                         '                        </tr>\n' +
                         '                    </table>\n' +

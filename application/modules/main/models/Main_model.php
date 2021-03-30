@@ -9,6 +9,59 @@ class Main_model extends CI_Model
         return $query;
     }
 
+    function get_pick_up_by_id($id){
+        $sql = "SELECT *, 
+                DATE_FORMAT(a.tgl_pick_up, '%Y-%m-%d') AS custom_tgl_pick_up,
+                DATE_FORMAT(c.tgl_order_vendor, '%d/%m/%Y') AS custom_tgl_order_vendor
+                FROM pick_up a
+                INNER JOIN vendor b ON a.id_vendor = b.id_vendor
+                INNER JOIN order_vendor_m c ON a.id_order_vendor_m = c.id_order_vendor_m
+                INNER JOIN staff d ON a.id_staff = d.id_staff
+                WHERE a.id_pick_up = '".$id."'";
+
+        $query = $this->db->query($sql);
+        return $query;
+
+    }
+
+    function get_pick_up($search = null){
+        $sql = "SELECT *, a.id_pick_up
+                FROM pick_up a
+                INNER JOIN vendor b ON a.id_vendor = b.id_vendor
+                INNER JOIN order_vendor_m c ON a.id_order_vendor_m = c.id_order_vendor_m
+                INNER JOIN staff d ON a.id_staff = d.id_staff";
+
+        if($search != "" || $search != null){
+            $sql .= " WHERE CONCAT(b.nama_vendor, c.no_order_vendor, a.alamat_pick_up, c.tgl_order_vendor) LIKE '%$search%'";
+        }
+
+        $sql .= " ORDER BY a.tgl_pick_up DESC";
+
+        $query = $this->db->query($sql);
+        return $query;
+    }
+
+    function add_pick_up($data){
+        $input_data = array(
+            'id_vendor' => $data['id_vendor'],
+            'alamat_pick_up' => $data['alamat_pick_up'],
+            'no_hp_pick_up' => $data['no_hp_pick_up'],
+            'id_order_vendor_m' => $data['id_order_vendor_m'],
+            'tgl_pick_up' => $data['tgl_pick_up'],
+            'catatan_pick_up' => $data['catatan_pick_up'],
+            'status_pick_up' => $data['status_pick_up'],
+            'id_staff' => $data['id_staff']
+        );
+
+        $this->db->insert('pick_up',$input_data);
+        $insert_id = $this->db->insert_id();
+        return $insert_id;
+    }
+
+    function update_pick_up($updated_data, $id_pick_up){
+        $this->db->where('id_pick_up', $id_pick_up);
+        return $this->db->update('pick_up',$updated_data);
+    }
 
     function get_order_vendor_detail($no_order){
 
@@ -25,7 +78,7 @@ class Main_model extends CI_Model
     }
 
     function get_order_vendor_m($search = null){
-        $sql = "SELECT *
+        $sql = "SELECT *, a.id_order_vendor_m, a.id_vendor
                 FROM order_vendor_m a
                 INNER JOIN vendor b ON a.id_vendor = b.id_vendor";
 
@@ -39,8 +92,25 @@ class Main_model extends CI_Model
         return $query;
     }
 
+    function get_order_vendor_m_pickup($search = null){
+        $sql = "SELECT *, a.id_order_vendor_m, a.id_vendor
+                FROM order_vendor_m a
+                INNER JOIN vendor b ON a.id_vendor = b.id_vendor
+                LEFT JOIN pick_up c ON a.id_order_vendor_m = c.id_order_vendor_m
+                WHERE (c.status_pick_up IS NULL OR c.status_pick_up = '2')";
+
+        if($search != "" || $search != null){
+            $sql .= " AND CONCAT(b.nama_vendor, a.no_order_vendor, b.alamat_vendor, a.tgl_order_vendor) LIKE '%$search%'";
+        }
+
+        $sql .= " ORDER BY a.tgl_order_vendor DESC";
+
+        $query = $this->db->query($sql);
+        return $query;
+    }
+
     function get_order_vendor_s($id_order_vendor_m){
-        $sql = "SELECT *
+        $sql = "SELECT *, a.id_order_vendor_s
                 FROM order_vendor_s a
                 INNER JOIN product b ON a.id_product = b.id_product
                 WHERE a.id_order_vendor_m = '".$id_order_vendor_m."'";
@@ -107,14 +177,14 @@ class Main_model extends CI_Model
     }
 
     function get_delivery($search = null){
-        $sql = "SELECT *
+        $sql = "SELECT *, a.id_delivery
                 FROM delivery a
                 INNER JOIN customer b ON a.id_customer = b.id_customer
                 INNER JOIN order_m c ON a.id_order_m = c.id_order_m
                 INNER JOIN staff d ON a.id_staff = d.id_staff";
 
         if($search != "" || $search != null){
-            $sql .= " WHERE CONCAT(b.nama_customer, c.no_order, a.alamat_deliver, c.tgl_order) LIKE '%$search%'";
+            $sql .= " WHERE CONCAT(b.nama_customer, c.no_order, a.alamat_delivery, c.tgl_order) LIKE '%$search%'";
         }
 
         $sql .= " ORDER BY a.tgl_delivery DESC";

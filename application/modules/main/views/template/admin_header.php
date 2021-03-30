@@ -66,7 +66,7 @@
             border-radius: 10px; /* Rounded borders */
             padding: 16px; /* Padding */
             position: fixed; /* Sit on top of the screen */
-            z-index: 1; /* Add a z-index if needed */
+            z-index: 99999999; /* Add a z-index if needed */
             left: 50%; /* Center the snackbar */
             bottom: 100px;
         }

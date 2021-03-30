@@ -8,7 +8,7 @@
     <!-- DataTales Example -->
     <div class="card shadow mb-4">
         <div class="card-header py-3">
-            <h6 class="m-0 font-weight-bold text-primary">Daftar Delivery</h6>
+            <h6 class="m-0 font-weight-bold text-primary">Daftar Pick Up</h6>
         </div>
         <div class="card-body">
             <div class="table-responsive">
@@ -41,7 +41,7 @@
                 <div id="info_items"></div>
                 <br>
                 <div id="info_catatan" style="font-size: 13px; margin-top: 5px"></div>
-                <div id="info_catatan_delivery" style="font-size: 13px; margin-top: 5px"></div>
+                <div id="info_catatan_pick_up" style="font-size: 13px; margin-top: 5px"></div>
                 <br>
                 <div style="text-align: right" id="info_payment"></div>
                 <a id="edit-info" target="_blank"><span class="link"> Edit </span></a>
@@ -107,10 +107,10 @@
     $('#collapseUser').addClass('show');
     $('#navbar-user').addClass('active');
 
-    get_order_m();
+    get_order_vendor_m();
 
     //get all products
-    function get_order_m(){
+    function get_order_vendor_m(){
         $('.loading').css("display", "block");
         $('.Veil-non-hover').fadeIn();
 
@@ -127,51 +127,44 @@
             },
             pagingType: "simple",
             ajax: {
-                url     : admin_url + 'get_delivery',
+                url     : admin_url + 'get_pick_up',
                 type    : 'POST',
             },
             createdRow: function ( row, data, index ) {
                 $('td', row).eq(0).css("display", "none");
             },
             columns: [
-                {"data": "id_delivery"},
+                {"data": "id_pick_up"},
                 {
                     "data": {
-                        "nama_customer":"nama_customer",
-                        "no_hp_delivery":"no_hp_delivery",
-                        "alamat_delivery":"alamat_delivery",
-                        "tgl_delivery":"tgl_delivery",
+                        "nama_vendor":"nama_vendor",
+                        "no_hp_pick_up":"no_hp_pick_up",
+                        "alamat_pick_up":"alamat_pick_up",
+                        "tgl_pick_up":"tgl_pick_up",
                         "grand_total_order":"grand_total_order",
-                        "status_delivery": "status_delivery",
-                        "no_order": "no_order",
+                        "status_pick_up": "status_pick_up",
+                        "no_order_vendor": "no_order_vendor",
                         "nama_staff":"nama_staff",
-                        "timestamp_otw":"timestamp_otw",
-                        "timestamp_delivery":"timestamp_delivery",
-                        "ongkir_order":"ongkir_order"
+                        "timestamp_pick_up":"timestamp_pick_up"
                     },
                     mRender : function(data, type, full) {
 
-                        var temp_date = new Date(data.tgl_delivery);
+                        var temp_date = new Date(data.tgl_pick_up);
 
                         html = '<div class="detail-row">' +
                                 '<div class="detail-column">' +
                             '       <span>'+ temp_date.getDate() + '/' + (temp_date.getMonth() + 1) + '/' + temp_date.getFullYear() +'</span><br>' +
-                                    '<strong>'+ data.no_order +'</strong><br>' +
-                                    '<span>'+ data.nama_customer +'</span>' +
-                            '       <p>Ongkir: '+ convertToRupiah(data.ongkir_order) +'</p>';
+                                    '<strong>'+ data.no_order_vendor +'</strong><br>' +
+                                    '<span>'+ data.nama_vendor +'</span>';
 
 
-                        if(data.status_delivery == "0"){
+                        if(data.status_pick_up == "0"){
                             html += '<div class="alert alert-danger alert-payment mobile-only" role="alert">\n' +
-                                '                            <strong>BELUM DIANTAR</strong>\n' +
+                                '                            <strong>BELUM PICK UP</strong>\n' +
                                 '                        </div>';
-                        } else if(data.status_delivery == "1"){
-                            html += '<div class="alert alert-warning alert-payment mobile-only" role="alert">\n' +
-                                '                            <strong>OTW SIS</strong><br>' + data.timestamp_otw +
-                                '                        </div>';
-                        } else if(data.status_delivery == "2"){
+                        } else if(data.status_pick_up == "1"){
                             html += '<div class="alert alert-success alert-payment mobile-only" role="alert">\n' +
-                                '                            <strong>TERKIRIM</strong><br>' + data.timestamp_delivery +
+                                '                            <strong>SELESAI</strong><br>' + data.timestamp_pick_up +
                                 '                        </div>';
                         }
 
@@ -180,17 +173,13 @@
                                 '<div class="detail-column desktop-and-tablet" style="text-align: left">' +
                                     '<strong style="font-size: 11px;">Status</strong>';
 
-                        if(data.status_delivery == "0"){
+                        if(data.status_pick_up == "0"){
                             html += '<div class="alert alert-danger alert-payment" role="alert">\n' +
-                                '                            <strong>BELUM DIANTAR</strong>\n' +
+                                '                            <strong>BELUM PICK UP</strong>\n' +
                                 '                        </div>';
-                        } else if(data.status_delivery == "1"){
-                            html += '<div class="alert alert-warning alert-payment" role="alert">\n' +
-                                '                            <strong>OTW SIS</strong><br>' + data.timestamp_otw +
-                                '                        </div>';
-                        } else if(data.status_delivery == "2"){
+                        } else if(data.status_pick_up == "1"){
                             html += '<div class="alert alert-success alert-payment" role="alert">\n' +
-                                '                            <strong>TERKIRIM</strong><br>' + data.timestamp_delivery +
+                                '                            <strong>SELESAI</strong><br>' + data.timestamp_pick_up +
                                 '                        </div>';
                         }
 
@@ -198,8 +187,8 @@
 
                         html += '<div class="detail-row"><table style="width: 100%">' +
                             '       <tr class="no-pointer"><td>Driver: </td><td><span>'+ data.nama_staff +'<br>('+ data.no_hp_staff +')</span></td></tr>' +
-                            '       <tr class="no-pointer"><td>Alamat: </td><td><span>'+ data.alamat_delivery +'</span></td></tr>' +
-                            '       <tr class="no-pointer"><td>No HP: </td><td><span>'+ data.no_hp_delivery +'</span></td></tr>' +
+                            '       <tr class="no-pointer"><td>Alamat: </td><td><span>'+ data.alamat_pick_up +'</span></td></tr>' +
+                            '       <tr class="no-pointer"><td>No HP: </td><td><span>'+ data.no_hp_pick_up +'</span></td></tr>' +
                                 '</table></div>';
 
 
@@ -222,26 +211,22 @@
         $('#info_items').html("Memuat...");
         rowData = $('#dataTable').DataTable().row( this ).data();
 
-        $("#edit-info").attr("href", admin_url + 'delivery_detail?id=' + rowData.id_delivery);
+        $("#edit-info").attr("href", admin_url + 'pick_up_detail?id=' + rowData.id_pick_up);
 
-        var temp_date = new Date(rowData.tgl_order);
+        var temp_date = new Date(rowData.tgl_order_vendor);
 
         html_info_customer = '<span>'+ temp_date.getDate() + '/' + (temp_date.getMonth() + 1) + '/' + temp_date.getFullYear() +'</span><br>\n' +
-            '                <strong>'+ rowData.no_order +'</strong><br>\n' +
-            '                <span>'+ rowData.nama_customer +' ('+ rowData.no_hp_customer +')</span><br>\n' +
-                            '<span>'+ rowData.alamat_customer +'</span><br>';
+            '                <strong>'+ rowData.no_order_vendor +'</strong><br>\n' +
+            '                <span>'+ rowData.nama_vendor +' ('+ rowData.no_hp_vendor +')</span><br>\n' +
+                            '<span>'+ rowData.alamat_vendor +'</span><br>';
 
-        if(rowData.status_delivery == "0"){
+        if(rowData.status_pick_up == "0"){
             html_info_customer += '<div class="alert alert-danger alert-payment" role="alert">\n' +
-                '                            <strong>BELUM DIANTAR</strong>\n' +
+                '                            <strong>BELUM PICK UP</strong>\n' +
                 '                        </div>';
-        } else if(rowData.status_delivery == "1"){
-            html_info_customer += '<div class="alert alert-warning alert-payment" role="alert">\n' +
-                '                            <strong>OTW SIS</strong>\n' +
-                '                        </div>';
-        } else if(rowData.status_delivery == "2"){
+        } else if(rowData.status_pick_up == "1"){
             html_info_customer += '<div class="alert alert-success alert-payment" role="alert">\n' +
-                '                            <strong>TERKIRIM</strong>\n' +
+                '                            <strong>SELESAI</strong>\n' +
                 '                        </div>';
         }
 
@@ -252,9 +237,9 @@
 
         $.ajax({
             type        : 'POST', // define the type of HTTP verb we want to use (POST for our form)
-            url         : admin_url + 'get_order_s', // the url where we want to POST// our data object
+            url         : admin_url + 'get_order_vendor_s', // the url where we want to POST// our data object
             dataType    : 'json',
-            data        : {id_order_m: rowData.id_order_m},
+            data        : {id_order_vendor_m: rowData.id_order_vendor_m},
             success     : function(data){
                 html_info_items = "";
 
@@ -275,7 +260,7 @@
 
                     html_info_items +=  '            </td>\n' +
                         '                            <td style="text-align: right">\n' +
-                        '                                <span style="font-size: 9px;">'+ data.qty_order + ' ' +data.satuan_product +' </span> <br>\n' +
+                        '                                <span style="font-size: 9px;">'+ data.qty_order_vendor + ' ' +data.satuan_product +' </span> <br>\n' +
                         '                        </tr>\n' +
                         '                    </table>\n' +
                         '                </div>';
@@ -287,18 +272,15 @@
             }
         })
 
-        $('#info_catatan').html("Catatan Pesanan: " + rowData.catatan_order);
+        $('#info_catatan').html("Catatan Pesanan: " + rowData.catatan_order_vendor);
 
-        html_catatan_delivery = "Catatan Delivery: " + rowData.catatan_delivery;
+        html_catatan_pick_up = "Catatan Pick Up: " + rowData.catatan_pick_up;
 
-        if(rowData.status_delivery == '1'){
-            html_catatan_delivery += "<br>Waktu Driver Berangkat: " + rowData.timestamp_otw;
-        } else if (rowData.status_delivery == '2') {
-            html_catatan_delivery += "<br>Waktu Driver Berangkat: " + rowData.timestamp_otw;
-            html_catatan_delivery += "<br>Waktu Sampai: " + rowData.timestamp_delivery;
+        if(rowData.status_pick_up == '1'){
+            html_catatan_pick_up += "<br>Waktu Pick Up: " + rowData.timestamp_pick_up;
         }
 
-        $('#info_catatan_delivery').html(html_catatan_delivery);
+        $('#info_catatan_pick_up').html(html_catatan_pick_up);
 
         //
         // html_info_payment = '<table style="border-spacing: 0 10px; border-collapse:separate; width: 100%;">\n' +
@@ -343,14 +325,12 @@
         $('#info_customer').html(html_info_customer);
         // $('#info_payment').html(html_info_payment);
 
-        if(rowData.status_delivery == '0'){
-            action_button = '<button type="button" class="btn btn-primary update-status" id="otw">Gas!</button>';
-            $('.modal-footer').html(action_button);
-        } else if (rowData.status_delivery == '1') {
-            action_button = '<button type="button" class="btn btn-danger update-status" id="cancel">Batalkan</button>' +
-                '<button type="button" class="btn btn-primary update-status" id="done">Selesai</button>';
+        if(rowData.status_pick_up == '0'){
+            action_button = '<button type="button" class="btn btn-primary update-status" id="done">Selesai</button>';
             $('.modal-footer').html(action_button);
         }
+
+
 
 
 
@@ -358,37 +338,36 @@
 
         $('.update-status').click(function(){
 
-            $('.loading').css("display", "block");
-            $('.Veil-non-hover').fadeIn();
+            if(confirm("Selesaikan Pick Up?")) {
 
-            tipe_status = $(this).attr('id');
+                $('.loading').css("display", "block");
+                $('.Veil-non-hover').fadeIn();
 
-            if(tipe_status == 'otw'){
-                status = '1'
-            } else if(tipe_status == 'cancel') {
-                status = '0'
-            } else if(tipe_status == 'done'){
-                status = '2'
-            }
+                tipe_status = $(this).attr('id');
 
-            $.ajax({
-                type: 'POST', // define the type of HTTP verb we want to use (POST for our form)
-                url: admin_url + 'update_delivery_status', // the url where we want to POST// our data object
-                dataType: 'json',
-                data: {status: status, id_delivery: rowData.id_delivery},
-                success: function (response) {
-                    if(response.Status == "OK"){
-                        $('#detail-modal').modal('hide');
-                        get_order_m();
-                        show_snackbar(response.Message);
-                    } else if(response.Status == "ERROR" ){
-                        show_snackbar(response.Message);
-                        $('.loading').css("display", "none");
-                        $('.Veil-non-hover').fadeOut();
-                    }
-
+                if (tipe_status == 'done') {
+                    status = '1'
                 }
-            })
+
+                $.ajax({
+                    type: 'POST', // define the type of HTTP verb we want to use (POST for our form)
+                    url: admin_url + 'update_pick_up_status', // the url where we want to POST// our data object
+                    dataType: 'json',
+                    data: {status: status, id_pick_up: rowData.id_pick_up},
+                    success: function (response) {
+                        if (response.Status == "OK") {
+                            $('#detail-modal').modal('hide');
+                            get_order_vendor_m();
+                            show_snackbar(response.Message);
+                        } else if (response.Status == "ERROR") {
+                            show_snackbar(response.Message);
+                            $('.loading').css("display", "none");
+                            $('.Veil-non-hover').fadeOut();
+                        }
+
+                    }
+                })
+            }
         })
 
     });

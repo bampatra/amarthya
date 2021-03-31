@@ -196,7 +196,7 @@
         var temp_date = new Date(rowData.tgl_order);
 
         html_info_customer = '<span>'+ temp_date.getDate() + '/' + (temp_date.getMonth() + 1) + '/' + temp_date.getFullYear() +'</span><br>\n' +
-            '                <strong>'+ rowData.no_order +'</strong><br>\n' +
+            '                <strong>'+ rowData.no_order +'</strong> <a target="_blank" href="'+ admin_url +'pdf_order?no='+ rowData.no_order +'"><span class="link"> (Print Invoice) </span></a><br>' +
             '                <span>'+ rowData.nama_customer +' ('+ rowData.no_hp_customer +')</span><br>\n' +
                             '<span>'+ rowData.alamat_customer +'</span><br>';
 

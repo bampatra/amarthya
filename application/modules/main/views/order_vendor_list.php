@@ -196,7 +196,7 @@
         var temp_date = new Date(rowData.tgl_order_vendor);
 
         html_info_customer = '<span>'+ temp_date.getDate() + '/' + (temp_date.getMonth() + 1) + '/' + temp_date.getFullYear() +'</span><br>\n' +
-            '                <strong>'+ rowData.no_order_vendor +'</strong><br>\n' +
+            '                <strong>'+ rowData.no_order_vendor +'</strong> <a target="_blank" href="'+ admin_url +'pdf_tt?no='+ rowData.no_order_vendor +'"><span class="link"> (Print Tanda Terima) </span></a><br>' +
             '                <span>'+ rowData.nama_vendor +' ('+ rowData.no_hp_vendor +')</span><br>\n' +
                             '<span>'+ rowData.alamat_vendor +'</span><br>';
 

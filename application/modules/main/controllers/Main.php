@@ -1,5 +1,9 @@
 <?php
 defined('BASEPATH') OR exit('No direct script access allowed');
+use Dompdf\Dompdf;
+use Dompdf\Options;
+use Spipu\Html2Pdf\Html2Pdf;
+
 class Main extends MX_Controller
 {
 
@@ -290,7 +294,7 @@ class Main extends MX_Controller
         $catatan_order_vendor = strtoupper(trim(htmlentities($_REQUEST['catatan_order_vendor'], ENT_QUOTES)));
         $tgl_order_vendor = strtoupper(trim(htmlentities($_REQUEST['tgl_order_vendor'], ENT_QUOTES)));
         $is_paid_vendor = strtoupper(trim(htmlentities($_REQUEST['is_paid_vendor'], ENT_QUOTES)));
-        $payment_detail = strtoupper(trim(htmlentities($_REQUEST['payment_detail'], ENT_QUOTES)));
+        $payment_detail = trim(htmlentities($_REQUEST['payment_detail'], ENT_QUOTES));
 
 
         if(empty($tgl_order_vendor)){
@@ -1155,7 +1159,7 @@ class Main extends MX_Controller
         $id_product = strtoupper(trim(htmlentities($_REQUEST['id_product'], ENT_QUOTES)));
         $nama_product = trim(htmlentities($_REQUEST['nama_product'], ENT_QUOTES));
         $SKU_product = strtoupper(trim(htmlentities($_REQUEST['SKU_product'], ENT_QUOTES)));
-        $satuan_product = strtoupper(trim(htmlentities($_REQUEST['satuan_product'], ENT_QUOTES)));
+        $satuan_product = trim(htmlentities($_REQUEST['satuan_product'], ENT_QUOTES));
         $HP_product = strtoupper(trim(htmlentities($_REQUEST['HP_product'], ENT_QUOTES)));
         $HJ_product = strtoupper(trim(htmlentities($_REQUEST['HJ_product'], ENT_QUOTES)));
         $HR_product = strtoupper(trim(htmlentities($_REQUEST['HR_product'], ENT_QUOTES)));
@@ -1260,8 +1264,8 @@ class Main extends MX_Controller
     function add_vendor(){
 
         $id_vendor = strtoupper(trim(htmlentities($_REQUEST['id_vendor'], ENT_QUOTES)));
-        $nama_vendor = strtoupper(trim(htmlentities($_REQUEST['nama_vendor'], ENT_QUOTES)));
-        $alamat_vendor = strtoupper(trim(htmlentities($_REQUEST['alamat_vendor'], ENT_QUOTES)));
+        $nama_vendor = trim(htmlentities($_REQUEST['nama_vendor'], ENT_QUOTES));
+        $alamat_vendor = trim(htmlentities($_REQUEST['alamat_vendor'], ENT_QUOTES));
         $no_hp_vendor = strtoupper(trim(htmlentities($_REQUEST['no_hp_vendor'], ENT_QUOTES)));
         $email_vendor = strtoupper(trim(htmlentities($_REQUEST['email_vendor'], ENT_QUOTES)));
         $catatan_vendor = strtoupper(trim(htmlentities($_REQUEST['catatan_vendor'], ENT_QUOTES)));
@@ -1364,8 +1368,8 @@ class Main extends MX_Controller
     function add_customer(){
 
         $id_customer = strtoupper(trim(htmlentities($_REQUEST['id_customer'], ENT_QUOTES)));
-        $nama_customer = strtoupper(trim(htmlentities($_REQUEST['nama_customer'], ENT_QUOTES)));
-        $alamat_customer = strtoupper(trim(htmlentities($_REQUEST['alamat_customer'], ENT_QUOTES)));
+        $nama_customer = trim(htmlentities($_REQUEST['nama_customer'], ENT_QUOTES));
+        $alamat_customer = trim(htmlentities($_REQUEST['alamat_customer'], ENT_QUOTES));
         $no_hp_customer = strtoupper(trim(htmlentities($_REQUEST['no_hp_customer'], ENT_QUOTES)));
         $email_customer = strtoupper(trim(htmlentities($_REQUEST['email_customer'], ENT_QUOTES)));
         $catatan_customer = trim(htmlentities($_REQUEST['catatan_customer'], ENT_QUOTES));
@@ -1565,6 +1569,16 @@ class Main extends MX_Controller
         return substr(str_shuffle(str_repeat($x='ABCDEFGHJKMNPQRSTUVWXYZ', ceil($length/strlen($x)) )),1,$length);
     }
 
+    function encode_img_base64($img_path){
+        // Read image path, convert to base64 encoding
+        $imageData = base64_encode(file_get_contents($img_path));
+
+        // Format the image SRC:  data:{mime};base64,{data};
+        $src = 'data: '.mime_content_type($img_path).';base64,'.$imageData;
+
+        return $src;
+    }
+
     function logout(){
         unset(
             $_SESSION['id_web_user'],
@@ -1576,6 +1590,331 @@ class Main extends MX_Controller
         $this->load->helper('url');
         redirect(base_url('home/admin_login'), 'refresh');
     }
+
+    function pdf_order(){
+
+        require_once APPPATH.'third_party/fpdf182/fpdf.php';
+
+
+        if(isset($_GET['no'])){
+
+            $data_order = $this->Main_model->get_order_detail(htmlentities($_GET['no'], ENT_QUOTES));
+
+            if($data_order->num_rows() == 0){
+                // kosong
+
+            } else {
+
+                $data = $data_order->result_object();
+
+//                $html2pdf = new Html2Pdf('P','A4','fr', true, 'UTF-8', array(15, 15, 15, 15), false);
+//                $html2pdf->writeHTML($this->load->view('template/invoice', $data, true));
+//                $html2pdf->output();
+
+                $pdf = new FPDF('P','mm','A4');
+                $pdf->AddPage();
+
+                //set font
+                $pdf->AddFont('Nunito','','Nunito-Regular.php');
+                $pdf->AddFont('Nunito','B','Nunito-Bold.php');
+
+
+                $pdf->SetFont('Nunito','B',20);
+
+                //====================== HEADER ======================
+
+                $pdf->Cell(130 ,5,'',0,0);
+                $pdf->Image(base_url('assets/images/logopdf.jpg'), 10, 10, 48, 22 ,'');
+                $x = $pdf->GetX();
+
+                $pdf->Cell(59 ,5,'INVOICE',0,1, 'R');//end of line
+
+                $pdf->SetFont('Nunito','B',11);
+
+                $pdf->SetX($x);
+                $pdf->Cell(59 ,5,'',0,1);//end of line
+
+                $pdf->SetX($x);
+                $pdf->Cell(25 ,5,'',0,0, 'R');
+                $pdf->Cell(34 ,5,'Kedai Amarthya',0,1, 'R');//end of line
+
+                $pdf->SetFont('Nunito','',11);
+
+                $pdf->SetX($x);
+                $pdf->Cell(25 ,5,'',0,0, 'R');
+                $pdf->Cell(34 ,5,'+62 819-3618-1788',0,1, 'R');//end of line
+
+                $pdf->SetX($x);
+                $pdf->Cell(25 ,5,'',0,0, 'R');
+                $pdf->Cell(34 ,5,'kedai.amarthya@gmail.com',0,1, 'R');//end of line
+
+                $pdf->SetX($x);
+                $pdf->Cell(25 ,5,'',0,0, 'R');
+                $pdf->Cell(34 ,5,'Jalan Gelogor Indah IB, Gg Kresna No 1',0,1, 'R');//end of line
+
+                //buat dummy cell untuk memberi jarak vertikal
+                $pdf->Cell(189 ,10,'',0,1);//end of line
+
+
+                // ================ ORDER INFO ===============
+
+                $pdf->SetFont('Nunito','B',11);
+                $pdf->Cell(100 ,5,'Ditagih Kepada',0,1);//end of line
+
+                $pdf->SetFont('Nunito','',11);
+                $pdf->Cell(25 ,5,$data_order->row()->nama_customer,0,0);
+                $pdf->Cell(95 ,5,'',0,0);
+                $pdf->Cell(25 ,5,"Invoice",0,0);
+                $pdf->Cell(34 ,5,"#".$data_order->row()->no_order,0,1);
+
+
+
+                $pdf->Cell(25 ,5,$data_order->row()->no_hp_customer,0,0);
+                $pdf->Cell(95 ,5,'',0,0);
+                $pdf->Cell(25 ,5,"Tanggal",0,0);
+                $pdf->Cell(34 ,5,date_format(date_create($data_order->row()->tgl_order),"d/m/Y"),0,1);
+
+
+                //buat dummy cell untuk memberi jarak vertikal
+                $pdf->Cell(189 ,10,'',0,1);//end of line
+
+                // ================ INVOICE HEADER ===============
+
+                $pdf->SetFont('Nunito','',10.5);
+
+                $pdf->setFillColor(222,237,247);
+                $pdf->Cell(87 ,12,'Barang','',0, 'L', TRUE);
+                $pdf->Cell(18 ,12,'Kuantitas','',0,'C', TRUE);
+                $pdf->Cell(15 ,12,'Satuan','',0,'C', TRUE);
+                $pdf->Cell(35 ,12,'Harga','',0,'R', TRUE);
+                $pdf->Cell(35 ,12,'Jumlah','',1, 'R', TRUE);//end of line
+
+
+
+                // ================ INVOICE DETAIL ===============
+
+                $pdf->SetFont('Nunito','',10);
+
+                $odd = true;
+                foreach ($data as $order){
+
+                    if($odd){
+                        $pdf->setFillColor(255,255,255);
+                        $odd = false;
+                    } else {
+                        $pdf->setFillColor(245,245,245);
+                        $odd = true;
+                    }
+
+                    if($order->is_free == '0'){
+                        $pdf->Cell(87 ,9,$order->nama_product,'',0, 'L', TRUE);
+                    } else {
+                        $pdf->Cell(87 ,9,$order->nama_product." (FREE)",'',0, 'L', TRUE);
+                    }
+
+
+                    $pdf->Cell(18 ,9,$order->qty_order,'',0,'C', TRUE);
+                    $pdf->Cell(15 ,9,$order->satuan_product,'',0,'C', TRUE);
+                    $pdf->Cell(35 ,9,"Rp. " . number_format($order->harga_order,2,',','.'),'',0,'R', TRUE);
+                    $pdf->Cell(35 ,9,"Rp. " . number_format($order->total_order,2,',','.'),'',1, 'R', TRUE);//end of line
+                }
+
+
+                //buat dummy cell untuk memberi jarak vertikal
+                $pdf->Cell(189 ,7,'','T',1);//end of line
+
+                // ================ PAYMENT DETAIL ===============
+
+                $payment_detail_height = 6;
+
+                $pdf->SetFont('Nunito','B',10);
+                $pdf->Cell(130 ,$payment_detail_height,'Instruksi Pembayaran',0,0);
+                $pdf->SetFont('Nunito','',10);
+                $pdf->Cell(25 ,$payment_detail_height,'Subtotal',0,0);
+                $pdf->Cell(34 ,$payment_detail_height,"Rp. " . number_format($order->subtotal_order,2,',','.'),0,1,'R');//end of line
+
+                $pdf->Cell(130 ,$payment_detail_height,'BCA 0490409181 An. A. A.A. Arina Saraswati Hardy',0,0);
+                $pdf->Cell(25 ,$payment_detail_height,'Pengiriman',0,0);
+
+                if($data_order->row()->is_ongkir_kas == '0'){
+                    $pdf->Cell(34 ,$payment_detail_height,"Rp. " . number_format($order->ongkir_order,2,',','.'),0,1,'R');//end of line
+                } else {
+                    $pdf->Cell(34 ,$payment_detail_height,"Rp. " . number_format(0,2,',','.'),0,1,'R');//end of line
+                }
+
+
+                $pdf->Cell(130 ,$payment_detail_height,'',0,0);
+                $pdf->Cell(25 ,$payment_detail_height,'Diskon',0,0);
+                $pdf->Cell(34 ,$payment_detail_height,"(Rp. " . number_format($order->diskon_order,2,',','.').")",0,1,'R');//end of line
+
+                $pdf->SetFont('Nunito','B',10);
+
+                $pdf->Cell(130 ,$payment_detail_height,'',0,0);
+                $pdf->Cell(25 ,$payment_detail_height,'Total','B',0);
+                $pdf->Cell(34 ,$payment_detail_height,"Rp. " . number_format($order->grand_total_order,2,',','.'),'B',1,'R');//end of line
+
+                // ================ SIGNATURE ===============
+
+
+                $pdf->Image(base_url('assets/images/ttdarina.png'), 20, $pdf->GetY()+5, 72, 33 ,'');
+
+                $pdf->Cell(75 ,33,'','',1);//end of line
+                $pdf->Cell(15 ,1,'','',0);//end of line
+                $pdf->Cell(50 ,1,'','T',0);//end of line
+                $pdf->Cell(15 ,1,'','',1);//end of line
+
+                $pdf->SetFont('Nunito','',10);
+                $pdf->Cell(75 ,5,date_format(date_create($data_order->row()->tgl_order),"d/m/Y"),'',0, 'C');
+
+                $pdf->Output("I", "Invoice #".$data_order->row()->no_order." - ".$data_order->row()->nama_customer.".pdf");
+            }
+
+        } else {
+            // kosong
+        }
+
+    }
+
+    function pdf_tt(){
+
+        require_once APPPATH.'third_party/fpdf182/fpdf.php';
+
+
+        if(isset($_GET['no'])){
+
+            $data_order = $this->Main_model->get_order_vendor_detail(htmlentities($_GET['no'], ENT_QUOTES));
+
+            if($data_order->num_rows() == 0){
+                // kosong
+
+            } else {
+
+                $data = $data_order->result_object();
+
+//                $html2pdf = new Html2Pdf('P','A4','fr', true, 'UTF-8', array(15, 15, 15, 15), false);
+//                $html2pdf->writeHTML($this->load->view('template/invoice', $data, true));
+//                $html2pdf->output();
+
+                $pdf = new FPDF('P','mm','A4');
+                $pdf->AddPage();
+
+                //set font
+                $pdf->AddFont('Nunito','','Nunito-Regular.php');
+                $pdf->AddFont('Nunito','B','Nunito-Bold.php');
+
+
+                $pdf->SetFont('Nunito','B',20);
+
+                //====================== HEADER ======================
+
+                $pdf->Cell(130 ,5,'',0,0);
+                $pdf->Image(base_url('assets/images/logopdf.jpg'), 10, 10, 48, 22 ,'');
+                $x = $pdf->GetX();
+
+                $pdf->Cell(59 ,5,'TANDA TERIMA',0,1, 'R');//end of line
+
+                $pdf->SetFont('Nunito','B',11);
+
+                $pdf->SetX($x);
+                $pdf->Cell(59 ,5,'',0,1);//end of line
+
+                $pdf->SetX($x);
+                $pdf->Cell(25 ,5,'',0,0, 'R');
+                $pdf->Cell(34 ,5,'Kedai Amarthya',0,1, 'R');//end of line
+
+                $pdf->SetFont('Nunito','',11);
+
+                $pdf->SetX($x);
+                $pdf->Cell(25 ,5,'',0,0, 'R');
+                $pdf->Cell(34 ,5,'+62 819-3618-1788',0,1, 'R');//end of line
+
+                $pdf->SetX($x);
+                $pdf->Cell(25 ,5,'',0,0, 'R');
+                $pdf->Cell(34 ,5,'kedai.amarthya@gmail.com',0,1, 'R');//end of line
+
+                $pdf->SetX($x);
+                $pdf->Cell(25 ,5,'',0,0, 'R');
+                $pdf->Cell(34 ,5,'Jalan Gelogor Indah IB, Gg Kresna No 1',0,1, 'R');//end of line
+
+                //buat dummy cell untuk memberi jarak vertikal
+                $pdf->Cell(189 ,10,'',0,1);//end of line
+
+
+                // ================ ORDER INFO ===============
+
+                $pdf->SetFont('Nunito','',10);
+                $pdf->Cell(35 ,5,'Info Pembayaran:',0,0);
+                $pdf->Cell(90 ,5,$data_order->row()->payment_detail,0,1);
+
+                // grey line
+                $pdf->setFillColor(201,201,201);
+                $pdf->Cell(189 ,5,'',0,1, 'L', TRUE);
+
+                $pdf->Cell(35 ,6,'Telah terima dari: ',0,0);
+                $pdf->Cell(25 ,6,$data_order->row()->nama_vendor,0,1);
+
+                $pdf->Cell(35 ,6,'pada tanggal: ',0,0);
+                $pdf->Cell(25 ,6,date_format(date_create($data_order->row()->tgl_order_vendor),"d/m/Y"),0,1);
+
+                $pdf->Cell(35 ,6,'Berupa: ',0,0);
+
+
+                // ================ INVOICE HEADER ===============
+
+                $pdf->SetFont('Nunito','',10);
+
+                $pdf->setFillColor(201,201,201);
+                $pdf->Cell(54 ,6,'Barang','',0, 'L', TRUE);
+//                $pdf->Cell(58 ,5,'','',0, 'L');
+                $pdf->Cell(15 ,6,'Qty','',0,'C', TRUE);
+                $pdf->Cell(15 ,6,'Satuan','',0,'C', TRUE);
+                $pdf->Cell(35 ,6,'Harga','',0,'R', TRUE);
+                $pdf->Cell(35 ,6,'Total','',1, 'R', TRUE);//end of line
+
+
+                // ================ TANDA TERIMA DETAIL ===============
+
+                $pdf->SetFont('Nunito','',10);
+                $pdf->setFillColor(255,255,255);
+
+                foreach ($data as $order){
+                    $pdf->Cell(35 ,6,' ',0,0);
+                    $pdf->Cell(54 ,6,$order->nama_product,'',0, 'L', TRUE);
+                    $pdf->Cell(15 ,6,$order->qty_order_vendor,'',0,'C', TRUE);
+                    $pdf->Cell(15 ,6,$order->satuan_product,'',0,'C', TRUE);
+                    $pdf->Cell(35 ,6,"Rp. " . number_format($order->harga_order_vendor,2,',','.'),'',0,'R', TRUE);
+                    $pdf->Cell(35 ,6,"Rp. " . number_format($order->total_order_vendor,2,',','.'),'',1, 'R', TRUE);//end of line
+                }
+
+                // ================ SIGNATURE ===============
+
+                // dummy line
+                $pdf->Cell(189 ,15,'',0, 1);
+
+                $pdf->Cell(35 ,5,'Diterima oleh: ',0,0);
+                $pdf->Cell(35 ,5,'A.A.A. Saraswati Hardy ',0,1);
+                $pdf->setFillColor(201,201,201);
+                $pdf->Cell(139 ,5,'',0,0, 'L', TRUE);
+
+                $pdf->SetFont('Nunito','B',10);
+
+                $pdf->Cell(15 ,5,'Total:',0,0, 'L', TRUE);
+                $pdf->Cell(35 ,5,"Rp. " . number_format($data_order->row()->grand_total_order,2,',','.'),0,1, 'R', TRUE);
+
+
+//                $pdf->Cell(75 ,5,date_format(date_create($data_order->row()->tgl_order_vendor),"d/m/Y"),'',0, 'C');
+
+                $pdf->Output("I", "Tanda Terima #".$data_order->row()->no_order_vendor." - ".$data_order->row()->nama_vendor.".pdf");
+            }
+
+        } else {
+            // kosong
+        }
+
+    }
+
+
+
 
 
 

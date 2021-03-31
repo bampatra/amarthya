@@ -35,6 +35,7 @@
                 <label class="col-sm-3 col-form-label col-form-label-sm">No. Order</label>
                 <label class="col-sm-9 col-form-label col-form-label-sm" id="no_order"><?php echo $orders[0]->no_order; ?></label>
             </div>
+            <a target="_blank" href="<?php echo base_url('main/pdf_order?no=').$orders[0]->no_order?>"><span class="link">Print Invoice</span></a>
         </div>
     </div>
 

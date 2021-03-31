@@ -270,7 +270,7 @@ class Main_model extends CI_Model
 
     function get_order_detail($no_order){
 
-        $sql = "SELECT *, DATE_FORMAT(a.tgl_order, '%Y-%m-%d') AS custom_tgl_order
+        $sql = "SELECT *, DATE_FORMAT(a.tgl_order, '%Y-%m-%d') AS custom_tgl_order, a.id_order_m
                 FROM order_m a
                 INNER JOIN order_s b ON a.id_order_m = b.id_order_m
                 INNER JOIN product d ON b.id_product = d.id_product

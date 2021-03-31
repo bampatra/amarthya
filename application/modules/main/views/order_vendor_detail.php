@@ -34,6 +34,7 @@
                 <label class="col-sm-3 col-form-label col-form-label-sm">No. Order</label>
                 <label class="col-sm-9 col-form-label col-form-label-sm" id="no_order"><?php echo $orders[0]->no_order_vendor; ?></label>
             </div>
+            <a target="_blank" href="<?php echo base_url('main/pdf_tt?no=').$orders[0]->no_order_vendor?>"><span class="link">Print Tanda Terima</span></a>
         </div>
     </div>
 

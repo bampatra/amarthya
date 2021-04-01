@@ -2,13 +2,7 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="822c5f09-bd0b-4858-81e7-523fc1d476f6" name="Default Changelist" comment="">
-      <change afterPath="$PROJECT_DIR$/application/modules/main/views/slip_gaji.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/application/config/config.php" beforeDir="false" afterPath="$PROJECT_DIR$/application/config/config.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/application/modules/main/controllers/Main.php" beforeDir="false" afterPath="$PROJECT_DIR$/application/modules/main/controllers/Main.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/application/modules/main/models/Main_model.php" beforeDir="false" afterPath="$PROJECT_DIR$/application/modules/main/models/Main_model.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/application/modules/main/views/salary_form.php" beforeDir="false" afterPath="$PROJECT_DIR$/application/modules/main/views/salary_form.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/application/modules/main/views/staff.php" beforeDir="false" afterPath="$PROJECT_DIR$/application/modules/main/views/staff.php" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
@@ -38,7 +32,7 @@
   </component>
   <component name="FileEditorManager">
     <leaf SIDE_TABS_SIZE_LIMIT_KEY="300">
-      <file pinned="false" current-in-tab="true">
+      <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/application/modules/main/views/salary_form.php">
           <provider selected="true" editor-type-id="text-editor">
             <state relative-caret-position="435">
@@ -51,6 +45,15 @@
                 <element signature="n#style#0;n#button#0;n#div#0;n#!!top" expanded="true" />
                 <element signature="n#style#0;n#!!top" />
               </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file pinned="false" current-in-tab="true">
+        <entry file="file://$PROJECT_DIR$/application/config/config.php">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="224">
+              <caret line="385" column="33" lean-forward="true" selection-start-line="385" selection-start-column="33" selection-end-line="385" selection-end-column="33" />
             </state>
           </provider>
         </entry>
@@ -172,8 +175,8 @@
       <find>get_order_m</find>
       <find>salary</find>
       <find>add_staff</find>
-      <find>save_salary</find>
       <find>get_staff_salary</find>
+      <find>save_salary</find>
     </findStrings>
     <replaceStrings>
       <replace>rekening_mutasi</replace>
@@ -259,12 +262,12 @@
         <option value="$PROJECT_DIR$/application/modules/home/models/Home_model.php" />
         <option value="$PROJECT_DIR$/application/modules/main/views/vendor.php" />
         <option value="$PROJECT_DIR$/application/modules/home/views/register.php" />
-        <option value="$PROJECT_DIR$/application/config/config.php" />
         <option value="$PROJECT_DIR$/application/modules/main/views/staff.php" />
         <option value="$PROJECT_DIR$/application/modules/main/models/Main_model.php" />
         <option value="$PROJECT_DIR$/application/modules/main/controllers/Main.php" />
         <option value="$PROJECT_DIR$/application/modules/main/views/slip_gaji.php" />
         <option value="$PROJECT_DIR$/application/modules/main/views/salary_form.php" />
+        <option value="$PROJECT_DIR$/application/config/config.php" />
       </list>
     </option>
   </component>
@@ -584,12 +587,12 @@
       <workItem from="1616990960247" duration="6211000" />
       <workItem from="1617059733599" duration="18495000" />
       <workItem from="1617150852802" duration="15218000" />
-      <workItem from="1617241939991" duration="13849000" />
+      <workItem from="1617241939991" duration="14078000" />
     </task>
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="1481351000" />
+    <option name="totallyTimeSpent" value="1481580000" />
   </component>
   <component name="ToolWindowManager">
     <frame x="0" y="23" width="1280" height="777" extended-state="0" />
@@ -952,13 +955,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/application/config/config.php">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="15">
-          <caret line="25" column="51" lean-forward="true" selection-start-line="25" selection-start-column="51" selection-end-line="25" selection-end-column="51" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/application/modules/main/views/delivery_form.php">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="-2737">
@@ -1075,6 +1071,13 @@
             <element signature="n#style#0;n#button#0;n#div#0;n#!!top" expanded="true" />
             <element signature="n#style#0;n#!!top" />
           </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/application/config/config.php">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="224">
+          <caret line="385" column="33" lean-forward="true" selection-start-line="385" selection-start-column="33" selection-end-line="385" selection-end-column="33" />
         </state>
       </provider>
     </entry>

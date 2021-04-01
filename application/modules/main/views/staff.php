@@ -70,7 +70,7 @@
 
                     <div class="form-group" >
                         <label class="col-form-label">No. HP</label>
-                        <input type="number" id="no_hp_staff"  name="no_hp_staff" class="form-control form-active-control">
+                        <input type="text" id="no_hp_staff"  name="no_hp_staff" class="form-control form-active-control">
                         <div class="invalid-feedback invalid-nohp">Data tidak valid</div>
                     </div>
 

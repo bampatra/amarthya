@@ -25,6 +25,16 @@ class Main extends MX_Controller
         $this->load->view('template/admin_footer');
     }
 
+    function slip_gaji(){
+
+//        $id_staff = $this->session->userdata('id_staff');
+
+        $this->load->view('template/admin_header');
+        $this->load->view('slip_gaji');
+        $this->load->view('template/admin_footer');
+
+    }
+
     function salary_form(){
 
         $data['staffs'] = $this->Main_model->get_staff()->result_object();
@@ -32,6 +42,90 @@ class Main extends MX_Controller
         $this->load->view('template/admin_header');
         $this->load->view('salary_form', $data);
         $this->load->view('template/admin_footer');
+    }
+
+    function get_staff_salary(){
+        date_default_timezone_set('Asia/Singapore');
+
+        $id_staff = htmlentities($_REQUEST['id_staff'], ENT_QUOTES);
+        $awal_akhir_salary = htmlentities($_REQUEST['awal_akhir_salary'], ENT_QUOTES);
+        $bulan_salary = htmlentities($_REQUEST['bulan_salary'], ENT_QUOTES);
+        $tahun_salary = htmlentities($_REQUEST['tahun_salary'], ENT_QUOTES);
+
+        // Periode Delivery
+        if($awal_akhir_salary == "AWAL"){
+
+            $tgl_awal = $tahun_salary."-".sprintf('%02d', $bulan_salary)."-01";
+            $tgl_akhir = $tahun_salary."-".sprintf('%02d', $bulan_salary)."-15";
+
+        } else if($awal_akhir_salary == "AKHIR"){
+            $tgl_awal = $tahun_salary."-".sprintf('%02d', $bulan_salary)."-16";
+            $tgl_akhir = $tahun_salary."-".sprintf('%02d', $bulan_salary)."-".date('t');
+        }
+
+        $data = $this->Main_model->get_staff_salary($id_staff, $awal_akhir_salary, $bulan_salary, $tahun_salary, $tgl_awal, $tgl_akhir);
+        echo json_encode($data->row());
+        return;
+    }
+
+    function save_salary(){
+
+        $id_staff = trim(htmlentities($_REQUEST['id_staff'], ENT_QUOTES));
+        $awal_akhir_salary = trim(htmlentities($_REQUEST['awal_akhir_salary'], ENT_QUOTES));
+        $bulan_salary = trim(htmlentities($_REQUEST['bulan_salary'], ENT_QUOTES));
+        $tahun_salary = trim(htmlentities($_REQUEST['tahun_salary'], ENT_QUOTES));
+        $fee_penjualan_salary = trim(htmlentities($_REQUEST['fee_penjualan_salary'], ENT_QUOTES));
+        $lembur_salary = trim(htmlentities($_REQUEST['lembur_salary'], ENT_QUOTES));
+        $kas_bon_salary = trim(htmlentities($_REQUEST['kas_bon_salary'], ENT_QUOTES));
+        $potongan_kas_bon_salary = trim(htmlentities($_REQUEST['potongan_kas_bon_salary'], ENT_QUOTES));
+        $THR_salary = trim(htmlentities($_REQUEST['THR_salary'], ENT_QUOTES));
+        $lain_lain_salary = trim(htmlentities($_REQUEST['lain_lain_salary'], ENT_QUOTES));
+        $catatan_lain_lain = trim(htmlentities($_REQUEST['catatan_lain_lain'], ENT_QUOTES));
+        $kuota_internet_salary = trim(htmlentities($_REQUEST['kuota_internet_salary'], ENT_QUOTES));
+
+
+        $this->db->trans_begin();
+
+        if($awal_akhir_salary == "AWAL"){
+            //from 1 to 15
+        } else if($awal_akhir_salary == "AKHIR"){
+            //from 15 to end of month
+        }
+
+        $salary_data = $this->Main_model->get_salary_only($id_staff, $awal_akhir_salary, $bulan_salary, $tahun_salary);
+
+        if($salary_data->num_rows() == 0){
+
+            $data = compact('id_staff', 'awal_akhir_salary','bulan_salary', 'tahun_salary',
+                'fee_penjualan_salary', 'lembur_salary', 'kas_bon_salary', 'potongan_kas_bon_salary',
+                'THR_salary', 'lain_lain_salary', 'catatan_lain_lain', 'kuota_internet_salary');
+
+            if($this->Main_model->add_salary($data)){
+                $this->db->trans_commit();
+                $return_arr = array("Status" => 'OK', "Message" => 'Berhasil tersimpan');
+            } else {
+                $this->db->trans_rollback();
+                $return_arr = array("Status" => 'ERROR', "Message" => 'ERROR: Gagal menyimpan data!');
+            }
+
+        } else {
+
+            $id_salary = $salary_data->row()->id_salary;
+            $updated_data = compact('fee_penjualan_salary', 'lembur_salary', 'kas_bon_salary', 'potongan_kas_bon_salary',
+                'THR_salary', 'lain_lain_salary', 'catatan_lain_lain', 'kuota_internet_salary');
+
+            if($this->Main_model->update_salary($updated_data, $id_salary)){
+                $this->db->trans_commit();
+                $return_arr = array("Status" => 'OK', "Message" => 'Berhasil tersimpan');
+            } else {
+                $this->db->trans_rollback();
+                $return_arr = array("Status" => 'ERROR', "Message" => 'ERROR: Gagal menyimpan data!');
+            }
+
+        }
+
+        echo json_encode($return_arr);
+
     }
 
     function update_pick_up(){
@@ -1487,7 +1581,7 @@ class Main extends MX_Controller
         $tgl_lahir_staff = strtoupper(trim(htmlentities($_REQUEST['tgl_lahir_staff'], ENT_QUOTES)));
         $alamat_staff = strtoupper(trim(htmlentities($_REQUEST['alamat_staff'], ENT_QUOTES)));
         $no_hp_staff = strtoupper(trim(htmlentities($_REQUEST['no_hp_staff'], ENT_QUOTES)));
-        $id_posisi = strtoupper(trim(htmlentities($_REQUEST['id_posisi'], ENT_QUOTES)));
+        $id_posisi = trim(htmlentities($_REQUEST['id_posisi'], ENT_QUOTES));
         $salary_staff = strtoupper(trim(htmlentities($_REQUEST['salary'], ENT_QUOTES)));
         $no_rek_staff = strtoupper(trim(htmlentities($_REQUEST['no_rek_staff'], ENT_QUOTES)));
         $nama_bank_staff = strtoupper(trim(htmlentities($_REQUEST['nama_bank_staff'], ENT_QUOTES)));
@@ -1514,7 +1608,7 @@ class Main extends MX_Controller
             array_push($error, "invalid-nohp");
         }
 
-        if(empty($id_posisi) || $id_posisi == "none"){
+        if($id_posisi == "none"){
             array_push($error, "invalid-posisi");
         }
 

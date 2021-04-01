@@ -9,6 +9,66 @@ class Main_model extends CI_Model
         return $query;
     }
 
+    function get_staff_salary($id_staff, $awal_akhir_salary, $bulan_salary, $tahun_salary, $tgl_awal, $tgl_akhir){
+        $sql = "SELECT *, b.id_staff
+                FROM staff b
+                LEFT JOIN salary a ON a.id_staff = b.id_staff  
+                  AND a.`awal_akhir_salary` = '".$awal_akhir_salary."' 
+                  AND a.`bulan_salary` = '".$bulan_salary."' 
+                  AND a.`tahun_salary` = '".$tahun_salary."'
+                LEFT JOIN (
+                    SELECT SUM(b.ongkir_order) as ongkir_salary, a.id_staff
+                    FROM delivery a
+                    INNER JOIN order_m b ON a.id_order_m = b.id_order_m
+                    WHERE a.id_staff = '".$id_staff."' 
+                        AND a.tgl_delivery BETWEEN '".$tgl_awal."' AND '".$tgl_akhir."'
+                    GROUP BY a.id_staff
+                ) c ON b.id_staff = c.id_staff
+                WHERE b.id_staff = '".$id_staff."' ";
+
+        $query = $this->db->query($sql);
+        return $query;
+    }
+
+    function get_salary_only($id_staff, $awal_akhir_salary, $bulan_salary, $tahun_salary){
+        $sql = "SELECT *
+                FROM salary a
+                WHERE a.id_staff = '".$id_staff."' 
+                  AND a.`awal_akhir_salary` = '".$awal_akhir_salary."' 
+                  AND a.`bulan_salary` = '".$bulan_salary."' 
+                  AND a.`tahun_salary` = '".$tahun_salary."'";
+
+        $query = $this->db->query($sql);
+        return $query;
+    }
+
+    function add_salary($data){
+        $input_data = array(
+            'id_staff' => $data['id_staff'],
+            'awal_akhir_salary' => $data['awal_akhir_salary'],
+            'bulan_salary' => $data['bulan_salary'],
+            'tahun_salary' => $data['tahun_salary'],
+            'fee_penjualan_salary' => $data['fee_penjualan_salary'],
+            'lembur_salary' => $data['lembur_salary'],
+            'kas_bon_salary' => $data['kas_bon_salary'],
+            'potongan_kas_bon_salary' => $data['potongan_kas_bon_salary'],
+            'THR_salary' => $data['THR_salary'],
+            'lain_lain_salary' => $data['lain_lain_salary'],
+            'catatan_lain_lain' => $data['catatan_lain_lain'],
+            'kuota_internet_salary' => $data['kuota_internet_salary']
+
+        );
+
+        $this->db->insert('salary',$input_data);
+        $insert_id = $this->db->insert_id();
+        return $insert_id;
+    }
+
+    function update_salary($updated_data, $id_salary){
+        $this->db->where('id_salary', $id_salary);
+        return $this->db->update('salary',$updated_data);
+    }
+
     function get_pick_up_by_id($id){
         $sql = "SELECT *, 
                 DATE_FORMAT(a.tgl_pick_up, '%Y-%m-%d') AS custom_tgl_pick_up,
@@ -227,7 +287,7 @@ class Main_model extends CI_Model
     }
 
     function get_order_m($search = null){
-        $sql = "SELECT *
+        $sql = "SELECT *, a.id_order_m, b.id_customer
                 FROM order_m a
                 INNER JOIN customer b ON a.id_customer = b.id_customer";
 
@@ -242,7 +302,7 @@ class Main_model extends CI_Model
     }
 
     function get_order_m_deliv($search = null){
-        $sql = "SELECT *, a.id_order_m
+        $sql = "SELECT *, a.id_order_m, b.id_customer
                 FROM order_m a
                 INNER JOIN customer b ON a.id_customer = b.id_customer
                 LEFT JOIN delivery c ON a.id_order_m = c.id_order_m
@@ -620,7 +680,7 @@ class Main_model extends CI_Model
             'alamat_staff' => $data['alamat_staff'],
             'no_hp_staff' => $data['no_hp_staff'],
             'id_posisi' => $data['id_posisi'],
-            'salary_staff' => $data['salary'],
+            'salary_staff' => $data['salary_staff'],
             'no_rek_staff' => $data['no_rek_staff'],
             'nama_bank_staff' => $data['nama_bank_staff'],
             'tgl_join_staff' => $data['tgl_join_staff']

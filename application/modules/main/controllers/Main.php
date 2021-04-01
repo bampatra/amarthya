@@ -25,6 +25,15 @@ class Main extends MX_Controller
         $this->load->view('template/admin_footer');
     }
 
+    function salary_form(){
+
+        $data['staffs'] = $this->Main_model->get_staff()->result_object();
+
+        $this->load->view('template/admin_header');
+        $this->load->view('salary_form', $data);
+        $this->load->view('template/admin_footer');
+    }
+
     function update_pick_up(){
 
         $alamat_pick_up = strtoupper(trim(htmlentities($_REQUEST['alamat_pick_up'], ENT_QUOTES)));
@@ -1268,7 +1277,9 @@ class Main extends MX_Controller
         $alamat_vendor = trim(htmlentities($_REQUEST['alamat_vendor'], ENT_QUOTES));
         $no_hp_vendor = strtoupper(trim(htmlentities($_REQUEST['no_hp_vendor'], ENT_QUOTES)));
         $email_vendor = strtoupper(trim(htmlentities($_REQUEST['email_vendor'], ENT_QUOTES)));
-        $catatan_vendor = strtoupper(trim(htmlentities($_REQUEST['catatan_vendor'], ENT_QUOTES)));
+        $catatan_vendor = trim(htmlentities($_REQUEST['catatan_vendor'], ENT_QUOTES));
+        $no_rekening_vendor = trim(htmlentities($_REQUEST['no_rekening_vendor'], ENT_QUOTES));
+        $nama_bank_vendor = trim(htmlentities($_REQUEST['nama_bank_vendor'], ENT_QUOTES));
 
         //validation
         $error = array();
@@ -1294,7 +1305,7 @@ class Main extends MX_Controller
             return;
         }
 
-        $data = compact('nama_vendor', 'alamat_vendor',
+        $data = compact('nama_vendor', 'alamat_vendor', 'no_rekening_vendor', 'nama_bank_vendor',
             'no_hp_vendor', 'email_vendor', 'catatan_vendor');
 
 
@@ -1472,7 +1483,7 @@ class Main extends MX_Controller
     function add_staff(){
 
         $id_staff = strtoupper(trim(htmlentities($_REQUEST['id_staff'], ENT_QUOTES)));
-        $nama_staff = strtoupper(trim(htmlentities($_REQUEST['nama_staff'], ENT_QUOTES)));
+        $nama_staff = trim(htmlentities($_REQUEST['nama_staff'], ENT_QUOTES));
         $tgl_lahir_staff = strtoupper(trim(htmlentities($_REQUEST['tgl_lahir_staff'], ENT_QUOTES)));
         $alamat_staff = strtoupper(trim(htmlentities($_REQUEST['alamat_staff'], ENT_QUOTES)));
         $no_hp_staff = strtoupper(trim(htmlentities($_REQUEST['no_hp_staff'], ENT_QUOTES)));

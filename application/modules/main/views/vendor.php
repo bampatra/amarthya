@@ -42,7 +42,7 @@
     <div class="modal-dialog" role="document">
         <div class="modal-content">
             <div class="modal-header">
-                <h5 class="modal-title">Customer</h5>
+                <h5 class="modal-title">Vendor</h5>
                 <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                     <span aria-hidden="true">&times;</span>
                 </button>
@@ -71,6 +71,16 @@
                         <label class="col-form-label">Email</label>
                         <input type="text" id="email_vendor"  name="email_vendor" class="form-control form-active-control">
                         <div class="invalid-feedback invalid-email">Data tidak valid</div>
+                    </div>
+
+                    <div class="form-group" >
+                        <label class="col-form-label">No. Rekening</label>
+                        <input type="number" id="no_rekening_vendor"  name="no_rekening_vendor" class="form-control form-active-control">
+                    </div>
+
+                    <div class="form-group" >
+                        <label class="col-form-label">Nama Bank</label>
+                        <input type="text" id="nama_bank_vendor"  name="nama_bank_vendor" class="form-control form-active-control">
                     </div>
 
                     <div class="form-group">
@@ -167,6 +177,8 @@
         $('#no_hp_vendor').val(htmlDecode(data.no_hp_vendor));
         $('#email_vendor').val(htmlDecode(data.email_vendor));
         $('#catatan_vendor').val(htmlDecode(data.catatan_vendor));
+        $('#no_rekening_vendor').val(htmlDecode(data.no_rekening_vendor));
+        $('#nama_bank_vendor').val(htmlDecode(data.nama_bank_vendor));
 
 
         $('.form-active-control').prop('disabled', true);

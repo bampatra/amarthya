@@ -9,6 +9,51 @@ class Home extends MX_Controller
     {
         parent::__construct();
         $this->load->model('Home_model');
+        $this->load->model('main/Main_model');
+    }
+
+    function register(){
+        $data['staffs'] = $this->Home_model->get_staff()->result_object();
+        $this->load->view('register', $data);
+    }
+
+
+    function add_user(){
+
+        $id_staff = trim(htmlentities($_REQUEST['id_staff'], ENT_QUOTES));
+        $username = trim(htmlentities($_REQUEST['username'], ENT_QUOTES));
+        $password = trim(htmlentities($_REQUEST['username'], ENT_QUOTES));
+
+        if($id_staff == 'none'){
+            $return_arr = array("Status" => 'ERROR', "Message" => '');
+            echo json_encode($return_arr);
+            return;
+        }
+
+        if(empty($username)){
+            $return_arr = array("Status" => 'ERROR', "Message" => '');
+            echo json_encode($return_arr);
+            return;
+        }
+
+        if(empty($password)){
+            $return_arr = array("Status" => 'ERROR', "Message" => '');
+            echo json_encode($return_arr);
+            return;
+        }
+
+        $password = md5($password);
+
+        $data = compact('id_staff', 'username', 'password');
+
+        if($this->Home_model->add_user($data)){
+            $return_arr = array("Status" => 'OK', "Message" => '');
+        } else {
+            $return_arr = array("Status" => 'ERROR', "Message" => '');
+        }
+
+        echo json_encode($return_arr);
+        return;
     }
 
     function admin_login(){
@@ -21,7 +66,6 @@ class Home extends MX_Controller
         } else {
             $this->load->view('admin_login');
         }
-
     }
 
     function admin_final_login(){

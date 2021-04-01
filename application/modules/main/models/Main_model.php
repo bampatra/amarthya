@@ -507,6 +507,8 @@ class Main_model extends CI_Model
             'alamat_vendor' => $data['alamat_vendor'],
             'no_hp_vendor' => $data['no_hp_vendor'],
             'email_vendor' => $data['email_vendor'],
+            'no_rekening_vendor' => $data['no_rekening_vendor'],
+            'nama_bank_vendor' => $data['nama_bank_vendor'],
             'catatan_vendor' => $data['catatan_vendor']
         );
 

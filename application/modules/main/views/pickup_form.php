@@ -180,9 +180,7 @@
     var selected_order, selected_staff, selected_vendor;
 
 
-    $('#collapseUser').addClass('show');
-    $('#navbar-user').addClass('active');
-
+    document.title = "Formulir Pick Up - Amarthya Group";
 
     $('.save').click(function(e){
 
@@ -261,7 +259,9 @@
                         "grand_total_order":"grand_total_order"
                     },
                     mRender : function(data, type, full) {
-                        var temp_date = new Date(data.tgl_order_vendor);
+                        let dateTimeParts= data.tgl_order_vendor.split(/[- :]/);
+                        dateTimeParts[1]--;
+                        const temp_date = new Date(...dateTimeParts);
 
                         html = '<span style="font-size: 12px">'+ (temp_date.getDate() + 1) + '/' + temp_date.getMonth() + '/' + temp_date.getFullYear() +'</span><br>' +
                             '   <strong>'+ data.no_order_vendor +'</strong><br>' +
@@ -304,7 +304,9 @@
         $('#no_hp_pick_up').val(no_hp_vendor);
         $('#alamat_pick_up').val(alamat_vendor);
 
-        var temp_date = new Date(tgl_order_vendor);
+        let dateTimeParts= tgl_order_vendor.split(/[- :]/);
+        dateTimeParts[1]--;
+        const temp_date = new Date(...dateTimeParts);
 
         html = '<span style="font-size: 12px">'+ (temp_date.getDate() + 1) + '/' + temp_date.getMonth() + '/' + temp_date.getFullYear() +'</span><br>' +
             '   <strong>'+ no_order +'</strong><br>' +

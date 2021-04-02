@@ -99,8 +99,7 @@
 
 <script>
 
-    $('#collapseUser').addClass('show');
-    $('#navbar-user').addClass('active');
+    document.title = "Daftar Order - Amarthya Group";
 
     get_order_m();
 
@@ -142,7 +141,9 @@
                     },
                     mRender : function(data, type, full) {
 
-                        var temp_date = new Date(data.tgl_order);
+                        let dateTimeParts= data.tgl_order.split(/[- :]/);
+                        dateTimeParts[1]--;
+                        const temp_date = new Date(...dateTimeParts);
 
                         html = '<div class="detail-row">' +
                                 '<div class="detail-column">' +
@@ -193,7 +194,9 @@
 
         $("#edit-info").attr("href", admin_url + 'order_detail?no=' + rowData.no_order);
 
-        var temp_date = new Date(rowData.tgl_order);
+        let dateTimeParts= rowData.tgl_order.split(/[- :]/);
+        dateTimeParts[1]--;
+        const temp_date = new Date(...dateTimeParts);
 
         html_info_customer = '<span>'+ temp_date.getDate() + '/' + (temp_date.getMonth() + 1) + '/' + temp_date.getFullYear() +'</span><br>\n' +
             '                <strong>'+ rowData.no_order +'</strong> <a target="_blank" href="'+ admin_url +'pdf_order?no='+ rowData.no_order +'"><span class="link"> (Print Invoice) </span></a><br>' +

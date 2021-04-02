@@ -11,10 +11,13 @@ class Main extends MX_Controller
     {
         parent::__construct();
         $this->load->model('Main_model');
-//        if(!$this->session->userdata('id_web_user') || $_SESSION['is_admin'] == '0'){
-//            redirect(base_url('home/admin_login'));
-//        }
+        if(!$this->session->userdata('id_staff')){
+            redirect(base_url('home/login'));
+        }
 
+//        if($_SESSION['is_admin'] == '0'){
+//            redirect(base_url('main'));
+//        }
     }
 
     function index()
@@ -37,6 +40,10 @@ class Main extends MX_Controller
 
     function salary_form(){
 
+        if($this->session->userdata('is_admin') == "0"){
+            redirect(base_url('main'));
+        }
+
         $data['staffs'] = $this->Main_model->get_staff()->result_object();
 
         $this->load->view('template/admin_header');
@@ -45,6 +52,11 @@ class Main extends MX_Controller
     }
 
     function get_staff_salary(){
+
+        if($this->session->userdata('is_admin') == "0"){
+            redirect(base_url('main'));
+        }
+
         date_default_timezone_set('Asia/Singapore');
 
         $id_staff = htmlentities($_REQUEST['id_staff'], ENT_QUOTES);
@@ -69,6 +81,10 @@ class Main extends MX_Controller
     }
 
     function save_salary(){
+
+        if($this->session->userdata('is_admin') == "0"){
+            redirect(base_url('main'));
+        }
 
         $id_staff = trim(htmlentities($_REQUEST['id_staff'], ENT_QUOTES));
         $awal_akhir_salary = trim(htmlentities($_REQUEST['awal_akhir_salary'], ENT_QUOTES));
@@ -130,6 +146,10 @@ class Main extends MX_Controller
 
     function update_pick_up(){
 
+        if($this->session->userdata('is_admin') == "0"){
+            redirect(base_url('main'));
+        }
+
         $alamat_pick_up = strtoupper(trim(htmlentities($_REQUEST['alamat_pick_up'], ENT_QUOTES)));
         $no_hp_pick_up = strtoupper(trim(htmlentities($_REQUEST['no_hp_pick_up'], ENT_QUOTES)));
         $tgl_pick_up = strtoupper(trim(htmlentities($_REQUEST['tgl_pick_up'], ENT_QUOTES)));
@@ -175,6 +195,11 @@ class Main extends MX_Controller
     }
 
     function pick_up_detail(){
+
+        if($this->session->userdata('is_admin') == "0"){
+            redirect(base_url('main'));
+        }
+
         $this->load->view('template/admin_header');
 
         if(isset($_GET['id'])){
@@ -213,8 +238,12 @@ class Main extends MX_Controller
 
         $this->db->limit($length,$start);
 
+        if($this->session->userdata('is_admin') == "0"){
 
-        $output['data'] = $this->Main_model->get_pick_up($search)->result_object();
+        } else {
+            $output['data'] = $this->Main_model->get_pick_up($search)->result_object();
+        }
+
 
         echo json_encode($output);
     }
@@ -263,6 +292,9 @@ class Main extends MX_Controller
 
     function pick_up_form()
     {
+        if($this->session->userdata('is_admin') == "0"){
+            redirect(base_url('main'));
+        }
 
         $this->load->view('template/admin_header');
         $this->load->view('pickup_form');
@@ -271,6 +303,10 @@ class Main extends MX_Controller
 
     // ================== HALF DONE ====================
     function add_pick_up(){
+
+        if($this->session->userdata('is_admin') == "0"){
+            redirect(base_url('main'));
+        }
 
         // TODO: check if staff exists
 
@@ -329,6 +365,11 @@ class Main extends MX_Controller
     }
 
     function order_vendor_detail(){
+
+        if($this->session->userdata('is_admin') == "0"){
+            redirect(base_url('main'));
+        }
+
         $this->load->view('template/admin_header');
 
         if(isset($_GET['no'])){
@@ -350,6 +391,10 @@ class Main extends MX_Controller
     }
 
     function order_vendor_list(){
+        if($this->session->userdata('is_admin') == "0"){
+            redirect(base_url('main'));
+        }
+
         $this->load->view('template/admin_header');
         $this->load->view('order_vendor_list');
         $this->load->view('template/admin_footer');
@@ -393,6 +438,10 @@ class Main extends MX_Controller
 
     function update_order_vendor(){
 
+        if($this->session->userdata('is_admin') == "0"){
+            redirect(base_url('main'));
+        }
+
         $no_order = strtoupper(trim(htmlentities($_REQUEST['no_order'], ENT_QUOTES)));
         $catatan_order_vendor = strtoupper(trim(htmlentities($_REQUEST['catatan_order_vendor'], ENT_QUOTES)));
         $tgl_order_vendor = strtoupper(trim(htmlentities($_REQUEST['tgl_order_vendor'], ENT_QUOTES)));
@@ -434,6 +483,10 @@ class Main extends MX_Controller
     }
 
     function add_order_vendor(){
+
+        if($this->session->userdata('is_admin') == "0"){
+            redirect(base_url('main'));
+        }
 
         if(isset($_REQUEST['id_vendor'])){
             $id_vendor = strtoupper(trim(htmlentities($_REQUEST['id_vendor'], ENT_QUOTES)));
@@ -546,6 +599,9 @@ class Main extends MX_Controller
 
     function order_vendor_form()
     {
+        if($this->session->userdata('is_admin') == "0"){
+            redirect(base_url('main'));
+        }
 
         $this->load->view('template/admin_header');
         $this->load->view('order_vendor_form');
@@ -553,6 +609,11 @@ class Main extends MX_Controller
     }
 
     function update_delivery(){
+
+        if($this->session->userdata('is_admin') == "0"){
+            redirect(base_url('main'));
+        }
+
         $alamat_delivery = strtoupper(trim(htmlentities($_REQUEST['alamat_delivery'], ENT_QUOTES)));
         $no_hp_delivery = strtoupper(trim(htmlentities($_REQUEST['no_hp_delivery'], ENT_QUOTES)));
         $tgl_delivery = strtoupper(trim(htmlentities($_REQUEST['tgl_delivery'], ENT_QUOTES)));
@@ -598,6 +659,11 @@ class Main extends MX_Controller
     }
 
     function delivery_detail(){
+
+        if($this->session->userdata('is_admin') == "0"){
+            redirect(base_url('main'));
+        }
+
         $this->load->view('template/admin_header');
 
         if(isset($_GET['id'])){
@@ -642,8 +708,12 @@ class Main extends MX_Controller
 
         $this->db->limit($length,$start);
 
+        if($this->session->userdata('is_admin') == "0"){
+            $output['data'] = $this->Main_model->get_delivery($search, false, $this->session->userdata('id_staff'))->result_object();
+        } else {
+            $output['data'] = $this->Main_model->get_delivery($search)->result_object();
+        }
 
-        $output['data'] = $this->Main_model->get_delivery($search)->result_object();
 
         echo json_encode($output);
     }
@@ -724,6 +794,9 @@ class Main extends MX_Controller
 
     function delivery_form()
     {
+        if($this->session->userdata('is_admin') == "0"){
+            redirect(base_url('main'));
+        }
 
         $this->load->view('template/admin_header');
         $this->load->view('delivery_form');
@@ -731,6 +804,11 @@ class Main extends MX_Controller
     }
 
     function order_list(){
+
+        if($this->session->userdata('is_admin') == "0"){
+            redirect(base_url('main'));
+        }
+
         $this->load->view('template/admin_header');
         $this->load->view('order_list');
         $this->load->view('template/admin_footer');
@@ -833,6 +911,10 @@ class Main extends MX_Controller
 
     function update_order_m(){
 
+        if($this->session->userdata('is_admin') == "0"){
+            redirect(base_url('main'));
+        }
+
         $this->db->trans_begin();
 
         $no_order = strtoupper(trim(htmlentities($_REQUEST['no_order'], ENT_QUOTES)));
@@ -902,6 +984,11 @@ class Main extends MX_Controller
     }
 
     function order_detail(){
+
+        if($this->session->userdata('is_admin') == "0"){
+            redirect(base_url('main'));
+        }
+
         $this->load->view('template/admin_header');
 
         if(isset($_GET['no'])){
@@ -924,6 +1011,9 @@ class Main extends MX_Controller
 
     function order_form()
     {
+        if($this->session->userdata('is_admin') == "0"){
+            redirect(base_url('main'));
+        }
 
         $this->load->view('template/admin_header');
         $this->load->view('order_form');
@@ -932,6 +1022,10 @@ class Main extends MX_Controller
 
     // ================== HALF DONE ====================
     function add_order(){
+
+        if($this->session->userdata('is_admin') == "0"){
+            redirect(base_url('main'));
+        }
 
         date_default_timezone_set('Asia/Singapore');
 
@@ -1081,6 +1175,11 @@ class Main extends MX_Controller
     }
 
     function stok_in_out(){
+
+        if($this->session->userdata('is_admin') == "0"){
+            echo "Unauthorized";
+        }
+
         $this->load->view('template/admin_header');
 
 
@@ -1140,6 +1239,11 @@ class Main extends MX_Controller
     }
 
     function add_stok_in_out(){
+
+        if($this->session->userdata('is_admin') == "0"){
+            redirect(base_url('main'));
+        }
+
         $id_stok_in_out = strtoupper(trim(htmlentities($_REQUEST['id_stok_in_out'], ENT_QUOTES)));
         $tipe_in_out = strtoupper(trim(htmlentities($_REQUEST['tipe_in_out'], ENT_QUOTES)));
         $stok_in_out = strtoupper(trim(htmlentities($_REQUEST['stok_in_out'], ENT_QUOTES)));
@@ -1215,6 +1319,11 @@ class Main extends MX_Controller
     }
 
     function product(){
+
+        if($this->session->userdata('is_admin') == "0"){
+            redirect(base_url('main'));
+        }
+
         $this->load->view('template/admin_header');
         $this->load->view('product');
         $this->load->view('template/admin_footer');
@@ -1258,6 +1367,10 @@ class Main extends MX_Controller
     }
 
     function add_product(){
+
+        if($this->session->userdata('is_admin') == "0"){
+            redirect(base_url('main'));
+        }
 
         $id_product = strtoupper(trim(htmlentities($_REQUEST['id_product'], ENT_QUOTES)));
         $nama_product = trim(htmlentities($_REQUEST['nama_product'], ENT_QUOTES));
@@ -1537,6 +1650,11 @@ class Main extends MX_Controller
     }
 
     function staff(){
+
+        if($this->session->userdata('is_admin') == "0"){
+            redirect(base_url('main'));
+        }
+
         $data['posisi_list'] = $this->Main_model->get_posisi()->result_object();
 
         $this->load->view('template/admin_header');
@@ -1545,6 +1663,12 @@ class Main extends MX_Controller
     }
 
     function get_staff(){
+
+        if($this->session->userdata('is_admin') == "0"){
+            redirect(base_url('main'));
+        }
+
+
         // server-side pagination
         $draw = $_REQUEST['draw'];
         $length = $_REQUEST['length'];
@@ -1574,6 +1698,10 @@ class Main extends MX_Controller
     }
 
     function add_staff(){
+
+        if($this->session->userdata('is_admin') == "0"){
+            redirect(base_url('main'));
+        }
 
         $id_staff = strtoupper(trim(htmlentities($_REQUEST['id_staff'], ENT_QUOTES)));
         $nama_staff = trim(htmlentities($_REQUEST['nama_staff'], ENT_QUOTES));
@@ -1685,14 +1813,14 @@ class Main extends MX_Controller
 
     function logout(){
         unset(
-            $_SESSION['id_web_user'],
-            $_SESSION['email_web_user'],
+            $_SESSION['id_user'],
+            $_SESSION['id_staff'],
             $_SESSION['is_admin'],
-            $_SESSION['id_so_m']
+            $_SESSION['username']
         );
 
         $this->load->helper('url');
-        redirect(base_url('home/admin_login'), 'refresh');
+        redirect(base_url('home/login'), 'refresh');
     }
 
     function pdf_order(){
@@ -2057,8 +2185,15 @@ class Main extends MX_Controller
                 $end = date('t').sprintf('%02d', $bulan_salary)."-".$tahun_salary;
             }
 
-
             $data_salary = $this->Main_model->get_staff_salary($id_staff, $awal_akhir_salary, $bulan_salary, $tahun_salary, $tgl_awal, $tgl_akhir);
+
+            // check if ID staff in parameters match logged in ID staff
+            if($this->session->userdata('is_admin') == "0"){
+                if($id_staff != $this->session->userdata('id_staff')){
+                    echo "Unauthorized";
+                    return;
+                }
+            }
 
             if($data_salary->num_rows() == 0){
                 // empty

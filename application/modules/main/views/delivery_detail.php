@@ -72,7 +72,7 @@
         <div id="order-data">
             <span style="font-size: 12px"><?php echo $delivery[0]->custom_tgl_order ?></span><br>
             <strong><?php echo $delivery[0]->no_order ?></strong><br>
-            <span><?php echo $delivery[0]->nama_customer ?></span><br>
+            <span id="nama_customer"><?php echo $delivery[0]->nama_customer ?></span><br>
             <span>Total Order: <?php echo "Rp. " . number_format($delivery[0]->grand_total_order,2,',','.'); ?> || Ongkir: <?php echo "Rp. " . number_format($delivery[0]->ongkir_order,2,',','.'); ?></span>
             <br><span>Catatan Order: <?php echo $delivery[0]->catatan_order ?></span>
 
@@ -194,9 +194,7 @@
 
     var selected_staff = $('#id_staff').val();
 
-
-    $('#collapseUser').addClass('show');
-    $('#navbar-user').addClass('active');
+    document.title = "Delivery "+ $('#nama_customer').html() +" - Amarthya Group";
 
     load_items($('#id_order_m').val());
 

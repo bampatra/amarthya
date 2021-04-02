@@ -180,8 +180,7 @@
     var selected_order, selected_staff, selected_customer;
 
 
-    $('#collapseUser').addClass('show');
-    $('#navbar-user').addClass('active');
+    document.title = "Formulir Delivery - Amarthya Group";
 
 
     $('.save').click(function(e){
@@ -262,7 +261,9 @@
                         "ongkir_order":"ongkir_order"
                     },
                     mRender : function(data, type, full) {
-                        var temp_date = new Date(data.tgl_order);
+                        let dateTimeParts= data.tgl_order.split(/[- :]/);
+                        dateTimeParts[1]--;
+                        const temp_date = new Date(...dateTimeParts);
 
                         html = '<span style="font-size: 12px">'+ (temp_date.getDate() + 1) + '/' + temp_date.getMonth() + '/' + temp_date.getFullYear() +'</span><br>' +
                             '   <strong>'+ data.no_order +'</strong><br>' +
@@ -306,7 +307,9 @@
         $('#no_hp_delivery').val(no_hp_customer);
         $('#alamat_delivery').val(alamat_customer);
 
-        var temp_date = new Date(tgl_order);
+        let dateTimeParts= tgl_order.split(/[- :]/);
+        dateTimeParts[1]--;
+        const temp_date = new Date(...dateTimeParts);
 
         html = '<span style="font-size: 12px">'+ (temp_date.getDate() + 1) + '/' + temp_date.getMonth() + '/' + temp_date.getFullYear() +'</span><br>' +
             '   <strong>'+ no_order +'</strong><br>' +

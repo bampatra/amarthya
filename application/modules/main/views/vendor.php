@@ -123,8 +123,7 @@
 
 <script>
 
-    $('#collapseUser').addClass('show');
-    $('#navbar-user').addClass('active');
+    document.title = "Vendor - Amarthya Group";
 
     get_vendor();
 

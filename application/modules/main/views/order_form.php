@@ -326,8 +326,7 @@
     set_harga();
 
 
-    $('#collapseUser').addClass('show');
-    $('#navbar-user').addClass('active');
+    document.title = "Formulir Order - Amarthya Group";
 
     $('.payment-detail').click(function(){
         $('#payment-modal').modal('toggle');

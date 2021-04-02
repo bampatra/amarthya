@@ -18,7 +18,7 @@
     <!-- Bootstrap CSS -->
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css">
 
-    <title>PIRA Admin Login</title>
+    <title>Amarthya Group Staff Login</title>
 </head>
 <body>
 
@@ -29,16 +29,16 @@
         <div class="row justify-content-center">
             <div class="col-md-8">
                 <div class="card">
-                    <div class="card-header">Admin Login</div>
+                    <div class="card-header">Staff Login</div>
                     <div class="card-body">
                         <div class="alert alert-danger" role="alert" style="display: none">
                             This is a danger alert—check it out!
                         </div>
                         <form id="login-form">
                             <div class="form-group row">
-                                <label for="email_address" class="col-md-4 col-form-label text-md-right">Email / No. Telp </label>
+                                <label for="email_address" class="col-md-4 col-form-label text-md-right">Username</label>
                                 <div class="col-md-6">
-                                    <input type="text" id="creds" class="form-control" name="creds" required autofocus>
+                                    <input type="text" id="username" class="form-control" name="username" required autofocus>
                                 </div>
                             </div>
 
@@ -91,18 +91,24 @@
 <script>
 
     $('#login-btn').click(function(e){
+        $('#login-btn').attr("disabled", true);
+        $('#login-btn').html("Loading...");
+
         e.preventDefault();
         $.ajax({
             type        : 'POST', // define the type of HTTP verb we want to use (POST for our form)
-            url         : '<?php echo base_url('home/')?>' + 'admin_final_login', // the url where we want to POST
+            url         : '<?php echo base_url('home/')?>' + 'final_login', // the url where we want to POST
             data        : $('#login-form').serialize(), // our data object
             dataType    : 'json',
             success     : function(response){
                 if(response.Status == 'OK'){
-                    window.location.replace("<?php echo base_url('admin')?>");
+                    window.location.replace("<?php echo base_url('main')?>");
                 } else if(response.Status == 'ERROR'){
                     $('.alert-danger').html(response.Message);
                     $('.alert-danger').css('display', 'block');
+
+                    $('#login-btn').attr("disabled", false);
+                    $('#login-btn').html("Login");
 
                 }
             }

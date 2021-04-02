@@ -113,8 +113,7 @@
 
 <script>
 
-    $('#collapseUser').addClass('show');
-    $('#navbar-user').addClass('active');
+    document.title = "Customer - Amarthya Group";
 
     get_customer();
 

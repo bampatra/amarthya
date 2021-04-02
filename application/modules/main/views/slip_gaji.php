@@ -57,7 +57,7 @@
         </div>
     </div>
     <br>
-    <button class="btn btn-primary print" style="width: 100%;  font-size: 14px;">Cetak Slip Gaji</button>
+    <a id="print-link" target="_blank"><button class="btn btn-primary print" style="width: 100%;  font-size: 14px;">Cetak Slip Gaji</button></a>
 
 
     <br><br><br><br><br>
@@ -97,6 +97,20 @@
         font-size: 13px;
     }
 </style>
+<script>
+    document.title = "Slip Gaji - Amarthya Group";
+
+    $(document).ready(function(){
+        $('#print-link').attr("href", admin_url +
+            "pdf_slip_gaji?staff=" + <?php echo $this->session->userdata('id_staff')?> +
+                "&periode=" + $('#awal_akhir_salary').val() +
+            "&bulan=" + $('#bulan_salary').val() +
+            "&tahun=" + $('#tahun_salary').val());
+    })
+
+
+
+</script>
 
 <!-- Page level custom scripts -->
 

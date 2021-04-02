@@ -62,7 +62,7 @@
         <div id="order_vendor-data">
             <span style="font-size: 12px"><?php echo $pick_up[0]->custom_tgl_order_vendor ?></span><br>
             <strong><?php echo $pick_up[0]->no_order_vendor ?></strong><br>
-            <span><?php echo $pick_up[0]->nama_vendor ?></span><br>
+            <span id="nama_vendor"><?php echo $pick_up[0]->nama_vendor ?></span><br>
             <span>Total Order: <?php echo "Rp. " . number_format($pick_up[0]->grand_total_order,2,',','.'); ?> </span>
             <br><span>Catatan Order: <?php echo $pick_up[0]->catatan_order_vendor ?></span>
 
@@ -184,9 +184,7 @@
 
     var selected_staff = $('#id_staff').val();
 
-
-    $('#collapseUser').addClass('show');
-    $('#navbar-user').addClass('active');
+    document.title = "Pick Up "+ $('#nama_vendor').html() +" - Amarthya Group";
 
     load_items($('#id_order_vendor_m').val());
 

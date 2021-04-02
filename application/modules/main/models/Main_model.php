@@ -85,7 +85,7 @@ class Main_model extends CI_Model
 
     }
 
-    function get_pick_up($search = null){
+    function get_pick_up($search = null, $admin = true, $id_staff = 0){
         $sql = "SELECT *, a.id_pick_up
                 FROM pick_up a
                 INNER JOIN vendor b ON a.id_vendor = b.id_vendor
@@ -93,7 +93,17 @@ class Main_model extends CI_Model
                 INNER JOIN staff d ON a.id_staff = d.id_staff";
 
         if($search != "" || $search != null){
-            $sql .= " WHERE CONCAT(b.nama_vendor, c.no_order_vendor, a.alamat_pick_up, c.tgl_order_vendor) LIKE '%$search%'";
+            if(!$admin){
+                $sql .= " WHERE CONCAT(b.nama_vendor, c.no_order_vendor, a.alamat_pick_up, c.tgl_order_vendor) LIKE '%$search%'
+                            AND d.id_staff = '".$id_staff."'";
+            } else {
+                $sql .= " WHERE CONCAT(b.nama_vendor, c.no_order_vendor, a.alamat_pick_up, c.tgl_order_vendor) LIKE '%$search%'";
+            }
+
+        } else {
+            if(!$admin){
+                $sql .= " WHERE d.id_staff = '".$id_staff."'";
+            }
         }
 
         $sql .= " ORDER BY a.tgl_pick_up DESC";
@@ -237,7 +247,7 @@ class Main_model extends CI_Model
 
     }
 
-    function get_delivery($search = null){
+    function get_delivery($search = null, $admin = true, $id_staff = 0){
         $sql = "SELECT *, a.id_delivery
                 FROM delivery a
                 INNER JOIN customer b ON a.id_customer = b.id_customer
@@ -245,8 +255,19 @@ class Main_model extends CI_Model
                 INNER JOIN staff d ON a.id_staff = d.id_staff";
 
         if($search != "" || $search != null){
-            $sql .= " WHERE CONCAT(b.nama_customer, c.no_order, a.alamat_delivery, c.tgl_order) LIKE '%$search%'";
+            if(!$admin){
+                $sql .= " WHERE CONCAT(b.nama_customer, c.no_order, a.alamat_delivery, c.tgl_order) LIKE '%$search%'
+                            AND d.id_staff = '".$id_staff."'";
+            } else {
+                $sql .= " WHERE CONCAT(b.nama_customer, c.no_order, a.alamat_delivery, c.tgl_order) LIKE '%$search%'";
+            }
+
+        } else {
+            if(!$admin){
+                $sql .= " WHERE d.id_staff = '".$id_staff."'";
+            }
         }
+
 
         $sql .= " ORDER BY a.tgl_delivery DESC";
 

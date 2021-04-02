@@ -158,8 +158,7 @@
     item_lists = [];
 
 
-    $('#collapseUser').addClass('show');
-    $('#navbar-user').addClass('active');
+    document.title = "Order Vendor #"+ $('#no_order').html() +" - Amarthya Group";
 
 
 

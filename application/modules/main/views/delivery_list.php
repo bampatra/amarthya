@@ -44,7 +44,9 @@
                 <div id="info_catatan_delivery" style="font-size: 13px; margin-top: 5px"></div>
                 <br>
                 <div style="text-align: right" id="info_payment"></div>
-                <a id="edit-info" target="_blank"><span class="link"> Edit </span></a>
+                <?php if($this->session->userdata('is_admin') == "1") { ?>
+                    <a id="edit-info" target="_blank"><span class="link"> Edit </span></a>
+                <?php } ?>
 
             </div>
             <div class="modal-footer">
@@ -104,8 +106,7 @@
 
 <script>
 
-    $('#collapseUser').addClass('show');
-    $('#navbar-user').addClass('active');
+    document.title = "Daftar Delivery - Amarthya Group";
 
     get_order_m();
 
@@ -151,11 +152,13 @@
                     },
                     mRender : function(data, type, full) {
 
-                        var temp_date = new Date(data.tgl_delivery);
+                        let dateTimeParts= data.tgl_delivery.split(/[- :]/);
+                        dateTimeParts[1]--;
+                        const temp_date = new Date(...dateTimeParts);
 
                         html = '<div class="detail-row">' +
                                 '<div class="detail-column">' +
-                            '       <span>'+ temp_date.getDate() + '/' + (temp_date.getMonth() + 1) + '/' + temp_date.getFullYear() +'</span><br>' +
+                            '       <span> Tgl Delivery: '+ temp_date.getDate() + '/' + (temp_date.getMonth() + 1) + '/' + temp_date.getFullYear() +'</span><br>' +
                                     '<strong>'+ data.no_order +'</strong><br>' +
                                     '<span>'+ data.nama_customer +'</span>' +
                             '       <p>Ongkir: '+ convertToRupiah(data.ongkir_order) +'</p>';
@@ -196,14 +199,18 @@
 
                         html += '</div></div>';
 
-                        html += '<div class="detail-row"><table style="width: 100%">' +
-                            '       <tr class="no-pointer"><td>Driver: </td><td><span>'+ data.nama_staff +'<br>('+ data.no_hp_staff +')</span></td></tr>' +
-                            '       <tr class="no-pointer"><td>Alamat: </td><td><span>'+ data.alamat_delivery +'</span></td></tr>' +
-                            '       <tr class="no-pointer"><td>No HP: </td><td><span>'+ data.no_hp_delivery +'</span></td></tr>' +
+                        if(<?php echo $this->session->userdata('is_admin')?> == "1"){
+                            html += '<div class="detail-row"><table style="width: 100%">' +
+                                '       <tr class="no-pointer"><td>Driver: </td><td><span>'+ data.nama_staff +'<br>('+ data.no_hp_staff +')</span></td></tr>' +
+                                '       <tr class="no-pointer"><td>Alamat: </td><td><span>'+ data.alamat_delivery +'</span></td></tr>' +
+                                '       <tr class="no-pointer"><td>No HP: </td><td><span>'+ data.no_hp_delivery +'</span></td></tr>' +
                                 '</table></div>';
-
-
-
+                        } else {
+                            html += '<div class="detail-row"><table style="width: 100%">' +
+                                '       <tr class="no-pointer"><td>Alamat: </td><td><span>'+ data.alamat_delivery +'</span></td></tr>' +
+                                '       <tr class="no-pointer"><td>No HP: </td><td><span>'+ data.no_hp_delivery +'</span></td></tr>' +
+                                '</table></div>';
+                        }
 
                         return html;
 
@@ -224,9 +231,11 @@
 
         $("#edit-info").attr("href", admin_url + 'delivery_detail?id=' + rowData.id_delivery);
 
-        var temp_date = new Date(rowData.tgl_order);
+        let dateTimeParts= rowData.tgl_order.split(/[- :]/);
+        dateTimeParts[1]--;
+        const temp_date = new Date(...dateTimeParts);
 
-        html_info_customer = '<span>'+ temp_date.getDate() + '/' + (temp_date.getMonth() + 1) + '/' + temp_date.getFullYear() +'</span><br>\n' +
+        html_info_customer = '<span> Tgl Order: '+ temp_date.getDate() + '/' + (temp_date.getMonth() + 1) + '/' + temp_date.getFullYear() +'</span><br>\n' +
             '                <strong>'+ rowData.no_order +'</strong><br>\n' +
             '                <span>'+ rowData.nama_customer +' ('+ rowData.no_hp_customer +')</span><br>\n' +
                             '<span>'+ rowData.alamat_customer +'</span><br>';

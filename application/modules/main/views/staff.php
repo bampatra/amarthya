@@ -148,8 +148,7 @@
 
 <script>
 
-    $('#collapseUser').addClass('show');
-    $('#navbar-user').addClass('active');
+    document.title = "Staff - Amarthya Group";
 
     get_staff();
 

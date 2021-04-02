@@ -210,9 +210,7 @@
 
     var selected_order, selected_staff, selected_customer;
 
-
-    $('#collapseUser').addClass('show');
-    $('#navbar-user').addClass('active');
+    document.title = "Salary - Amarthya Group";
 
     $('#id_staff, #awal_akhir_salary, #bulan_salary, #tahun_salary').change(function(){
         if($('#id_staff').val() == "none"){

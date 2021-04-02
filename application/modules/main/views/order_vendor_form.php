@@ -236,9 +236,7 @@
     set_harga();
 
 
-    $('#collapseUser').addClass('show');
-    $('#navbar-user').addClass('active');
-
+    document.title = "Formulir Order Vendor - Amarthya Group";
 
 
     $('.save').click(function(e){

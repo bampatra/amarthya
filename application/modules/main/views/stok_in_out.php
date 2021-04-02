@@ -4,7 +4,7 @@
 <div class="container-fluid">
 
     <!-- Page Heading -->
-    <h1 class="h3 mb-2 text-gray-800"><?php print_r($product[0]['nama_product']) ?></h1>
+    <h1 class="h3 mb-2 text-gray-800" id="nama_product"><?php print_r($product[0]['nama_product']) ?></h1>
     <br>
 
     <button class="btn btn-primary add" style="background: #a50000; color: white; width: 300px;"> Tambah Data </button>
@@ -129,8 +129,8 @@
 
 <script>
 
-    $('#collapseUser').addClass('show');
-    $('#navbar-user').addClass('active');
+    document.title = "Detail Stok " + $('#nama_product').html() + " - Amarthya Group";
+
     detail_toggled = false;
 
     $("#tgl_stok_out").hide();

@@ -173,8 +173,8 @@
 
 <script>
 
-    $('#collapseUser').addClass('show');
-    $('#navbar-user').addClass('active');
+    document.title = "Product - Amarthya Group";
+
     detail_toggled = false;
 
     get_product();

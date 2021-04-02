@@ -2,11 +2,10 @@
 class Home_model extends CI_Model
 {
 
-    function is_registered($creds, $password){
-        $query = $this->db->query("SELECT * FROM web_user 
-                                    WHERE password_web_user = '{$password}'
-                                    AND (email_web_user = '{$creds}' OR telp_web_user = '{$creds}')
-                                    AND active_web_user = '1'");
+    function is_registered($username, $password){
+        $query = $this->db->query("SELECT * FROM user 
+                                    WHERE password = '{$password}'
+                                    AND username = '{$username}'");
 
         return $query;
     }

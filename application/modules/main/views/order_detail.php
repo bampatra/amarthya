@@ -229,6 +229,7 @@
 
 <script>
 
+    document.title = "Pesanan #"+ $('#no_order').html() +" - Amarthya Group";
 
     $('.save').click(function(e){
         $('.loading').css("display", "block");

@@ -147,21 +147,21 @@
     <ul class="navbar-nav sidebar sidebar-dark accordion toggled" id="accordionSidebar">
 
         <!-- Sidebar - Brand -->
-        <a class="sidebar-brand d-flex align-items-center justify-content-center" href="<?php echo base_url('admin')?>">
-            <div class="sidebar-brand-text mx-3">YAPN</sup></div>
-        </a>
+<!--        <a class="sidebar-brand d-flex align-items-center justify-content-center" href="--><?php //echo base_url('main')?><!--">-->
+<!--            <div class="sidebar-brand-text mx-3">YAPN</sup></div>-->
+<!--        </a>-->
+<!---->
 
-        <!-- Divider -->
-        <hr class="sidebar-divider my-0">
+<!--        <hr class="sidebar-divider my-0">-->
 
         <!-- Nav Item - Dashboard -->
-        <li class="nav-item active">
-            <a class="nav-link" href="<?php echo base_url('admin')?>">
-                <i class="fas fa-fw fa-tachometer-alt"></i>
-                <span>Dashboard</span></a>
-        </li>
+<!--        <li class="nav-item active">-->
+<!--            <a class="nav-link" href="--><?php //echo base_url('main')?><!--">-->
+<!--                <i class="fas fa-fw fa-tachometer-alt"></i>-->
+<!--                <span style="font-size: 12px !important">Dashboard</span></a>-->
+<!--        </li>-->
+<!---->
 
-        <!-- Divider -->
         <hr class="sidebar-divider">
 
         <!-- Heading -->
@@ -170,32 +170,96 @@
         </div>
 
         <!-- Nav Item - Pages Collapse Menu -->
-<!--        <li class="nav-item">-->
-<!--            <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseMaster" aria-expanded="true" aria-controls="collapseMaster">-->
-<!--                <i class="fas fa-fw fa-key"></i>-->
-<!--                <span>Staff</span>-->
-<!--            </a>-->
-<!--            <div id="collapseMaster" class="collapse" aria-labelledby="headingTwo" data-parent="#accordionSidebar">-->
-<!--                <div class="bg-white py-2 collapse-inner rounded">-->
-<!--                    <h6 class="collapse-header">Option:</h6>-->
-<!--                    <a class="collapse-item" href="--><?php //echo base_url('main/staff')?><!--">Data Staff</a>-->
-<!--                    <a class="collapse-item" href="--><?php //echo base_url('main/staff-input')?><!--">Input Staff</a>-->
-<!--                </div>-->
-<!--            </div>-->
-<!--        </li>-->
 
         <li class="nav-item">
             <a class="nav-link" href="<?php echo base_url('main/staff')?>">
-                <i class="fas fa-fw fa-money-bill-wave"></i>
-                <span>Staff</span>
+                <i class="fas fa-fw fa-id-card"></i>
+                <span style="font-size: 12px !important">Staff</span>
             </a>
         </li>
 
         <li class="nav-item">
             <a class="nav-link" href="<?php echo base_url('main/customer')?>">
-                <i class="fas fa-fw fa-money-bill-wave"></i>
-                <span>Customer</span>
+                <i class="fas fa-fw fa-user-circle"></i>
+                <span style="font-size: 12px !important">Customer</span>
             </a>
+        </li>
+
+        <li class="nav-item">
+            <a class="nav-link" href="<?php echo base_url('main/product')?>">
+                <i class="fas fa-fw fa-shopping-bag"></i>
+                <span style="font-size: 12px !important">Product</span>
+            </a>
+        </li>
+
+        <li class="nav-item">
+            <a class="nav-link" href="<?php echo base_url('main/salary_form')?>">
+                <i class="fas fa-fw fa-money-bill-wave"></i>
+                <span style="font-size: 12px !important">Salary</span>
+            </a>
+        </li>
+
+        <li class="nav-item">
+            <a class="nav-link" href="<?php echo base_url('main/slip_gaji')?>">
+                <i class="fas fa-fw fa-money-bill-wave"></i>
+                <span style="font-size: 12px !important">Slip Gaji</span>
+            </a>
+        </li>
+
+        <li class="nav-item">
+            <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseOrder" aria-expanded="true" aria-controls="collapseMaster">
+                <i class="fas fa-fw fa-shopping-cart"></i>
+                <span style="font-size: 12px !important">Order Cust.</span>
+            </a>
+            <div id="collapseOrder" class="collapse" aria-labelledby="headingTwo" data-parent="#accordionSidebar">
+                <div class="bg-white py-2 collapse-inner rounded">
+                    <h6 class="collapse-header">Option:</h6>
+                    <a class="collapse-item" href="<?php echo base_url('main/order_form')?>">Form</a>
+                    <a class="collapse-item" href="<?php echo base_url('main/order_list')?>">Semua Order</a>
+                </div>
+            </div>
+        </li>
+
+        <li class="nav-item">
+            <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseOrderVendor" aria-expanded="true" aria-controls="collapseMaster">
+                <i class="fas fa-fw fa-cart-plus"></i>
+                <span style="font-size: 12px !important">Order Vdr.</span>
+            </a>
+            <div id="collapseOrderVendor" class="collapse" aria-labelledby="headingTwo" data-parent="#accordionSidebar">
+                <div class="bg-white py-2 collapse-inner rounded">
+                    <h6 class="collapse-header">Option:</h6>
+                    <a class="collapse-item" href="<?php echo base_url('main/order_vendor_form')?>">Form</a>
+                    <a class="collapse-item" href="<?php echo base_url('main/order_vendor_list')?>">Semua Order</a>
+                </div>
+            </div>
+        </li>
+
+        <li class="nav-item">
+            <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseDelivery" aria-expanded="true" aria-controls="collapseMaster">
+                <i class="fas fa-fw fa-motorcycle"></i>
+                <span style="font-size: 12px !important">Delivery</span>
+            </a>
+            <div id="collapseDelivery" class="collapse" aria-labelledby="headingTwo" data-parent="#accordionSidebar">
+                <div class="bg-white py-2 collapse-inner rounded">
+                    <h6 class="collapse-header">Option:</h6>
+                    <a class="collapse-item" href="<?php echo base_url('main/delivery_form')?>">Form</a>
+                    <a class="collapse-item" href="<?php echo base_url('main/delivery_list')?>">Semua Delivery</a>
+                </div>
+            </div>
+        </li>
+
+        <li class="nav-item">
+            <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapsePickUp" aria-expanded="true" aria-controls="collapseMaster">
+                <i class="fas fa-fw fa-motorcycle"></i>
+                <span style="font-size: 12px !important">Pick Up</span>
+            </a>
+            <div id="collapsePickUp" class="collapse" aria-labelledby="headingTwo" data-parent="#accordionSidebar">
+                <div class="bg-white py-2 collapse-inner rounded">
+                    <h6 class="collapse-header">Option:</h6>
+                    <a class="collapse-item" href="<?php echo base_url('main/pickup_form')?>">Form</a>
+                    <a class="collapse-item" href="<?php echo base_url('main/pickup_list')?>">Semua Pick Up</a>
+                </div>
+            </div>
         </li>
 
 
@@ -211,7 +275,7 @@
         <li class="nav-item">
             <a class="nav-link" href="<?php echo base_url('admin/logout')?>">
                 <i class="fas fa-fw fa-sign-out-alt"></i>
-                <span>Logout</span></a>
+                <span style="font-size: 12px !important">Logout</span></a>
         </li>
 
 

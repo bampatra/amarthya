@@ -27,7 +27,9 @@
                         </select>
                     </div>
                 </div>
-                <button class="btn btn-primary print mt-3 col-sm-12" style="font-size: 14px;">Cetak Slip Gaji</button>
+                <a target="_blank" href="" id="print-link">
+                    <button class="btn btn-primary print mt-3 col-sm-12" style="font-size: 14px;">Cetak Slip Gaji</button>
+                </a>
 
             </div>
             
@@ -216,6 +218,8 @@
         if($('#id_staff').val() == "none"){
             return;
         }
+
+        $('#print-link').attr("href", admin_url + "pdf_slip_gaji?staff=" + $('#id_staff').val() + "&periode=" + $('#awal_akhir_salary').val() + "&bulan=" + $('#bulan_salary').val() + "&tahun=" + $('#tahun_salary').val())
 
         $('.loading').css("display", "block");
         $('.Veil-non-hover').fadeIn();

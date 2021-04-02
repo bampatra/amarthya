@@ -1544,7 +1544,6 @@ class Main extends MX_Controller
         $this->load->view('template/admin_footer');
     }
 
-
     function get_staff(){
         // server-side pagination
         $draw = $_REQUEST['draw'];
@@ -1826,7 +1825,9 @@ class Main extends MX_Controller
 
 
                 //buat dummy cell untuk memberi jarak vertikal
-                $pdf->Cell(189 ,7,'','T',1);//end of line
+                $pdf->Cell(189 ,7,'Catatan: '.$order->catatan_order,'T',1);//end of line
+                $pdf->Cell(189 ,2,'','',1);//end of line
+
 
                 // ================ PAYMENT DETAIL ===============
 
@@ -1958,6 +1959,9 @@ class Main extends MX_Controller
                 $pdf->Cell(35 ,6,'Telah terima dari: ',0,0);
                 $pdf->Cell(25 ,6,$data_order->row()->nama_vendor,0,1);
 
+                $pdf->Cell(35 ,6,'No. Rek: ',0,0);
+                $pdf->Cell(25 ,6,$data_order->row()->no_rekening_vendor." (".$data_order->row()->nama_bank_vendor.")",0,1);
+
                 $pdf->Cell(35 ,6,'pada tanggal: ',0,0);
                 $pdf->Cell(25 ,6,date_format(date_create($data_order->row()->tgl_order_vendor),"d/m/Y"),0,1);
 
@@ -1996,8 +2000,11 @@ class Main extends MX_Controller
                 // dummy line
                 $pdf->Cell(189 ,15,'',0, 1);
 
-                $pdf->Cell(35 ,5,'Diterima oleh: ',0,0);
-                $pdf->Cell(35 ,5,'A.A.A. Saraswati Hardy ',0,1);
+                $pdf->Cell(35 ,5,'Catatan',0,0);
+                $pdf->Cell(35 ,5,": ".$data_order->row()->catatan_order_vendor,0,1);
+
+                $pdf->Cell(35 ,5,'Diterima oleh',0,0);
+                $pdf->Cell(35 ,5,': A.A.A. Saraswati Hardy ',0,1);
                 $pdf->setFillColor(201,201,201);
                 $pdf->Cell(139 ,5,'',0,0, 'L', TRUE);
 
@@ -2007,6 +2014,9 @@ class Main extends MX_Controller
                 $pdf->Cell(35 ,5,"Rp. " . number_format($data_order->row()->grand_total_order,2,',','.'),0,1, 'R', TRUE);
 
 
+                $pdf->SetFont('Nunito','',10);
+
+
 //                $pdf->Cell(75 ,5,date_format(date_create($data_order->row()->tgl_order_vendor),"d/m/Y"),'',0, 'C');
 
                 $pdf->Output("I", "Tanda Terima #".$data_order->row()->no_order_vendor." - ".$data_order->row()->nama_vendor.".pdf");
@@ -2014,6 +2024,216 @@ class Main extends MX_Controller
 
         } else {
             // kosong
+        }
+
+    }
+
+    function pdf_slip_gaji(){
+
+        require_once APPPATH.'third_party/fpdf182/fpdf.php';
+
+        if(isset($_GET['staff']) && isset($_GET['periode']) && isset($_GET['bulan']) && isset($_GET['tahun'])){
+
+            date_default_timezone_set('Asia/Singapore');
+
+            $id_staff = htmlentities($_GET['staff'], ENT_QUOTES);
+            $awal_akhir_salary = htmlentities($_GET['periode'], ENT_QUOTES);
+            $bulan_salary = htmlentities($_GET['bulan'], ENT_QUOTES);
+            $tahun_salary = htmlentities($_GET['tahun'], ENT_QUOTES);
+
+            // Periode Delivery
+            if($awal_akhir_salary == "AWAL"){
+                $tgl_awal = $tahun_salary."-".sprintf('%02d', $bulan_salary)."-01";
+                $tgl_akhir = $tahun_salary."-".sprintf('%02d', $bulan_salary)."-15";
+
+                $start = "01-".sprintf('%02d', $bulan_salary)."-".$tahun_salary;
+                $end = "15-".sprintf('%02d', $bulan_salary)."-".$tahun_salary;
+
+            } else if($awal_akhir_salary == "AKHIR"){
+                $tgl_awal = $tahun_salary."-".sprintf('%02d', $bulan_salary)."-16";
+                $tgl_akhir = $tahun_salary."-".sprintf('%02d', $bulan_salary)."-".date('t');
+
+                $start = "16-".sprintf('%02d', $bulan_salary)."-".$tahun_salary;
+                $end = date('t').sprintf('%02d', $bulan_salary)."-".$tahun_salary;
+            }
+
+
+            $data_salary = $this->Main_model->get_staff_salary($id_staff, $awal_akhir_salary, $bulan_salary, $tahun_salary, $tgl_awal, $tgl_akhir);
+
+            if($data_salary->num_rows() == 0){
+                // empty
+
+
+            } else {
+                $data = $data_salary->row();
+
+                $pdf = new FPDF('P','mm','A4');
+                $pdf->AddPage();
+
+                //set font
+                $pdf->AddFont('Nunito','','Nunito-Regular.php');
+                $pdf->AddFont('Nunito','B','Nunito-Bold.php');
+
+
+                $pdf->SetFont('Nunito','B',20);
+
+                //====================== HEADER ======================
+
+                $pdf->Cell(130 ,5,'',0,0);
+                $pdf->Image(base_url('assets/images/logopdf.jpg'), 10, 10, 48, 22 ,'');
+                $x = $pdf->GetX();
+
+                $pdf->Cell(59 ,5,'SLIP GAJI',0,1, 'R');//end of line
+
+                $pdf->SetFont('Nunito','B',11);
+
+                $pdf->SetX($x);
+                $pdf->Cell(59 ,5,'',0,1);//end of line
+
+                $pdf->SetX($x);
+                $pdf->Cell(25 ,5,'',0,0, 'R');
+                $pdf->Cell(34 ,5,'Kedai Amarthya',0,1, 'R');//end of line
+
+                $pdf->SetFont('Nunito','',11);
+
+                $pdf->SetX($x);
+                $pdf->Cell(25 ,5,'',0,0, 'R');
+                $pdf->Cell(34 ,5,'+62 819-3618-1788',0,1, 'R');//end of line
+
+                $pdf->SetX($x);
+                $pdf->Cell(25 ,5,'',0,0, 'R');
+                $pdf->Cell(34 ,5,'kedai.amarthya@gmail.com',0,1, 'R');//end of line
+
+                $pdf->SetX($x);
+                $pdf->Cell(25 ,5,'',0,0, 'R');
+                $pdf->Cell(34 ,5,'Jalan Gelogor Indah IB, Gg Kresna No 1',0,1, 'R');//end of line
+
+                //buat dummy cell untuk memberi jarak vertikal
+                $pdf->Cell(189 ,10,'',0,1);//end of line
+
+
+                // ================ SALARY INFO ===============
+                $pdf->SetFont('Nunito','',10);
+                $pdf->setFillColor(226,239,218);
+
+                $pdf->Cell(20 ,6,'Nama',"L,T",0, 'L', TRUE);
+                $pdf->Cell(87 ,6,": ".$data->nama_staff,"T",0, 'L', TRUE);
+                $pdf->Cell(20 ,6,"Periode","T",0, 'L', TRUE);
+                $pdf->Cell(62 ,6,": ".$start." s/d ".$end,"T, R",1, 'L', TRUE);
+
+                $pdf->Cell(20 ,6,'Jabatan ',"L,B",0, 'L', TRUE);
+                $pdf->Cell(87 ,6,": ".$data->nama_posisi,"B",0, 'L', TRUE);
+                $pdf->Cell(20 ,6,"No. Rek","B",0, 'L', TRUE);
+                $pdf->Cell(62 ,6,": ".$data->no_rek_staff." (".$data->nama_bank_staff.") ","B, R",1, 'L', TRUE);
+
+
+                // ================ SALARY HEADER ===============
+
+                $pdf->SetFont('Nunito','',10);
+                $pdf->setFillColor(217,225,242);
+
+                $pdf->Cell(20 ,6,'No',1,0, 'C', TRUE);
+                $pdf->Cell(87 ,6,'Keterangan',1,0, 'C', TRUE);
+                $pdf->Cell(82 ,6,'Jumlah',1,1, 'C', TRUE);
+
+
+
+                // ================ SALARY DETAIL ===============
+
+                $pdf->SetFont('Nunito','',10);
+                $pdf->setFillColor(255,255,255);
+
+
+
+                $pdf->Cell(20 ,6,'1','T, L, R',0, 'R', TRUE);
+                $pdf->Cell(87 ,6,'Gaji','T, L, R',0, 'L', TRUE);
+                $pdf->Cell(82 ,6,"Rp. " . number_format($data->salary_staff,2,',','.'),'T, L, R',1, 'R', TRUE);
+
+
+                $pdf->Cell(20 ,6,'2',' L, R',0, 'R', TRUE);
+                $pdf->Cell(87 ,6,'Upah Delivery','L, R',0, 'L', TRUE);
+                $pdf->Cell(82 ,6,"Rp. " . number_format($data->ongkir_salary,2,',','.'),'L, R',1, 'R', TRUE);
+
+                $pdf->Cell(20 ,6,'3',' L, R',0, 'R', TRUE);
+                $pdf->Cell(87 ,6,'Fee Penjualan','L, R',0, 'L', TRUE);
+                $pdf->Cell(82 ,6,"Rp. " . number_format($data->fee_penjualan_salary,2,',','.'),'L, R',1, 'R', TRUE);
+
+                $pdf->Cell(20 ,6,'4',' L, R',0, 'R', TRUE);
+                $pdf->Cell(87 ,6,'Lembur','L, R',0, 'L', TRUE);
+                $pdf->Cell(82 ,6,"Rp. " . number_format($data->lembur_salary,2,',','.'),'L, R',1, 'R', TRUE);
+
+                $pdf->Cell(20 ,6,'5',' L, R',0, 'R', TRUE);
+                $pdf->Cell(87 ,6,'Kas Bon','L, R',0, 'L', TRUE);
+                $pdf->Cell(82 ,6,"Rp. " . number_format($data->kas_bon_salary,2,',','.'),'L, R',1, 'R', TRUE);
+
+                $pdf->Cell(20 ,6,'6',' L, R',0, 'R', TRUE);
+                $pdf->Cell(87 ,6,'Potongan Kas Bon','L, R',0, 'L', TRUE);
+                $pdf->Cell(82 ,6,"(Rp. " . number_format($data->potongan_kas_bon_salary,2,',','.').")",'L, R',1, 'R', TRUE);
+
+                $pdf->Cell(20 ,6,'7',' L, R',0, 'R', TRUE);
+                $pdf->Cell(87 ,6,'THR','L, R',0, 'L', TRUE);
+                $pdf->Cell(82 ,6,"Rp. " . number_format($data->THR_salary,2,',','.'),'L, R',1, 'R', TRUE);
+
+                if($data->lain_lain_salary != 0 || !empty($data->lain_lain_salary)){
+                    $pdf->Cell(20 ,6,'8',' L, R',0, 'R', TRUE);
+                    $pdf->Cell(87 ,6,'Dana Kuota Internet','L, R',0, 'L', TRUE);
+                    $pdf->Cell(82 ,6,"Rp. " . number_format($data->kuota_internet_salary,2,',','.'),'L, R',1, 'R', TRUE);
+
+                    $pdf->Cell(20 ,6,'9',' L, R, B',0, 'R', TRUE);
+                    $pdf->Cell(87 ,6,"Lain-lain (".$data->catatan_lain_lain.")",'L, R, B',0, 'L', TRUE);
+                    $pdf->Cell(82 ,6,"Rp. " . number_format($data->lain_lain_salary,2,',','.'),'L, R, B',1, 'R', TRUE);
+
+                } else {
+                    $pdf->Cell(20 ,6,'8',' L, R, B',0, 'R', TRUE);
+                    $pdf->Cell(87 ,6,'Dana Kuota Internet','L, R, B',0, 'L', TRUE);
+                    $pdf->Cell(82 ,6,"Rp. " . number_format($data->kuota_internet_salary,2,',','.'),'L, R, B',1, 'R', TRUE);
+                }
+
+                $pdf->setFillColor(226,239,218);
+                $pdf->SetFont('Nunito','B',10);
+
+                $total_gaji = (empty($data->salary_staff)) ? 0 : $data->salary_staff +
+                floatval((empty($data->ongkir_salary)) ? 0 : $data->ongkir_salary) +
+                    floatval((empty($data->lembur_salary)) ? 0 : $data->lembur_salary) +
+                        floatval((empty($data->fee_penjualan_salary)) ? 0 : $data->fee_penjualan_salary) +
+                            floatval((empty($data->kuota_internet_salary)) ? 0 : $data->kuota_internet_salary) +
+                                floatval((empty($data->kas_bon_salary)) ? 0 : $data->kas_bon_salary) +
+                                    floatval((empty($data->THR_salary)) ? 0 : $data->THR_salary) +
+                                        floatval((empty($data->lain_lain_salary)) ? 0 : $data->lain_lain_salary) -
+                                            floatval((empty($data->potongan_kas_bon_salary)) ? 0 : $data->potongan_kas_bon_salary);
+
+                $pdf->Cell(189 ,6,'Total: '."Rp. " . number_format($total_gaji,2,',','.'),1, 1, 'R', TRUE);
+
+
+                // ================ SIGNATURE ===============
+
+                // dummy line
+                $pdf->Cell(189 ,15,'',0, 1);
+                $pdf->SetFont('Nunito','',10);
+
+                $pdf->Cell(20 ,6,'',0,0, 'R');
+                $pdf->Cell(52 ,6,'Diterima',0,0, 'C');
+                $pdf->Cell(25 ,6,'',0,0, 'R');
+                $pdf->Cell(82 ,6,'Mengetahui',0,1, 'C');
+
+                $pdf->Image(base_url('assets/images/ttdarina.png'), 125, $pdf->GetY()-1, 54, 25 ,'');
+
+                $pdf->Cell(189 ,25,'',0, 1);
+
+                $pdf->Cell(20 ,6,'',0,0, 'R');
+                $pdf->Cell(52 ,6,$data->nama_staff,0,0, 'C');
+                $pdf->Cell(25 ,6,'',0,0, 'R');
+                $pdf->Cell(82 ,6,'Arina Hardy',0,1, 'C');
+
+
+
+                $pdf->Output("I", "Slip Gaji - ".$data->nama_staff." (".$start." sampai ".$end.").pdf");
+
+            }
+
+
+        } else {
+
         }
 
     }

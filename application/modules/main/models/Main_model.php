@@ -12,6 +12,7 @@ class Main_model extends CI_Model
     function get_staff_salary($id_staff, $awal_akhir_salary, $bulan_salary, $tahun_salary, $tgl_awal, $tgl_akhir){
         $sql = "SELECT *, b.id_staff
                 FROM staff b
+                INNER JOIN posisi d ON b.id_posisi = d.id_posisi
                 LEFT JOIN salary a ON a.id_staff = b.id_staff  
                   AND a.`awal_akhir_salary` = '".$awal_akhir_salary."' 
                   AND a.`bulan_salary` = '".$bulan_salary."' 

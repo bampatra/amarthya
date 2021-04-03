@@ -334,12 +334,9 @@
 
 
     $('.save').click(function(e){
-        $('.loading').css("display", "block");
-        $('.Veil-non-hover').fadeIn();
-
         if(confirm("Pastikan semua data sudah benar. Data tidak bisa diedit setelah disimpan. Lanjutkan?")){
-            // $('.loading').css("display", "block");
-            // $('.Veil-non-hover').fadeIn();
+            $('.loading').css("display", "block");
+            $('.Veil-non-hover').fadeIn();
 
             $.ajax({
                 type: 'POST', // define the type of HTTP verb we want to use (POST for our form)

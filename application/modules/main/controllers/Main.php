@@ -38,6 +38,170 @@ class Main extends MX_Controller
 
     }
 
+    function delete_delivery(){
+        if($this->session->userdata('is_admin') == "0"){
+            redirect(base_url('main'));
+        }
+
+        $id_delivery = strtoupper(trim(htmlentities($_REQUEST['id_delivery'], ENT_QUOTES)));
+
+        $delivery_data = $this->Main_model->get_delivery_by_id($id_delivery);
+
+        if($delivery_data->num_rows() == 0){
+            $return_arr = array("Status" => 'ERROR', "Message" => 'Data tidak ditemukan');
+            echo json_encode($return_arr);
+            return;
+        }
+
+
+        if($delivery_data->row()->status_delivery != '0'){
+            $return_arr = array("Status" => 'ERROR', "Message" => 'Data tidak bisa dihapus karena sedang dikirim atau sudah dikirm');
+            echo json_encode($return_arr);
+            return;
+        }
+
+        if($this->Main_model->delete_delivery($id_delivery)){
+            $return_arr = array("Status" => 'OK', "Message" => 'Data berhasil dihapus');
+            echo json_encode($return_arr);
+            return;
+        } else {
+            $return_arr = array("Status" => 'ERROR', "Message" => 'Gagal menghapus data');
+            echo json_encode($return_arr);
+            return;
+        }
+
+    }
+
+    function delete_pick_up(){
+        if($this->session->userdata('is_admin') == "0"){
+            redirect(base_url('main'));
+        }
+
+        $id_pick_up = strtoupper(trim(htmlentities($_REQUEST['id_pick_up'], ENT_QUOTES)));
+
+        //Check if editable
+        $pick_up_data = $this->Main_model->get_pick_up_by_id($id_pick_up);
+
+        if($pick_up_data->num_rows() == 0){
+            $return_arr = array("Status" => 'ERROR', "Message" => 'Data pick up tidak ditemukan');
+            echo json_encode($return_arr);
+            return;
+        }
+
+        if($pick_up_data->row()->status_pick_up != '0'){
+            $return_arr = array("Status" => 'ERROR', "Message" => 'Data tidak bisa dihapus karena sudah selesai pick up');
+            echo json_encode($return_arr);
+            return;
+        }
+
+        if($this->Main_model->delete_pick_up($id_pick_up)){
+            $return_arr = array("Status" => 'OK', "Message" => 'Data berhasil dihapus');
+            echo json_encode($return_arr);
+            return;
+        } else {
+            $return_arr = array("Status" => 'ERROR', "Message" => 'Gagal menghapus data');
+            echo json_encode($return_arr);
+            return;
+        }
+
+
+    }
+
+    function update_status_order_vendor_m(){
+        if($this->session->userdata('is_admin') == "0"){
+            $return_arr = array("Status" => 'ERROR', "Message" => 'Gagal! Fitur khusus admin.');
+            echo json_encode($return_arr);
+            return;
+        }
+
+        $no_order = strtoupper(trim(htmlentities($_REQUEST['no_order'], ENT_QUOTES)));
+        $status_order = trim(htmlentities($_REQUEST['status_order'], ENT_QUOTES));
+
+        $order_vendor_m_data = $this->Main_model->get_order_vendor_detail($no_order)->row();
+
+        if($order_vendor_m_data->status_order_vendor == "0"){
+            $return_arr = array("Status" => 'ERROR', "Message" => 'Order sudah dihapus');
+            echo json_encode($return_arr);
+            return;
+        }
+
+
+        // check if order has delivery, else order sudah ada delivery
+        if($order_vendor_m_data->status_pick_up == "0" || $order_vendor_m_data->status_pick_up == "1"){
+            $return_arr = array("Status" => 'ERROR', "Message" => 'Order tidak bisa dihapus karena sudah ada pick up');
+            echo json_encode($return_arr);
+            return;
+        }
+
+        if($status_order == "delete"){
+            $status_order_vendor = "0";
+        } else {
+            $return_arr = array("Status" => 'ERROR', "Message" => 'Status tidak valid!');
+            echo json_encode($return_arr);
+            return;
+        }
+
+        $updated_data = compact('status_order_vendor');
+
+        if($this->Main_model->update_order_vendor_m($updated_data, $order_vendor_m_data->id_order_vendor_m)){
+            $this->db->trans_commit();
+            $return_arr = array("Status" => 'OK', "Message" => 'Data berhasil dihapus');
+        } else {
+            $this->db->trans_rollback();
+            $return_arr = array("Status" => 'ERROR', "Message" => 'Gagal mengupdate data');
+        }
+
+        echo json_encode($return_arr);
+
+    }
+
+    function update_status_order_m(){
+        if($this->session->userdata('is_admin') == "0"){
+            $return_arr = array("Status" => 'ERROR', "Message" => 'Gagal! Fitur khusus admin.');
+            echo json_encode($return_arr);
+            return;
+        }
+
+        $no_order = strtoupper(trim(htmlentities($_REQUEST['no_order'], ENT_QUOTES)));
+        $status_order = trim(htmlentities($_REQUEST['status_order'], ENT_QUOTES));
+
+        $order_m_data = $this->Main_model->get_order_m_by_no_order($no_order)->row();
+
+        // check if order is status = 1, else order sudah dihapus
+        if($order_m_data->status_order == "0"){
+            $return_arr = array("Status" => 'ERROR', "Message" => 'Order sudah dihapus');
+            echo json_encode($return_arr);
+            return;
+        }
+
+        // check if order has delivery, else order sudah ada delivery
+        if($order_m_data->status_delivery == "0" || $order_m_data->status_delivery == "1" || $order_m_data->status_delivery == "2"){
+            $return_arr = array("Status" => 'ERROR', "Message" => 'Order tidak bisa dihapus karena sudah ada delivery');
+            echo json_encode($return_arr);
+            return;
+        }
+
+        if($status_order == "delete"){
+            $status_order = "0";
+        } else {
+            $return_arr = array("Status" => 'ERROR', "Message" => 'Status tidak valid!');
+            echo json_encode($return_arr);
+            return;
+        }
+
+        $updated_data = compact('status_order');
+
+        if($this->Main_model->update_order_m($updated_data, $order_m_data->id_order_m)){
+            $this->db->trans_commit();
+            $return_arr = array("Status" => 'OK', "Message" => 'Data berhasil dihapus');
+        } else {
+            $this->db->trans_rollback();
+            $return_arr = array("Status" => 'ERROR', "Message" => 'Gagal mengupdate data');
+        }
+
+        echo json_encode($return_arr);
+    }
+
     function salary_form(){
 
         if($this->session->userdata('is_admin') == "0"){
@@ -301,14 +465,11 @@ class Main extends MX_Controller
         $this->load->view('template/admin_footer');
     }
 
-    // ================== HALF DONE ====================
     function add_pick_up(){
 
         if($this->session->userdata('is_admin') == "0"){
             redirect(base_url('main'));
         }
-
-        // TODO: check if staff exists
 
         if(!isset($_REQUEST['id_staff'])){
             $return_arr = array("Status" => 'ERROR', "Message" => 'Staff tidak boleh kosong');
@@ -316,8 +477,14 @@ class Main extends MX_Controller
             return;
         }
 
-        // TODO: check if order exists
-        // TODO: check if vendor and order matches
+        $id_staff = strtoupper(trim(htmlentities($_REQUEST['id_staff'], ENT_QUOTES)));
+
+        //check if staff exists
+        if ($this->Main_model->get_staff_by_id($id_staff)->num_rows() == 0){
+            $return_arr = array("Status" => 'ERROR', "Message" => 'Staff tidak ditemukan');
+            echo json_encode($return_arr);
+            return;
+        }
 
         if(!isset($_REQUEST['id_order_vendor_m'])){
             $return_arr = array("Status" => 'ERROR', "Message" => 'Order tidak boleh kosong');
@@ -325,13 +492,42 @@ class Main extends MX_Controller
             return;
         }
 
-        // TODO: check if the chosen order udah ada data pickup (all status except status_pick_up 2-dibatalkan)
-        // TODO: check if the chosen order statusnya tidak 0-dibatalkan
+        $id_vendor = strtoupper(trim(htmlentities($_REQUEST['id_vendor'], ENT_QUOTES)));
+        $id_order_vendor_m = strtoupper(trim(htmlentities($_REQUEST['id_order_vendor_m'], ENT_QUOTES)));
+
+        $data_order_m = $this->Main_model->get_order_vendor_m_by_id($id_order_vendor_m);
+
+        //check if order exists
+        if($data_order_m->num_rows() == 0){
+            $return_arr = array("Status" => 'ERROR', "Message" => 'Order Vendor tidak ditemukan');
+            echo json_encode($return_arr);
+            return;
+        }
+
+        // check if venodr and order matches
+        if($id_vendor != $data_order_m->row()->id_vendor){
+            $return_arr = array("Status" => 'ERROR', "Message" => 'ERROR: Data mismatch (1)');
+            echo json_encode($return_arr);
+            return;
+        }
+
+        //check if the chosen order udah ada data pick up
+        if($this->Main_model->get_pick_up_by_order_vendor_m($id_order_vendor_m)->num_rows() > 0){
+            $return_arr = array("Status" => 'ERROR', "Message" => 'Sudah ada pick up untuk pesanan ini');
+            echo json_encode($return_arr);
+            return;
+        }
+
+        //check if the chosen order statusnya tidak 0-dibatalkan
+        if($data_order_m->row()->status_order_vendor != '1'){
+            $return_arr = array("Status" => 'ERROR', "Message" => 'Order sudah dibatalkan');
+            echo json_encode($return_arr);
+            return;
+        }
 
 
         date_default_timezone_set('Asia/Singapore');
 
-        $id_vendor = strtoupper(trim(htmlentities($_REQUEST['id_vendor'], ENT_QUOTES)));
         $alamat_pick_up = strtoupper(trim(htmlentities($_REQUEST['alamat_pick_up'], ENT_QUOTES)));
         $no_hp_pick_up = strtoupper(trim(htmlentities($_REQUEST['no_hp_pick_up'], ENT_QUOTES)));
         $id_order_vendor_m = strtoupper(trim(htmlentities($_REQUEST['id_order_vendor_m'], ENT_QUOTES)));
@@ -814,10 +1010,7 @@ class Main extends MX_Controller
         $this->load->view('template/admin_footer');
     }
 
-    // ================== HALF DONE ====================
     function add_delivery(){
-
-        // TODO: check if staff exists
 
         if(!isset($_REQUEST['id_staff'])){
             $return_arr = array("Status" => 'ERROR', "Message" => 'Staff tidak boleh kosong');
@@ -825,8 +1018,14 @@ class Main extends MX_Controller
             return;
         }
 
-        // TODO: check if order exists
-        // TODO: check if customer and order matches
+        $id_staff = strtoupper(trim(htmlentities($_REQUEST['id_staff'], ENT_QUOTES)));
+
+        //check if staff exists
+        if ($this->Main_model->get_staff_by_id($id_staff)->num_rows() == 0){
+            $return_arr = array("Status" => 'ERROR', "Message" => 'Staff tidak ditemukan');
+            echo json_encode($return_arr);
+            return;
+        }
 
         if(!isset($_REQUEST['id_order_m'])){
             $return_arr = array("Status" => 'ERROR', "Message" => 'Order tidak boleh kosong');
@@ -834,19 +1033,45 @@ class Main extends MX_Controller
             return;
         }
 
-        // TODO: check if the chosen order udah ada data delivery (all status except status_delivery 3-dibatalkan)
-        // TODO: check if the chosen order statusnya tidak 0-dibatalkan
+        $id_order_m = strtoupper(trim(htmlentities($_REQUEST['id_order_m'], ENT_QUOTES)));
+        $id_customer = strtoupper(trim(htmlentities($_REQUEST['id_customer'], ENT_QUOTES)));
 
+        $data_order_m = $this->Main_model->get_order_m_by_id($id_order_m);
+
+        //check if order exists
+        if($data_order_m->num_rows() == 0){
+            $return_arr = array("Status" => 'ERROR', "Message" => 'Order tidak ditemukan');
+            echo json_encode($return_arr);
+            return;
+        }
+
+        // check if customer and order matches
+        if($id_customer != $data_order_m->row()->id_customer){
+            $return_arr = array("Status" => 'ERROR', "Message" => 'ERROR: Data mismatch (1)');
+            echo json_encode($return_arr);
+            return;
+        }
+
+        //check if the chosen order udah ada data delivery
+        if($this->Main_model->get_delivery_by_id_order_m($id_order_m)->num_rows() > 0){
+            $return_arr = array("Status" => 'ERROR', "Message" => 'Sudah ada delivery untuk pesanan ini');
+            echo json_encode($return_arr);
+            return;
+        }
+
+        //check if the chosen order statusnya tidak 0-dibatalkan
+        if($data_order_m->row()->status_order != '1'){
+            $return_arr = array("Status" => 'ERROR', "Message" => 'Order sudah dibatalkan');
+            echo json_encode($return_arr);
+            return;
+        }
 
         date_default_timezone_set('Asia/Singapore');
 
-        $id_customer = strtoupper(trim(htmlentities($_REQUEST['id_customer'], ENT_QUOTES)));
         $alamat_delivery = strtoupper(trim(htmlentities($_REQUEST['alamat_delivery'], ENT_QUOTES)));
         $no_hp_delivery = strtoupper(trim(htmlentities($_REQUEST['no_hp_delivery'], ENT_QUOTES)));
-        $id_order_m = strtoupper(trim(htmlentities($_REQUEST['id_order_m'], ENT_QUOTES)));
         $tgl_delivery = strtoupper(trim(htmlentities($_REQUEST['tgl_delivery'], ENT_QUOTES)));
         $catatan_delivery = trim(htmlentities($_REQUEST['catatan_delivery'], ENT_QUOTES));
-        $id_staff = strtoupper(trim(htmlentities($_REQUEST['id_staff'], ENT_QUOTES)));
 
         $status_delivery = '0';
 
@@ -968,12 +1193,9 @@ class Main extends MX_Controller
         }
 
 
-
-
-
         if($this->Main_model->update_order_m($data, $order_m_data->id_order_m)){
             $this->db->trans_commit();
-            $return_arr = array("Status" => 'OK', "Message" => '');
+            $return_arr = array("Status" => 'OK', "Message" => 'Data berhasil diupdate');
         } else {
             $this->db->trans_rollback();
             $return_arr = array("Status" => 'ERROR', "Message" => 'Gagal mengupdate data');

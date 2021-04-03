@@ -103,7 +103,8 @@
     </div>
 
     <br>
-    <?php if ($pick_up[0]->status_pick_up == '0') echo "<button class=\"btn btn-primary save\" style=\"width: 100%;  font-size: 14px;\">Update Pick Up</button><br><br>" ?>
+
+    <?php if ($pick_up[0]->status_pick_up == '0') echo "<button class=\"btn btn-danger delete\" style=\"width: 50%;  font-size: 14px;\">Hapus</button> <button class=\"btn btn-primary save\" style=\"width: 49%;  font-size: 14px;\">Update Pick Up</button><br><br>" ?>
 
     <br><br><br>
 
@@ -187,6 +188,34 @@
     document.title = "Pick Up "+ $('#nama_vendor').html() +" - Amarthya Group";
 
     load_items($('#id_order_vendor_m').val());
+
+    $('.delete').click(function(e){
+        if(confirm("Data akan dihapus permanen. Yakin ingin menghapus data?")) {
+            $('.loading').css("display", "block");
+            $('.Veil-non-hover').fadeIn();
+
+            $.ajax({
+                type: 'POST', // define the type of HTTP verb we want to use (POST for our form)
+                url: admin_url + 'delete_pick_up', // the url where we want to POST// our data object
+                dataType: 'json',
+                data: {
+                    id_pick_up: $('#id_pick_up').val()
+                },
+                success: function (response) {
+                    if(response.Status == "OK"){
+                        show_snackbar(response.Message);
+                        window.location.href = admin_url + 'pick_up_list';
+                    } else if(response.Status == "ERROR" ){
+                        show_snackbar(response.Message);
+                    }
+
+                    $('.loading').css("display", "none");
+                    $('.Veil-non-hover').fadeOut();
+
+                }
+            })
+        }
+    })
 
     $('.save').click(function(e){
 

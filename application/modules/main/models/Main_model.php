@@ -9,6 +9,23 @@ class Main_model extends CI_Model
         return $query;
     }
 
+    function delete_delivery($id_delivery){
+        $sql = "DELETE FROM delivery
+                WHERE id_delivery = '{$id_delivery}'";
+
+        $query = $this->db->query($sql);
+        return $query;
+    }
+
+
+    function delete_pick_up($id_pick_up){
+        $sql = "DELETE FROM pick_up
+                WHERE id_pick_up = '{$id_pick_up}'";
+
+        $query = $this->db->query($sql);
+        return $query;
+    }
+
     function get_staff_salary($id_staff, $awal_akhir_salary, $bulan_salary, $tahun_salary, $tgl_awal, $tgl_akhir){
         $sql = "SELECT *, b.id_staff
                 FROM staff b
@@ -85,6 +102,15 @@ class Main_model extends CI_Model
 
     }
 
+    function get_pick_up_by_order_vendor_m($id_order_vendor_m){
+        $sql = "SELECT *
+                FROM pick_up a
+                WHERE a.id_order_vendor_m = '".$id_order_vendor_m."'";
+
+        $query = $this->db->query($sql);
+        return $query;
+    }
+
     function get_pick_up($search = null, $admin = true, $id_staff = 0){
         $sql = "SELECT *, a.id_pick_up
                 FROM pick_up a
@@ -142,7 +168,18 @@ class Main_model extends CI_Model
                 INNER JOIN product d ON b.id_product = d.id_product
                 LEFT JOIN vendor c ON a.id_vendor = c.id_vendor
                 LEFT JOIN pick_up e ON a.id_order_vendor_m = e.id_order_vendor_m
-                WHERE a.no_order_vendor = '".$no_order."'";
+                WHERE a.no_order_vendor = '".$no_order."' AND a.status_order_vendor = '1'";
+
+        $query = $this->db->query($sql);
+        return $query;
+    }
+
+    function get_order_vendor_m_by_id($id_order_vendor_m){
+        $sql = "SELECT *, a.id_order_vendor_m, a.id_vendor
+                FROM order_vendor_m a
+                INNER JOIN vendor b ON a.id_vendor = b.id_vendor
+                WHERE a.id_order_vendor_m = '".$id_order_vendor_m."'";
+
 
         $query = $this->db->query($sql);
         return $query;
@@ -151,7 +188,8 @@ class Main_model extends CI_Model
     function get_order_vendor_m($search = null){
         $sql = "SELECT *, a.id_order_vendor_m, a.id_vendor
                 FROM order_vendor_m a
-                INNER JOIN vendor b ON a.id_vendor = b.id_vendor";
+                INNER JOIN vendor b ON a.id_vendor = b.id_vendor
+                WHERE a.status_order_vendor = '1'";
 
         if($search != "" || $search != null){
             $sql .= " WHERE CONCAT(b.nama_vendor, a.no_order_vendor, b.alamat_vendor, a.tgl_order_vendor) LIKE '%$search%'";
@@ -168,7 +206,8 @@ class Main_model extends CI_Model
                 FROM order_vendor_m a
                 INNER JOIN vendor b ON a.id_vendor = b.id_vendor
                 LEFT JOIN pick_up c ON a.id_order_vendor_m = c.id_order_vendor_m
-                WHERE (c.status_pick_up IS NULL OR c.status_pick_up = '2')";
+                WHERE (c.status_pick_up IS NULL OR c.status_pick_up = '2')
+                    AND a.status_order_vendor = '1'";
 
         if($search != "" || $search != null){
             $sql .= " AND CONCAT(b.nama_vendor, a.no_order_vendor, b.alamat_vendor, a.tgl_order_vendor) LIKE '%$search%'";
@@ -247,6 +286,15 @@ class Main_model extends CI_Model
 
     }
 
+    function get_delivery_by_id_order_m($id_order_m){
+        $sql = "SELECT *
+                FROM delivery a
+                WHERE a.id_order_m = '".$id_order_m."'";
+
+        $query = $this->db->query($sql);
+        return $query;
+    }
+
     function get_delivery($search = null, $admin = true, $id_staff = 0){
         $sql = "SELECT *, a.id_delivery
                 FROM delivery a
@@ -308,13 +356,24 @@ class Main_model extends CI_Model
         return $query;
     }
 
+    function get_order_m_by_id($id_order_m){
+        $sql = "SELECT *
+                FROM order_m a
+                INNER JOIN customer b ON a.id_customer = b.id_customer
+                WHERE a.id_order_m = '".$id_order_m."'";
+
+        $query = $this->db->query($sql);
+        return $query;
+    }
+
     function get_order_m($search = null){
         $sql = "SELECT *, a.id_order_m, b.id_customer
                 FROM order_m a
-                INNER JOIN customer b ON a.id_customer = b.id_customer";
+                INNER JOIN customer b ON a.id_customer = b.id_customer
+                WHERE a.status_order = '1'";
 
         if($search != "" || $search != null){
-            $sql .= " WHERE CONCAT(b.nama_customer, a.no_order, b.alamat_customer, a.tgl_order) LIKE '%$search%'";
+            $sql .= " AND CONCAT(b.nama_customer, a.no_order, b.alamat_customer, a.tgl_order) LIKE '%$search%'";
         }
 
         $sql .= " ORDER BY a.tgl_order DESC";
@@ -328,7 +387,8 @@ class Main_model extends CI_Model
                 FROM order_m a
                 INNER JOIN customer b ON a.id_customer = b.id_customer
                 LEFT JOIN delivery c ON a.id_order_m = c.id_order_m
-                WHERE (c.status_delivery IS NULL OR c.status_delivery = '3')";
+                WHERE (c.status_delivery IS NULL OR c.status_delivery = '3')
+                    AND a.status_order = '1'";
 
         if($search != "" || $search != null){
             $sql .= " AND CONCAT(b.nama_customer, a.no_order, b.alamat_customer, a.tgl_order) LIKE '%$search%'";
@@ -358,7 +418,8 @@ class Main_model extends CI_Model
                 INNER JOIN product d ON b.id_product = d.id_product
                 LEFT JOIN customer c ON a.id_customer = c.id_customer
                 LEFT JOIN delivery e ON a.id_order_m = e.id_order_m
-                WHERE a.no_order = '".$no_order."'";
+                WHERE a.no_order = '".$no_order."'
+                    AND a.status_order = '1'";
 
         $query = $this->db->query($sql);
         return $query;

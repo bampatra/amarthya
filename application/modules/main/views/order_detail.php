@@ -128,7 +128,8 @@
         </div>
     </div>
     <br>
-    <button class="btn btn-primary save" style="width: 100%;  font-size: 14px;">Update Pesanan</button>
+    <button class="btn btn-danger delete" style="width: 50%;  font-size: 14px;">Hapus</button>
+    <button class="btn btn-primary save" style="width: 49%;  font-size: 14px;">Update Pesanan</button>
     <br><br><br><br><br>
 
 
@@ -231,6 +232,35 @@
 
     document.title = "Pesanan #"+ $('#no_order').html() +" - Amarthya Group";
 
+    $('.delete').click(function(e){
+        if(confirm("Data akan dihapus permanen. Yakin ingin menghapus data?")) {
+            $('.loading').css("display", "block");
+            $('.Veil-non-hover').fadeIn();
+
+            $.ajax({
+                type: 'POST', // define the type of HTTP verb we want to use (POST for our form)
+                url: admin_url + 'update_status_order_m', // the url where we want to POST// our data object
+                dataType: 'json',
+                data: {
+                    no_order: $('#no_order').html(),
+                    status_order: 'delete'
+                },
+                success: function (response) {
+                    if(response.Status == "OK"){
+                        show_snackbar(response.Message);
+                        window.location.href = admin_url + 'order_vendor_list';
+                    } else if(response.Status == "ERROR" ){
+                        show_snackbar(response.Message);
+                    }
+
+                    $('.loading').css("display", "none");
+                    $('.Veil-non-hover').fadeOut();
+
+                }
+            })
+        }
+    })
+
     $('.save').click(function(e){
         $('.loading').css("display", "block");
         $('.Veil-non-hover').fadeIn();
@@ -252,14 +282,14 @@
             },
             success: function (response) {
                 if(response.Status == "OK"){
-                    window.location.href = admin_url + 'order_list';
+                    // window.location.href = admin_url + 'order_list';
+                    show_snackbar(response.Message);
                 } else if(response.Status == "ERROR" ){
                     show_snackbar(response.Message);
-
-                    $('.loading').css("display", "none");
-                    $('.Veil-non-hover').fadeOut();
                 }
 
+                $('.loading').css("display", "none");
+                $('.Veil-non-hover').fadeOut();
 
             }
         })

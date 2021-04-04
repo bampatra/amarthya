@@ -381,6 +381,10 @@
 
 
     $('.save-item').click(function(){
+        if(temp_product == 0){
+            return;
+        }
+
         id_product = temp_product;
         nama_product = $('.nama-product').val();
         qty_order = $('#qty_order').val();

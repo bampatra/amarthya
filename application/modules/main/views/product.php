@@ -311,6 +311,7 @@
 
 
     $('#dataTable').on( 'click', 'tbody tr', function () {
+        detail_toggled = false;
         $('body').addClass('modal-open');
 
         data = $('#dataTable').DataTable().row( this ).data();
@@ -341,23 +342,29 @@
     });
 
     $('.add').click(function (e) {
+        detail_toggled = false;
         e.preventDefault();
         $('.invalid-feedback').css('display', 'none');
         $('#id_product').val(0);
         setTimeout(function() {$('.modal-dialog').scrollTop(0);}, 200);
         $('#product-form').trigger('reset');
         $('#input-product-modal').modal('toggle');
-        detail_toggled = false;
     })
 
     $('.edit').click(function(e){
+        detail_toggled = true;
         $('.invalid-feedback').css('display', 'none');
         setTimeout(function() {$('.modal-dialog').scrollTop(0);}, 200);
         $('#detail-product-modal').modal('hide');
+
+
         $('#detail-product-modal').on('hidden.bs.modal', function () {
-            $('#input-product-modal').modal('toggle');
+            if(detail_toggled){
+                $('#input-product-modal').modal('toggle');
+            }
         })
-        detail_toggled = true;
+
+
     })
 
     // if(detail_toggled){

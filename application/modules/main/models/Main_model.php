@@ -111,7 +111,7 @@ class Main_model extends CI_Model
         return $query;
     }
 
-    function get_pick_up($search = null, $admin = true, $id_staff = 0){
+    function get_pick_up($search = null, $admin = true, $id_staff = 0, $length = 10000000000, $start = 0){
         $sql = "SELECT *, a.id_pick_up
                 FROM pick_up a
                 INNER JOIN vendor b ON a.id_vendor = b.id_vendor
@@ -132,7 +132,7 @@ class Main_model extends CI_Model
             }
         }
 
-        $sql .= " ORDER BY a.tgl_pick_up DESC";
+        $sql .= " ORDER BY a.tgl_pick_up DESC LIMIT {$start}, {$length}";
 
         $query = $this->db->query($sql);
         return $query;
@@ -185,7 +185,7 @@ class Main_model extends CI_Model
         return $query;
     }
 
-    function get_order_vendor_m($search = null){
+    function get_order_vendor_m($search = null, $length = 10000000000, $start = 0){
         $sql = "SELECT *, a.id_order_vendor_m, a.id_vendor
                 FROM order_vendor_m a
                 INNER JOIN vendor b ON a.id_vendor = b.id_vendor
@@ -195,13 +195,13 @@ class Main_model extends CI_Model
             $sql .= " WHERE CONCAT(b.nama_vendor, a.no_order_vendor, b.alamat_vendor, a.tgl_order_vendor) LIKE '%$search%'";
         }
 
-        $sql .= " ORDER BY a.tgl_order_vendor DESC";
+        $sql .= " ORDER BY a.tgl_order_vendor DESC LIMIT {$start}, {$length}";
 
         $query = $this->db->query($sql);
         return $query;
     }
 
-    function get_order_vendor_m_pickup($search = null){
+    function get_order_vendor_m_pickup($search = null, $length = 10000000000, $start = 0){
         $sql = "SELECT *, a.id_order_vendor_m, a.id_vendor
                 FROM order_vendor_m a
                 INNER JOIN vendor b ON a.id_vendor = b.id_vendor
@@ -213,7 +213,7 @@ class Main_model extends CI_Model
             $sql .= " AND CONCAT(b.nama_vendor, a.no_order_vendor, b.alamat_vendor, a.tgl_order_vendor) LIKE '%$search%'";
         }
 
-        $sql .= " ORDER BY a.tgl_order_vendor DESC";
+        $sql .= " ORDER BY a.tgl_order_vendor DESC LIMIT {$start}, {$length}";
 
         $query = $this->db->query($sql);
         return $query;
@@ -295,7 +295,7 @@ class Main_model extends CI_Model
         return $query;
     }
 
-    function get_delivery($search = null, $admin = true, $id_staff = 0){
+    function get_delivery($search = null, $admin = true, $id_staff = 0, $length = 10000000000, $start = 0){
         $sql = "SELECT *, a.id_delivery
                 FROM delivery a
                 INNER JOIN customer b ON a.id_customer = b.id_customer
@@ -317,7 +317,7 @@ class Main_model extends CI_Model
         }
 
 
-        $sql .= " ORDER BY a.tgl_delivery DESC";
+        $sql .= " ORDER BY a.tgl_delivery DESC LIMIT {$start}, {$length}";
 
         $query = $this->db->query($sql);
         return $query;
@@ -366,7 +366,7 @@ class Main_model extends CI_Model
         return $query;
     }
 
-    function get_order_m($search = null){
+    function get_order_m($search = null, $length = 10000000000, $start = 0){
         $sql = "SELECT *, a.id_order_m, b.id_customer
                 FROM order_m a
                 INNER JOIN customer b ON a.id_customer = b.id_customer
@@ -376,13 +376,13 @@ class Main_model extends CI_Model
             $sql .= " AND CONCAT(b.nama_customer, a.no_order, b.alamat_customer, a.tgl_order) LIKE '%$search%'";
         }
 
-        $sql .= " ORDER BY a.tgl_order DESC";
+        $sql .= " ORDER BY a.tgl_order DESC LIMIT {$start}, {$length}";
 
         $query = $this->db->query($sql);
         return $query;
     }
 
-    function get_order_m_deliv($search = null){
+    function get_order_m_deliv($search = null, $length = 10000000000, $start = 0){
         $sql = "SELECT *, a.id_order_m, b.id_customer
                 FROM order_m a
                 INNER JOIN customer b ON a.id_customer = b.id_customer
@@ -394,7 +394,7 @@ class Main_model extends CI_Model
             $sql .= " AND CONCAT(b.nama_customer, a.no_order, b.alamat_customer, a.tgl_order) LIKE '%$search%'";
         }
 
-        $sql .= " ORDER BY a.tgl_order DESC";
+        $sql .= " ORDER BY a.tgl_order DESC LIMIT {$start}, {$length}";
 
         $query = $this->db->query($sql);
         return $query;
@@ -484,14 +484,14 @@ class Main_model extends CI_Model
         return $query;
     }
 
-    function get_product_stok_in_out($id_product){
+    function get_product_stok_in_out($id_product, $length = 10000000000, $start = 0){
         $sql = "SELECT id_stok_in_out, tipe_in_out, stok_in_out, catatan_in_out,
                     DATE_FORMAT(tgl_in, '%Y-%m-%d') AS custom_tgl_in,
                     DATE_FORMAT(tgl_out, '%Y-%m-%d') AS custom_tgl_out,
                     DATE_FORMAT(tgl_expired, '%Y-%m-%d') AS custom_tgl_expired
                 FROM stok_in_out
                 WHERE id_product = '".$id_product."'
-                ORDER BY id_stok_in_out DESC";
+                ORDER BY id_stok_in_out DESC LIMIT {$start}, {$length}";
 
         $query = $this->db->query($sql);
         return $query;
@@ -499,12 +499,20 @@ class Main_model extends CI_Model
     }
 
     function get_stok_in_out_by_id($id){
-        $sql = "SELECT id_stok_in_out, tipe_in_out, stok_in_out, catatan_in_out,
+        $sql = "SELECT id_stok_in_out, tipe_in_out, stok_in_out, catatan_in_out,ref_order_m,
                     DATE_FORMAT(tgl_in, '%Y-%m-%d') AS custom_tgl_in,
                     DATE_FORMAT(tgl_out, '%Y-%m-%d') AS custom_tgl_out,
                     DATE_FORMAT(tgl_expired, '%Y-%m-%d') AS custom_tgl_expired
                 FROM stok_in_out
                 WHERE id_stok_in_out = '".$id."'";
+
+        $query = $this->db->query($sql);
+        return $query;
+    }
+
+    function delete_stok_in_out_by_order($ref_order_m){
+        $sql = "DELETE FROM stok_in_out
+                WHERE ref_order_m = '{$ref_order_m}'";
 
         $query = $this->db->query($sql);
         return $query;
@@ -518,7 +526,9 @@ class Main_model extends CI_Model
             'tgl_in' => $data['tgl_in'],
             'tgl_out' => $data['tgl_out'],
             'tgl_expired' => $data['tgl_expired'],
-            'catatan_in_out' => $data['catatan_in_out']
+            'catatan_in_out' => $data['catatan_in_out'],
+            'ref_order_m' => $data['ref_order_m']
+
         );
 
         $this->db->insert('stok_in_out',$input_data);
@@ -531,7 +541,7 @@ class Main_model extends CI_Model
         return $this->db->update('stok_in_out',$updated_data);
     }
 
-    function get_product($search = null){
+    function get_product($search = null, $length = 10000000000, $start = 0){
 
         $sql = "SELECT a.*, IFNULL(b.stok_in, 0) - IFNULL(c.stok_out, 0) as STOK
                 FROM product a
@@ -553,7 +563,7 @@ class Main_model extends CI_Model
             $sql .= " and a.nama_product LIKE '%$search%'";
         }
 
-        $sql .= " ORDER BY a.nama_product";
+        $sql .= " ORDER BY a.nama_product LIMIT {$start}, {$length}";
 
         $query = $this->db->query($sql);
         return $query;
@@ -611,16 +621,16 @@ class Main_model extends CI_Model
         return $this->db->update('product',$updated_data);
     }
 
-    function get_vendor($search = null){
+    function get_vendor($search = null, $length = 10000000000, $start = 0){
 
         $sql = "SELECT *
                 FROM vendor";
 
         if($search != "" || $search != null){
-            $sql .= " WHERE nama_vendor LIKE '%$search%'";
+            $sql .= " WHERE CONCAT(nama_vendor, '', catatan_vendor) LIKE '%$search%'";
         }
 
-        $sql .= " ORDER BY nama_vendor";
+        $sql .= " ORDER BY nama_vendor LIMIT {$start}, {$length}";
 
         $query = $this->db->query($sql);
         return $query;
@@ -665,15 +675,15 @@ class Main_model extends CI_Model
         return $this->db->update('vendor',$updated_data);
     }
 
-    function get_customer($search = null){
+    function get_customer($search = null, $length = 10000000000, $start = 0){
         $sql = "SELECT *
                 FROM customer";
 
         if($search != "" || $search != null){
-            $sql .= "WHERE nama_customer LIKE '%$search%'";
+            $sql .= " WHERE nama_customer LIKE '%$search%'";
         }
 
-        $sql .= " ORDER BY nama_customer";
+        $sql .= " ORDER BY nama_customer LIMIT {$start}, {$length}";
 
         $query = $this->db->query($sql);
         return $query;

@@ -14,10 +14,6 @@ class Main extends MX_Controller
         if(!$this->session->userdata('id_staff')){
             redirect(base_url('home/login'));
         }
-
-//        if($_SESSION['is_admin'] == '0'){
-//            redirect(base_url('main'));
-//        }
     }
 
     function index()
@@ -144,11 +140,23 @@ class Main extends MX_Controller
         $updated_data = compact('status_order_vendor');
 
         if($this->Main_model->update_order_vendor_m($updated_data, $order_vendor_m_data->id_order_vendor_m)){
-            $this->db->trans_commit();
-            $return_arr = array("Status" => 'OK', "Message" => 'Data berhasil dihapus');
+
+            // =========== Delete from stok_in_out ============
+
+            if($this->Main_model->delete_stok_in_out_by_order($no_order)){
+                $this->db->trans_commit();
+                $return_arr = array("Status" => 'OK', "Message" => 'Data berhasil dihapus');
+            } else {
+                $this->db->trans_rollback();
+                $return_arr = array("Status" => 'ERROR', "Message" => 'Gagal mengupdate data (ERR2)');
+            }
+
+            // ===========================================
+
+
         } else {
             $this->db->trans_rollback();
-            $return_arr = array("Status" => 'ERROR', "Message" => 'Gagal mengupdate data');
+            $return_arr = array("Status" => 'ERROR', "Message" => 'Gagal mengupdate data (ERR1)');
         }
 
         echo json_encode($return_arr);
@@ -192,8 +200,19 @@ class Main extends MX_Controller
         $updated_data = compact('status_order');
 
         if($this->Main_model->update_order_m($updated_data, $order_m_data->id_order_m)){
-            $this->db->trans_commit();
-            $return_arr = array("Status" => 'OK', "Message" => 'Data berhasil dihapus');
+
+            // =========== Delete from stok_in_out ============
+
+            if($this->Main_model->delete_stok_in_out_by_order($no_order)){
+                $this->db->trans_commit();
+                $return_arr = array("Status" => 'OK', "Message" => 'Data berhasil dihapus');
+            } else {
+                $this->db->trans_rollback();
+                $return_arr = array("Status" => 'ERROR', "Message" => 'Gagal mengupdate data (ERR2)');
+            }
+
+            // ===========================================
+
         } else {
             $this->db->trans_rollback();
             $return_arr = array("Status" => 'ERROR', "Message" => 'Gagal mengupdate data');
@@ -399,13 +418,10 @@ class Main extends MX_Controller
         $output['recordsTotal'] = $output['recordsFiltered'] = $total;
         $output['data']=array();
 
-
-        $this->db->limit($length,$start);
-
         if($this->session->userdata('is_admin') == "0"){
-
+            $output['data'] = $this->Main_model->get_pick_up($search, false, $this->session->userdata('id_staff'), $length, $start)->result_object();
         } else {
-            $output['data'] = $this->Main_model->get_pick_up($search)->result_object();
+            $output['data'] = $this->Main_model->get_pick_up($search, true, 0, $length, $start)->result_object();
         }
 
 
@@ -616,15 +632,12 @@ class Main extends MX_Controller
 
         $output['data']=array();
 
-
-        $this->db->limit($length,$start);
-
         if(!isset($_GET['pick_up'])){
             $total = $this->Main_model->get_order_vendor_m()->num_rows();
-            $output['data'] = $this->Main_model->get_order_vendor_m($search)->result_object();
+            $output['data'] = $this->Main_model->get_order_vendor_m($search, $length, $start)->result_object();
         } else {
             $total = $this->Main_model->get_order_vendor_m_pickup()->num_rows();
-            $output['data'] = $this->Main_model->get_order_vendor_m_pickup($search)->result_object();
+            $output['data'] = $this->Main_model->get_order_vendor_m_pickup($search, $length, $start)->result_object();
         }
 
         $output['recordsTotal'] = $output['recordsFiltered'] = $total;
@@ -765,21 +778,38 @@ class Main extends MX_Controller
                 return;
             }
 
+            // =========== Add to stok_in_out ============
+
+                $tipe_in_out = "IN";
+                $stok_in_out = $qty_order_vendor;
+                $tgl_in = $tgl_order_vendor;
+                $id_product = $id_product;
+                $catatan_in_out = "Masuk dari Order Vendor #{$no_order_vendor}";
+                $ref_order_m = $no_order_vendor;
+
+                $tgl_out = "";
+                $tgl_expired = "";
+
+
+                $data_in_out = compact('tipe_in_out', 'stok_in_out', 'tgl_in', 'id_product', 'catatan_in_out', 'ref_order_m',
+                                        'tgl_out', 'tgl_expired');
+
+                $id_stok_in_out = $this->Main_model->add_stok_in_out($data_in_out);
+
+                if(!$id_stok_in_out){
+                    $this->db->trans_rollback();
+                    $return_arr = array("Status" => 'ERROR', "Message" => 'Terjadi kesalahan sistem. Hubungi Admin (code: form_4)');
+                    echo json_encode($return_arr);
+                    return;
+                }
+
+            // ===========================================
+
         }
 
         $data_m_update = compact('grand_total_order');
 
         if($this->Main_model->update_order_vendor_m($data_m_update, $id_order_vendor_m)){
-
-
-            // =========== Extra Features ============
-
-            // Add stok in out after order => add_stok_in_out
-
-
-            // =======================================
-
-
             $this->db->trans_commit();
             $return_arr = array("Status" => 'OK', "Message" => $no_order_vendor);
         } else {
@@ -902,12 +932,10 @@ class Main extends MX_Controller
         $output['data']=array();
 
 
-        $this->db->limit($length,$start);
-
         if($this->session->userdata('is_admin') == "0"){
-            $output['data'] = $this->Main_model->get_delivery($search, false, $this->session->userdata('id_staff'))->result_object();
+            $output['data'] = $this->Main_model->get_delivery($search, false, $this->session->userdata('id_staff'), $length, $start)->result_object();
         } else {
-            $output['data'] = $this->Main_model->get_delivery($search)->result_object();
+            $output['data'] = $this->Main_model->get_delivery($search, true, 0, $length, $start)->result_object();
         }
 
 
@@ -1118,15 +1146,13 @@ class Main extends MX_Controller
         $output['data']=array();
 
 
-        $this->db->limit($length,$start);
-
 
         if(!isset($_GET['delivery'])){
             $total = $this->Main_model->get_order_m()->num_rows();
-            $output['data'] = $this->Main_model->get_order_m($search)->result_object();
+            $output['data'] = $this->Main_model->get_order_m($search, $length, $start)->result_object();
         } else {
             $total = $this->Main_model->get_order_m_deliv()->num_rows();
-            $output['data'] = $this->Main_model->get_order_m_deliv($search)->result_object();
+            $output['data'] = $this->Main_model->get_order_m_deliv($search, $length, $start)->result_object();
         }
 
         $output['recordsTotal'] = $output['recordsFiltered'] = $total;
@@ -1242,7 +1268,6 @@ class Main extends MX_Controller
         $this->load->view('template/admin_footer');
     }
 
-    // ================== HALF DONE ====================
     function add_order(){
 
         if($this->session->userdata('is_admin') == "0"){
@@ -1359,6 +1384,33 @@ class Main extends MX_Controller
                 return;
             }
 
+            // =========== Add to stok_in_out ============
+
+            $tipe_in_out = "OUT";
+            $stok_in_out = $qty_order;
+            $tgl_out = $tgl_order;
+            $id_product = $id_product;
+            $catatan_in_out = "Order #{$no_order}";
+            $ref_order_m = $no_order;
+
+            $tgl_in = "";
+            $tgl_expired = "";
+
+
+            $data_in_out = compact('tipe_in_out', 'stok_in_out', 'tgl_in', 'id_product', 'catatan_in_out', 'ref_order_m',
+                'tgl_out', 'tgl_expired');
+
+            $id_stok_in_out = $this->Main_model->add_stok_in_out($data_in_out);
+
+            if(!$id_stok_in_out){
+                $this->db->trans_rollback();
+                $return_arr = array("Status" => 'ERROR', "Message" => 'Terjadi kesalahan sistem. Hubungi Admin (code: form_4)');
+                echo json_encode($return_arr);
+                return;
+            }
+
+            // ===========================================
+
         }
 
 
@@ -1372,19 +1424,6 @@ class Main extends MX_Controller
         $data_m_update = compact('subtotal_order', 'grand_total_order');
 
         if($this->Main_model->update_order_m($data_m_update, $id_order_m)){
-
-
-            // =========== Extra Features ============
-
-            // Add stok in out after sales => add_stok_in_out
-
-
-            // =======================================
-
-
-
-
-
             $this->db->trans_commit();
             $return_arr = array("Status" => 'OK', "Message" => $no_order);
         } else {
@@ -1440,13 +1479,7 @@ class Main extends MX_Controller
         $output['recordsTotal'] = $output['recordsFiltered'] = $total;
         $output['data']=array();
 
-        if($search!=""){
-//            $this->db->like("CONCAT()",$search);
-        }
-
-        $this->db->limit($length,$start);
-
-        $output['data'] = $this->Main_model->get_product_stok_in_out($id_product)->result_object();
+        $output['data'] = $this->Main_model->get_product_stok_in_out($id_product, $length, $start)->result_object();
 
         echo json_encode($output);
 
@@ -1472,8 +1505,10 @@ class Main extends MX_Controller
         $tgl_in = strtoupper(trim(htmlentities($_REQUEST['tgl_in'], ENT_QUOTES)));
         $tgl_out = strtoupper(trim(htmlentities($_REQUEST['tgl_out'], ENT_QUOTES)));
         $tgl_expired = strtoupper(trim(htmlentities($_REQUEST['tgl_expired'], ENT_QUOTES)));
-        $catatan_in_out = strtoupper(trim(htmlentities($_REQUEST['catatan_in_out'], ENT_QUOTES)));
+        $catatan_in_out = trim(htmlentities($_REQUEST['catatan_in_out'], ENT_QUOTES));
         $id_product = strtoupper(trim(htmlentities($_REQUEST['id_product'], ENT_QUOTES)));
+
+        $ref_order_m = 0;
 
         //validation
         $error = array();
@@ -1511,11 +1546,12 @@ class Main extends MX_Controller
             return;
         }
 
+        $in_out_data = $this->Main_model->get_stok_in_out_by_id($id_stok_in_out);
 
-        $data = compact('id_product','tipe_in_out', 'stok_in_out',
-                            'tgl_in', 'tgl_out', 'tgl_expired', 'catatan_in_out');
+        if($in_out_data->num_rows() == 0){
 
-        if($this->Main_model->get_stok_in_out_by_id($id_stok_in_out)->num_rows() == 0){
+            $data = compact('id_product','tipe_in_out', 'stok_in_out',
+                'tgl_in', 'tgl_out', 'tgl_expired', 'catatan_in_out', 'ref_order_m');
 
             if($this->Main_model->add_stok_in_out($data)){
                 $this->db->trans_commit();
@@ -1525,6 +1561,12 @@ class Main extends MX_Controller
                 $return_arr = array("Status" => 'ERROR', "Message" => 'Gagal menambahkan data');
             }
         } else {
+
+            $ref_order_m = $in_out_data->row()->ref_order_m;
+
+            $data = compact('id_product','tipe_in_out', 'stok_in_out',
+                'tgl_in', 'tgl_out', 'tgl_expired', 'catatan_in_out', 'ref_order_m');
+
             if($this->Main_model->update_stok_in_out($data, $id_stok_in_out)){
                 $this->db->trans_commit();
                 $return_arr = array("Status" => 'OK', "Message" => '');
@@ -1567,10 +1609,7 @@ class Main extends MX_Controller
         $output['data']=array();
 
 
-        $this->db->limit($length,$start);
-
-
-        $output['data'] = $this->Main_model->get_product($search)->result_object();
+        $output['data'] = $this->Main_model->get_product($search, $length, $start)->result_object();
 
         echo json_encode($output);
     }
@@ -1685,9 +1724,7 @@ class Main extends MX_Controller
         $output['data']=array();
 
 
-        $this->db->limit($length,$start);
-
-        $output['data'] = $this->Main_model->get_vendor($search)->result_object();
+        $output['data'] = $this->Main_model->get_vendor($search, $length, $start)->result_object();
 
         echo json_encode($output);
     }
@@ -1790,9 +1827,7 @@ class Main extends MX_Controller
         $output['data']=array();
 
 
-        $this->db->limit($length,$start);
-
-        $output['data'] = $this->Main_model->get_customer($search)->result_object();
+        $output['data'] = $this->Main_model->get_customer($search, $length, $start)->result_object();
 
         echo json_encode($output);
 
@@ -2595,6 +2630,88 @@ class Main extends MX_Controller
 
     }
 
+    function upload_excel(){
+        $this->load->view('template/upload_excel');
+    }
+
+    function process_excel(){
+        include APPPATH.'third_party/PHPExcel/PHPExcel.php';
+
+//        $final_filename = time()."Customer";
+        $final_filename = time()."Vendor";
+        $config['upload_path'] = './assets/upload/excel/';
+        $config['allowed_types'] = 'xls|xlsx|csv';
+        $config['file_name'] = $final_filename;
+
+        $this->load->library('upload');
+        $this->upload->initialize($config);
+
+        if ($this->upload->do_upload('excel')){
+            $media = $this->upload->data();
+            $inputFileName = 'assets/upload/excel/'.$media['file_name'];
+            $isheet = 0;
+            $irow = 3;
+            $icol = 'A';
+
+            try {
+                $inputFileType = PHPExcel_IOFactory::identify($inputFileName);
+                $objReader = PHPExcel_IOFactory::createReader($inputFileType);
+                $objPHPExcel = $objReader->load($inputFileName);
+            } catch(Exception $e) {
+                die('Error loading file "'.pathinfo($inputFileName,PATHINFO_BASENAME).'": '.$e->getMessage());
+            }
+
+            $sheet = $objPHPExcel->getSheet(intval($isheet));
+            $highestRow = $sheet->getHighestRow();
+            $highestColumn = $sheet->getHighestColumn();
+
+            for ($row = intval($irow); $row <= $highestRow; $row++){
+                //  Read a row of data into an array
+                $rowData = $sheet->rangeToArray($icol . $row . ':' . $highestColumn . $row,NULL,TRUE,FALSE);
+                $rec_tbl[] = $rowData[0];
+            }
+
+            //================== Customer Excel ===============
+
+//            foreach($rec_tbl as $data){
+//                set_time_limit(0);
+//
+//                $nama_customer = htmlentities(trim($data[1]));
+//                $alamat_customer = htmlentities(trim($data[2]));
+//                $no_hp_customer = htmlentities(trim($data[4]));
+//
+//                $email_customer = "";
+//                $catatan_customer = "";
+//
+//                $customer_data = compact('nama_customer', 'alamat_customer', 'no_hp_customer', 'email_customer', 'catatan_customer');
+//
+//                $this->Main_model->add_customer($customer_data);
+//
+//            }
+
+            //================== Vendor Excel ===============
+
+//            foreach($rec_tbl as $data){
+//                set_time_limit(0);
+//
+//                $nama_vendor = htmlentities(trim($data[1]));
+//                $catatan_vendor = htmlentities(trim($data[2]));
+//                $alamat_vendor = htmlentities(trim($data[3]));
+//                $no_hp_vendor = htmlentities(trim($data[4]));
+//                $no_rekening_vendor = htmlentities(trim($data[5]));
+//                $nama_bank_vendor = htmlentities(trim($data[6]));
+//
+//                $email_vendor = "";
+//
+//                $vendor_data = compact('nama_vendor', 'alamat_vendor', 'no_hp_vendor', 'email_vendor',
+//                                        'catatan_vendor', 'no_rekening_vendor', 'nama_bank_vendor');
+//
+//                $this->Main_model->add_vendor($vendor_data);
+//
+//            }
+
+        }
+    }
 
 
 

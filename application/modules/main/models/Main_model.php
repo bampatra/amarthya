@@ -111,24 +111,25 @@ class Main_model extends CI_Model
         return $query;
     }
 
-    function get_pick_up($search = null, $admin = true, $id_staff = 0, $length = 10000000000, $start = 0){
+    function get_pick_up($search = null, $admin = true, $id_staff = 0, $length = 10000000000, $start = 0, $status = "all"){
         $sql = "SELECT *, a.id_pick_up
                 FROM pick_up a
                 INNER JOIN vendor b ON a.id_vendor = b.id_vendor
                 INNER JOIN order_vendor_m c ON a.id_order_vendor_m = c.id_order_vendor_m
-                INNER JOIN staff d ON a.id_staff = d.id_staff";
+                INNER JOIN staff d ON a.id_staff = d.id_staff
+                WHERE (a.status_pick_up = '{$status}' || 'all' = '{$status}')";
 
         if($search != "" || $search != null){
             if(!$admin){
-                $sql .= " WHERE CONCAT(b.nama_vendor, c.no_order_vendor, a.alamat_pick_up, c.tgl_order_vendor) LIKE '%$search%'
+                $sql .= " AND CONCAT(b.nama_vendor, c.no_order_vendor, a.alamat_pick_up, c.tgl_order_vendor) LIKE '%$search%'
                             AND d.id_staff = '".$id_staff."'";
             } else {
-                $sql .= " WHERE CONCAT(b.nama_vendor, c.no_order_vendor, a.alamat_pick_up, c.tgl_order_vendor) LIKE '%$search%'";
+                $sql .= " AND CONCAT(b.nama_vendor, c.no_order_vendor, a.alamat_pick_up, c.tgl_order_vendor) LIKE '%$search%'";
             }
 
         } else {
             if(!$admin){
-                $sql .= " WHERE d.id_staff = '".$id_staff."'";
+                $sql .= " AND d.id_staff = '".$id_staff."'";
             }
         }
 
@@ -295,24 +296,25 @@ class Main_model extends CI_Model
         return $query;
     }
 
-    function get_delivery($search = null, $admin = true, $id_staff = 0, $length = 10000000000, $start = 0){
+    function get_delivery($search = null, $admin = true, $id_staff = 0, $length = 10000000000, $start = 0, $status = "all"){
         $sql = "SELECT *, a.id_delivery
                 FROM delivery a
                 INNER JOIN customer b ON a.id_customer = b.id_customer
                 INNER JOIN order_m c ON a.id_order_m = c.id_order_m
-                INNER JOIN staff d ON a.id_staff = d.id_staff";
+                INNER JOIN staff d ON a.id_staff = d.id_staff
+                WHERE (a.status_delivery = '{$status}' || 'all' = '{$status}')";
 
         if($search != "" || $search != null){
             if(!$admin){
-                $sql .= " WHERE CONCAT(b.nama_customer, c.no_order, a.alamat_delivery, c.tgl_order) LIKE '%$search%'
+                $sql .= " AND CONCAT(b.nama_customer, c.no_order, a.alamat_delivery, c.tgl_order) LIKE '%$search%'
                             AND d.id_staff = '".$id_staff."'";
             } else {
-                $sql .= " WHERE CONCAT(b.nama_customer, c.no_order, a.alamat_delivery, c.tgl_order) LIKE '%$search%'";
+                $sql .= " AND CONCAT(b.nama_customer, c.no_order, a.alamat_delivery, c.tgl_order) LIKE '%$search%'";
             }
 
         } else {
             if(!$admin){
-                $sql .= " WHERE d.id_staff = '".$id_staff."'";
+                $sql .= " AND d.id_staff = '".$id_staff."'";
             }
         }
 
@@ -505,6 +507,14 @@ class Main_model extends CI_Model
                     DATE_FORMAT(tgl_expired, '%Y-%m-%d') AS custom_tgl_expired
                 FROM stok_in_out
                 WHERE id_stok_in_out = '".$id."'";
+
+        $query = $this->db->query($sql);
+        return $query;
+    }
+
+    function delete_stok_in_out_by_id($id_stok_in_out){
+        $sql = "DELETE FROM stok_in_out
+                WHERE id_stok_in_out = '{$id_stok_in_out}'";
 
         $query = $this->db->query($sql);
         return $query;

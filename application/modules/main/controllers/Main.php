@@ -103,6 +103,34 @@ class Main extends MX_Controller
 
     }
 
+    function delete_stok_in_out(){
+        if($this->session->userdata('is_admin') == "0"){
+            redirect(base_url('main'));
+        }
+
+        $id_stok_in_out = strtoupper(trim(htmlentities($_REQUEST['id_stok_in_out'], ENT_QUOTES)));
+
+        //Check if editable
+        $stok_in_out_data = $this->Main_model->get_stok_in_out_by_id($id_stok_in_out);
+
+        if($stok_in_out_data->num_rows() == 0){
+            $return_arr = array("Status" => 'ERROR', "Message" => 'Data stok tidak ditemukan');
+            echo json_encode($return_arr);
+            return;
+        }
+
+        if($this->Main_model->delete_stok_in_out_by_id($id_stok_in_out)){
+            $return_arr = array("Status" => 'OK', "Message" => 'Data berhasil dihapus');
+        } else {
+            $return_arr = array("Status" => 'ERROR', "Message" => 'Gagal menghapus data');
+        }
+
+        echo json_encode($return_arr);
+        return;
+
+
+    }
+
     function update_status_order_vendor_m(){
         if($this->session->userdata('is_admin') == "0"){
             $return_arr = array("Status" => 'ERROR', "Message" => 'Gagal! Fitur khusus admin.');
@@ -418,10 +446,16 @@ class Main extends MX_Controller
         $output['recordsTotal'] = $output['recordsFiltered'] = $total;
         $output['data']=array();
 
-        if($this->session->userdata('is_admin') == "0"){
-            $output['data'] = $this->Main_model->get_pick_up($search, false, $this->session->userdata('id_staff'), $length, $start)->result_object();
+        if(isset($_GET['status'])){
+            $status = htmlentities($_GET['status'], ENT_QUOTES);
         } else {
-            $output['data'] = $this->Main_model->get_pick_up($search, true, 0, $length, $start)->result_object();
+            $status = 'all';
+        }
+
+        if($this->session->userdata('is_admin') == "0"){
+            $output['data'] = $this->Main_model->get_pick_up($search, false, $this->session->userdata('id_staff'), $length, $start, $status)->result_object();
+        } else {
+            $output['data'] = $this->Main_model->get_pick_up($search, true, 0, $length, $start, $status)->result_object();
         }
 
 
@@ -931,11 +965,16 @@ class Main extends MX_Controller
         $output['recordsTotal'] = $output['recordsFiltered'] = $total;
         $output['data']=array();
 
+        if(isset($_GET['status'])){
+            $status = htmlentities($_GET['status'], ENT_QUOTES);
+        } else {
+            $status = 'all';
+        }
 
         if($this->session->userdata('is_admin') == "0"){
-            $output['data'] = $this->Main_model->get_delivery($search, false, $this->session->userdata('id_staff'), $length, $start)->result_object();
+            $output['data'] = $this->Main_model->get_delivery($search, false, $this->session->userdata('id_staff'), $length, $start, $status)->result_object();
         } else {
-            $output['data'] = $this->Main_model->get_delivery($search, true, 0, $length, $start)->result_object();
+            $output['data'] = $this->Main_model->get_delivery($search, true, 0, $length, $start, $status)->result_object();
         }
 
 
@@ -1819,7 +1858,6 @@ class Main extends MX_Controller
         $search = trim(htmlentities($_REQUEST['search']["value"], ENT_QUOTES));
 
         $total = $this->Main_model->get_customer()->num_rows();
-
 
         $output = array();
         $output['draw'] = $draw;

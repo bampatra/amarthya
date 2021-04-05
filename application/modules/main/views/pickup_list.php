@@ -12,6 +12,11 @@
         </div>
         <div class="card-body">
             <div class="table-responsive">
+                <select id="status_pick_up" name="status_pick_up" class="form-control form-control-sm form-active-control" data-live-search="true" style="width: 40%; float: left;">
+                    <option value="all">Semua</option>
+                    <option value="0">Belum Pick Up</option>
+                    <option value="1">Selesai</option>
+                </select>
                 <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
                     <thead>
                     <tr>
@@ -108,10 +113,14 @@
 
     document.title = "Daftar Pick Up - Amarthya Group";
 
+    $('#status_pick_up').change(function(){
+        get_order_vendor_m($(this).val());
+    })
+
     get_order_vendor_m();
 
     //get all products
-    function get_order_vendor_m(){
+    function get_order_vendor_m(status = "all"){
         $('.loading').css("display", "block");
         $('.Veil-non-hover').fadeIn();
 
@@ -128,7 +137,7 @@
             },
             pagingType: "simple",
             ajax: {
-                url     : admin_url + 'get_pick_up',
+                url     : admin_url + 'get_pick_up?status=' + status,
                 type    : 'POST',
             },
             createdRow: function ( row, data, index ) {
@@ -191,13 +200,13 @@
                         if(<?php echo $this->session->userdata('is_admin')?> == "1")
                         {
                             html += '<div class="detail-row"><table style="width: 100%">' +
-                                '       <tr class="no-pointer"><td>Driver: </td><td><span>' + data.nama_staff + '<br>(' + data.no_hp_staff + ')</span></td></tr>' +
+                                '       <tr class="no-pointer"><td style="width: 15%">Driver: </td><td><span>' + data.nama_staff + '<br>(' + data.no_hp_staff + ')</span></td></tr>' +
                                 '       <tr class="no-pointer"><td>Alamat: </td><td><span>' + data.alamat_pick_up + '</span></td></tr>' +
                                 '       <tr class="no-pointer"><td>No HP: </td><td><span>' + data.no_hp_pick_up + '</span></td></tr>' +
                                 '</table></div>';
                         } else {
                             html += '<div class="detail-row"><table style="width: 100%">' +
-                                '       <tr class="no-pointer"><td>Alamat: </td><td><span>' + data.alamat_pick_up + '</span></td></tr>' +
+                                '       <tr class="no-pointer"><td style="width: 15%">Alamat: </td><td><span>' + data.alamat_pick_up + '</span></td></tr>' +
                                 '       <tr class="no-pointer"><td>No HP: </td><td><span>' + data.no_hp_pick_up + '</span></td></tr>' +
                                 '</table></div>';
                         }

@@ -99,6 +99,7 @@
             </div>
             <div class="modal-footer">
                 <div class="modal-button-view-only">
+                    <button type="button" class="btn btn-danger delete">Hapus</button>
                     <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
                     <button type="button" class="btn btn-primary edit">Edit</button>
                 </div>
@@ -146,6 +147,33 @@
             $("#tgl_stok_out").show();
         }
     });
+
+    $('.delete').click(function(){
+        if(confirm("Data akan dihapus permanen. Lanjutkan?")){
+            $('.loading').css("display", "block");
+            $('.Veil-non-hover').fadeIn();
+
+            $.ajax({
+                type: 'POST', // define the type of HTTP verb we want to use (POST for our form)
+                url: admin_url + 'delete_stok_in_out', // the url where we want to POST// our data object
+                dataType: 'json',
+                data: { id_stok_in_out: $('#id_stok_in_out').val()},
+                success: function (response) {
+                    if(response.Status == "OK"){
+                        show_snackbar(response.Message);
+                        $('#inout-modal').modal('hide');
+                        get_in_out();
+                    } else if(response.Status == "ERROR" ){
+                        show_snackbar(response.Message);
+                    }
+
+                    $('.loading').css("display", "none");
+                    $('.Veil-non-hover').fadeOut();
+
+                }
+            })
+        }
+    })
 
     const urlParams = new URLSearchParams(window.location.search);
     var id_product = urlParams.get('product')

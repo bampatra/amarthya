@@ -22,7 +22,7 @@ class Home extends MX_Controller
 
         $id_staff = trim(htmlentities($_REQUEST['id_staff'], ENT_QUOTES));
         $username = trim(htmlentities($_REQUEST['username'], ENT_QUOTES));
-        $password = trim(htmlentities($_REQUEST['username'], ENT_QUOTES));
+        $password = trim(htmlentities($_REQUEST['password'], ENT_QUOTES));
 
         if($id_staff == 'none'){
             $return_arr = array("Status" => 'ERROR', "Message" => '');

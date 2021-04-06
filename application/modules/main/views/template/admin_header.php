@@ -174,28 +174,35 @@
         <li class="nav-item">
             <a class="nav-link" href="<?php echo base_url('main/staff')?>">
                 <i class="fas fa-fw fa-id-card"></i>
-                <span style="font-size: 12px !important">Staff</span>
+                <span style="font-size: 11px !important">Staff</span>
             </a>
         </li>
 
         <li class="nav-item">
             <a class="nav-link" href="<?php echo base_url('main/customer')?>">
                 <i class="fas fa-fw fa-user-circle"></i>
-                <span style="font-size: 12px !important">Customer</span>
+                <span style="font-size: 11px !important">Customer</span>
             </a>
         </li>
 
         <li class="nav-item">
             <a class="nav-link" href="<?php echo base_url('main/product')?>">
                 <i class="fas fa-fw fa-shopping-bag"></i>
-                <span style="font-size: 12px !important">Product</span>
+                <span style="font-size: 11px !important">Product</span>
             </a>
         </li>
 
         <li class="nav-item">
             <a class="nav-link" href="<?php echo base_url('main/salary_form')?>">
                 <i class="fas fa-fw fa-money-bill-wave"></i>
-                <span style="font-size: 12px !important">Salary</span>
+                <span style="font-size: 11px !important">Salary</span>
+            </a>
+        </li>
+
+        <li class="nav-item">
+            <a class="nav-link" href="<?php echo base_url('main/jurnal_umum')?>">
+                <i class="fas fa-fw fa-calculator"></i>
+                <span style="font-size: 11px !important">Jurnal Umum</span>
             </a>
         </li>
         <?php } ?>
@@ -203,7 +210,7 @@
         <li class="nav-item">
             <a class="nav-link" href="<?php echo base_url('main/slip_gaji')?>">
                 <i class="fas fa-fw fa-money-bill-wave"></i>
-                <span style="font-size: 12px !important">Slip Gaji</span>
+                <span style="font-size: 11px !important">Slip Gaji</span>
             </a>
         </li>
 
@@ -211,7 +218,7 @@
         <li class="nav-item">
             <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseOrder" aria-expanded="true" aria-controls="collapseMaster">
                 <i class="fas fa-fw fa-shopping-cart"></i>
-                <span style="font-size: 12px !important">Order Cust.</span>
+                <span style="font-size: 11px !important">Order Cust.</span>
             </a>
             <div id="collapseOrder" class="collapse" aria-labelledby="headingTwo" data-parent="#accordionSidebar">
                 <div class="bg-white py-2 collapse-inner rounded">
@@ -226,7 +233,7 @@
         <li class="nav-item">
             <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseOrderVendor" aria-expanded="true" aria-controls="collapseMaster">
                 <i class="fas fa-fw fa-cart-plus"></i>
-                <span style="font-size: 12px !important">Order Vdr.</span>
+                <span style="font-size: 11px !important">Order Vdr.</span>
             </a>
             <div id="collapseOrderVendor" class="collapse" aria-labelledby="headingTwo" data-parent="#accordionSidebar">
                 <div class="bg-white py-2 collapse-inner rounded">
@@ -242,7 +249,7 @@
         <li class="nav-item">
             <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseDelivery" aria-expanded="true" aria-controls="collapseMaster">
                 <i class="fas fa-fw fa-motorcycle"></i>
-                <span style="font-size: 12px !important">Delivery</span>
+                <span style="font-size: 11px !important">Delivery</span>
             </a>
             <div id="collapseDelivery" class="collapse" aria-labelledby="headingTwo" data-parent="#accordionSidebar">
                 <div class="bg-white py-2 collapse-inner rounded">
@@ -258,7 +265,7 @@
         <li class="nav-item">
             <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapsePickUp" aria-expanded="true" aria-controls="collapseMaster">
                 <i class="fas fa-fw fa-motorcycle"></i>
-                <span style="font-size: 12px !important">Pick Up</span>
+                <span style="font-size: 11px !important">Pick Up</span>
             </a>
             <div id="collapsePickUp" class="collapse" aria-labelledby="headingTwo" data-parent="#accordionSidebar">
                 <div class="bg-white py-2 collapse-inner rounded">

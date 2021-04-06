@@ -12,6 +12,11 @@
         </div>
         <div class="card-body">
             <div class="table-responsive">
+                <select id="is_paid" name="is_paid" class="form-control form-control-sm form-active-control" data-live-search="true" style="width: 40%; float: left">
+                    <option value="all">Semua</option>
+                    <option value="0">Belum Bayar</option>
+                    <option value="1">Lunas</option>
+                </select>
                 <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
                     <thead>
                     <tr>
@@ -101,10 +106,14 @@
 
     document.title = "Daftar Order - Amarthya Group";
 
+    $('#is_paid').change(function(){
+        get_order_m($(this).val());
+    })
+
     get_order_m();
 
     //get all products
-    function get_order_m(){
+    function get_order_m(status = "all"){
         $('.loading').css("display", "block");
         $('.Veil-non-hover').fadeIn();
 
@@ -121,7 +130,7 @@
             },
             pagingType: "simple",
             ajax: {
-                url     : admin_url + 'get_order_m',
+                url     : admin_url + 'get_order_m?status=' + status,
                 type    : 'POST',
             },
             createdRow: function ( row, data, index ) {

@@ -186,14 +186,14 @@ class Main_model extends CI_Model
         return $query;
     }
 
-    function get_order_vendor_m($search = null, $length = 10000000000, $start = 0){
+    function get_order_vendor_m($search = null, $length = 10000000000, $start = 0, $status = 'all'){
         $sql = "SELECT *, a.id_order_vendor_m, a.id_vendor
                 FROM order_vendor_m a
                 INNER JOIN vendor b ON a.id_vendor = b.id_vendor
-                WHERE a.status_order_vendor = '1'";
+                WHERE a.status_order_vendor = '1' AND (a.is_paid_vendor = '{$status}' || 'all' = '{$status}')";
 
         if($search != "" || $search != null){
-            $sql .= " WHERE CONCAT(b.nama_vendor, a.no_order_vendor, b.alamat_vendor, a.tgl_order_vendor) LIKE '%$search%'";
+            $sql .= " AND CONCAT(b.nama_vendor, a.no_order_vendor, b.alamat_vendor, a.tgl_order_vendor) LIKE '%$search%'";
         }
 
         $sql .= " ORDER BY a.tgl_order_vendor DESC LIMIT {$start}, {$length}";
@@ -202,13 +202,13 @@ class Main_model extends CI_Model
         return $query;
     }
 
-    function get_order_vendor_m_pickup($search = null, $length = 10000000000, $start = 0){
+    function get_order_vendor_m_pickup($search = null, $length = 10000000000, $start = 0, $status = 'all'){
         $sql = "SELECT *, a.id_order_vendor_m, a.id_vendor
                 FROM order_vendor_m a
                 INNER JOIN vendor b ON a.id_vendor = b.id_vendor
                 LEFT JOIN pick_up c ON a.id_order_vendor_m = c.id_order_vendor_m
                 WHERE (c.status_pick_up IS NULL OR c.status_pick_up = '2')
-                    AND a.status_order_vendor = '1'";
+                    AND a.status_order_vendor = '1' AND (a.is_paid_vendor = '{$status}' || 'all' = '{$status}')";
 
         if($search != "" || $search != null){
             $sql .= " AND CONCAT(b.nama_vendor, a.no_order_vendor, b.alamat_vendor, a.tgl_order_vendor) LIKE '%$search%'";
@@ -368,11 +368,11 @@ class Main_model extends CI_Model
         return $query;
     }
 
-    function get_order_m($search = null, $length = 10000000000, $start = 0){
+    function get_order_m($search = null, $length = 10000000000, $start = 0, $status = 'all'){
         $sql = "SELECT *, a.id_order_m, b.id_customer
                 FROM order_m a
                 INNER JOIN customer b ON a.id_customer = b.id_customer
-                WHERE a.status_order = '1'";
+                WHERE a.status_order = '1' AND (a.is_paid = '{$status}' || 'all' = '{$status}')";
 
         if($search != "" || $search != null){
             $sql .= " AND CONCAT(b.nama_customer, a.no_order, b.alamat_customer, a.tgl_order) LIKE '%$search%'";
@@ -384,13 +384,13 @@ class Main_model extends CI_Model
         return $query;
     }
 
-    function get_order_m_deliv($search = null, $length = 10000000000, $start = 0){
+    function get_order_m_deliv($search = null, $length = 10000000000, $start = 0, $status = 'all'){
         $sql = "SELECT *, a.id_order_m, b.id_customer
                 FROM order_m a
                 INNER JOIN customer b ON a.id_customer = b.id_customer
                 LEFT JOIN delivery c ON a.id_order_m = c.id_order_m
                 WHERE (c.status_delivery IS NULL OR c.status_delivery = '3')
-                    AND a.status_order = '1'";
+                    AND a.status_order = '1' AND (a.is_paid = '{$status}' || 'all' = '{$status}')";
 
         if($search != "" || $search != null){
             $sql .= " AND CONCAT(b.nama_customer, a.no_order, b.alamat_customer, a.tgl_order) LIKE '%$search%'";

@@ -248,7 +248,7 @@
                 success: function (response) {
                     if(response.Status == "OK"){
                         show_snackbar(response.Message);
-                        window.location.href = admin_url + 'order_vendor_list';
+                        window.location.href = admin_url + 'order_list';
                     } else if(response.Status == "ERROR" ){
                         show_snackbar(response.Message);
                     }

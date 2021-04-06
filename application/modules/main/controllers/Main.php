@@ -24,6 +24,12 @@ class Main extends MX_Controller
         $this->load->view('template/admin_footer');
     }
 
+    function jurnal_umum(){
+        $this->load->view('template/admin_header');
+        $this->load->view('jurnal_umum');
+        $this->load->view('template/admin_footer');
+    }
+
     function slip_gaji(){
 
 //        $id_staff = $this->session->userdata('id_staff');
@@ -666,12 +672,18 @@ class Main extends MX_Controller
 
         $output['data']=array();
 
+        if(isset($_GET['status'])){
+            $status = htmlentities($_GET['status'], ENT_QUOTES);
+        } else {
+            $status = 'all';
+        }
+
         if(!isset($_GET['pick_up'])){
             $total = $this->Main_model->get_order_vendor_m()->num_rows();
-            $output['data'] = $this->Main_model->get_order_vendor_m($search, $length, $start)->result_object();
+            $output['data'] = $this->Main_model->get_order_vendor_m($search, $length, $start, $status)->result_object();
         } else {
             $total = $this->Main_model->get_order_vendor_m_pickup()->num_rows();
-            $output['data'] = $this->Main_model->get_order_vendor_m_pickup($search, $length, $start)->result_object();
+            $output['data'] = $this->Main_model->get_order_vendor_m_pickup($search, $length, $start, $status)->result_object();
         }
 
         $output['recordsTotal'] = $output['recordsFiltered'] = $total;
@@ -1184,14 +1196,18 @@ class Main extends MX_Controller
         $output['draw'] = $draw;
         $output['data']=array();
 
-
+        if(isset($_GET['status'])){
+            $status = htmlentities($_GET['status'], ENT_QUOTES);
+        } else {
+            $status = 'all';
+        }
 
         if(!isset($_GET['delivery'])){
             $total = $this->Main_model->get_order_m()->num_rows();
-            $output['data'] = $this->Main_model->get_order_m($search, $length, $start)->result_object();
+            $output['data'] = $this->Main_model->get_order_m($search, $length, $start, $status)->result_object();
         } else {
             $total = $this->Main_model->get_order_m_deliv()->num_rows();
-            $output['data'] = $this->Main_model->get_order_m_deliv($search, $length, $start)->result_object();
+            $output['data'] = $this->Main_model->get_order_m_deliv($search, $length, $start, $status)->result_object();
         }
 
         $output['recordsTotal'] = $output['recordsFiltered'] = $total;
@@ -2709,6 +2725,9 @@ class Main extends MX_Controller
                 $rec_tbl[] = $rowData[0];
             }
 
+//            print_r($rec_tbl);
+//            return;
+
             //================== Customer Excel ===============
 
 //            foreach($rec_tbl as $data){
@@ -2747,6 +2766,69 @@ class Main extends MX_Controller
 //                $this->Main_model->add_vendor($vendor_data);
 //
 //            }
+
+            //================== Product Excel ===============
+
+//            date_default_timezone_set('Asia/Singapore');
+//
+//            foreach($rec_tbl as $data){
+//                set_time_limit(0);
+//
+//                $nama_product = htmlentities(trim($data[1]));
+//                $SKU_product = htmlentities(trim($data[2]));
+//                $satuan_product = htmlentities(trim($data[3]));
+//                $HP_product = htmlentities(trim($data[4]));
+//                $HR_product = htmlentities(trim($data[5]));
+//                $HJ_product = htmlentities(trim($data[6]));
+//
+//                $stok_in_out = htmlentities(trim($data[7]));
+//
+//                $this->db->trans_begin();
+//
+//                // add product
+//                $product_data = compact('nama_product', 'SKU_product', 'satuan_product', 'HP_product',
+//                                        'HR_product', 'HJ_product');
+//
+//                $id_product = $this->Main_model->add_product($product_data);
+//
+//                if($id_product){
+//
+//                    $tipe_in_out = "IN";
+//                    $tgl_in = date('Y-m-d H:i:s');
+//
+//                    $catatan_in_out = "";
+//                    $ref_order_m = "";
+//                    $tgl_out = "";
+//                    $tgl_expired = "";
+//
+//
+//                    $data_in_out = compact('tipe_in_out', 'stok_in_out', 'tgl_in', 'id_product', 'catatan_in_out', 'ref_order_m',
+//                        'tgl_out', 'tgl_expired');
+//
+//                    $id_stok_in_out = $this->Main_model->add_stok_in_out($data_in_out);
+//
+//                    if(!$id_stok_in_out){
+//                        $this->db->trans_rollback();
+//                        $return_arr = array("Status" => 'ERROR', "Message" => 'Gagal menambahkan in out');
+//                        echo json_encode($return_arr);
+//                        return;
+//                    } else {
+//                        $this->db->trans_commit();
+//                    }
+//
+//                } else {
+//                    $this->db->trans_rollback();
+//                    $return_arr = array("Status" => 'ERROR', "Message" => 'Gagal menambahkan product');
+//                    echo json_encode($return_arr);
+//                    return;
+//
+//                }
+//
+//            }
+//
+//            $return_arr = array("Status" => 'OK', "Message" => 'Done');
+//            echo json_encode($return_arr);
+
 
         }
     }

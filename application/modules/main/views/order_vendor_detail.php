@@ -209,14 +209,13 @@
                 },
                 success: function (response) {
                     if(response.Status == "OK"){
-                        window.location.href = admin_url + 'order_vendor_list';
+                        show_snackbar("Data berhasil diupdate");
                     } else if(response.Status == "ERROR" ){
                         show_snackbar(response.Message);
-
-                        $('.loading').css("display", "none");
-                        $('.Veil-non-hover').fadeOut();
                     }
 
+                    $('.loading').css("display", "none");
+                    $('.Veil-non-hover').fadeOut();
 
                 }
             })

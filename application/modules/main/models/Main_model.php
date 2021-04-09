@@ -208,6 +208,7 @@ class Main_model extends CI_Model
                 INNER JOIN vendor b ON a.id_vendor = b.id_vendor
                 LEFT JOIN pick_up c ON a.id_order_vendor_m = c.id_order_vendor_m
                 WHERE (c.status_pick_up IS NULL OR c.status_pick_up = '2')
+                    AND a.is_in_store = '0'
                     AND a.status_order_vendor = '1' AND (a.is_paid_vendor = '{$status}' || 'all' = '{$status}')";
 
         if($search != "" || $search != null){
@@ -378,7 +379,7 @@ class Main_model extends CI_Model
             $sql .= " AND CONCAT(b.nama_customer, a.no_order, b.alamat_customer, a.tgl_order) LIKE '%$search%'";
         }
 
-        $sql .= " ORDER BY a.tgl_order DESC LIMIT {$start}, {$length}";
+        $sql .= " ORDER BY a.tgl_order DESC, a.id_order_m DESC LIMIT {$start}, {$length}";
 
         $query = $this->db->query($sql);
         return $query;
@@ -390,13 +391,14 @@ class Main_model extends CI_Model
                 INNER JOIN customer b ON a.id_customer = b.id_customer
                 LEFT JOIN delivery c ON a.id_order_m = c.id_order_m
                 WHERE (c.status_delivery IS NULL OR c.status_delivery = '3')
+                    AND a.is_in_store = '0'
                     AND a.status_order = '1' AND (a.is_paid = '{$status}' || 'all' = '{$status}')";
 
         if($search != "" || $search != null){
             $sql .= " AND CONCAT(b.nama_customer, a.no_order, b.alamat_customer, a.tgl_order) LIKE '%$search%'";
         }
 
-        $sql .= " ORDER BY a.tgl_order DESC LIMIT {$start}, {$length}";
+        $sql .= " ORDER BY a.tgl_order DESC, a.id_order_m DESC LIMIT {$start}, {$length}";
 
         $query = $this->db->query($sql);
         return $query;

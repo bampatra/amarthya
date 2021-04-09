@@ -186,6 +186,13 @@
         </li>
 
         <li class="nav-item">
+            <a class="nav-link" href="<?php echo base_url('main/vendor')?>">
+                <i class="fas fa-fw fa-user-circle"></i>
+                <span style="font-size: 11px !important">Vendor</span>
+            </a>
+        </li>
+
+        <li class="nav-item">
             <a class="nav-link" href="<?php echo base_url('main/product')?>">
                 <i class="fas fa-fw fa-shopping-bag"></i>
                 <span style="font-size: 11px !important">Product</span>

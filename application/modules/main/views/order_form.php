@@ -266,14 +266,30 @@
                     </div>
 
 
-                    <div class="form-group row" id="ref_payment_form" style="display: none">
+                    <div class="form-group row payment-info" id="ref_payment_form" style="display: none">
                         <label class="col-sm-3 col-form-label col-form-label-sm">Ref. Payment</label>
                         <div class="col-sm-12">
                             <input type="text" id="payment_detail" name="payment_detail" class="form-control form-control-sm form-active-control">
                         </div>
                     </div>
 
-                </div>
+                    <div class="form-group row payment-info" style="display:none">
+                        <label class="col-sm-6 col-form-label col-form-label-sm">Tipe Transaksi</label>
+                        <div class="col-sm-10">
+                            <div class="form-check form-check-inline">
+                                <input class="form-check-input" type="radio" name="tipe_order" id="REK" value="REK" checked>
+                                <label class="form-check-label" for="inlineRadio1">Rekening</label>
+                            </div>
+                            <div class="form-check form-check-inline">
+                                <input class="form-check-input" type="radio" name="tipe_order" id="TUNAI" value="TUNAI" >
+                                <label class="form-check-label" for="inlineRadio1">Tunai</label>
+                            </div>
+                            <div class="form-check form-check-inline">
+                                <input class="form-check-input" type="radio" name="tipe_order" id="FREE" value="FREE" >
+                                <label class="form-check-label" for="inlineRadio1">Free</label>
+                            </div>
+                        </div>
+                    </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-primary save-payment">Simpan</button>
                 </div>
@@ -317,7 +333,7 @@
 <script>
 
     var temp_HJ = 0, temp_HR = 0, temp_HP = 0, temp_product = 0;
-    var chosen_price = temp_HJ, tipe_harga = 'HJ';
+    var chosen_price = temp_HJ, tipe_harga = 'HJ', tipe_order = 'REK';
     var subtotal = 0, ongkir = 0, diskon = 0;
     var selected_customer;
 
@@ -327,6 +343,10 @@
 
 
     document.title = "Formulir Order - Amarthya Group";
+
+    $('input[type=radio][name=tipe_order]').change(function() {
+        tipe_order = this.value;
+    });
 
     $('.payment-detail').click(function(){
         $('#payment-modal').modal('toggle');
@@ -353,6 +373,7 @@
                     payment_detail: $('#payment_detail').val(),
                     is_in_store: $('#is_in_store').prop("checked"),
                     is_tentative: $('#is_tentative').prop("checked"),
+                    tipe_order: tipe_order,
                     order_s: item_lists
                 },
                 success: function (response) {
@@ -374,12 +395,12 @@
 
     $('#is_paid').click(function(){
         if(this.checked) {
-            $('#ref_payment_form').css("display", "block");
+            $('.payment-info').css("display", "block");
             $('#is-paid-alert').html('<div class="alert alert-success alert-payment" role="alert">\n' +
                 '                            <strong>LUNAS</strong>\n' +
                 '                        </div>');
         } else {
-            $('#ref_payment_form').css("display", "none");
+            $('.payment-info').css("display", "none");
             $('#is-paid-alert').html('<div class="alert alert-danger alert-payment" role="alert">\n' +
                 '                            <strong>BELUM DIBAYAR</strong>\n' +
                 '                        </div>');

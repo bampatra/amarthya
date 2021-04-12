@@ -183,6 +183,22 @@
                             <input type="text" id="payment_detail" name="payment_detail" class="form-control form-control-sm form-active-control" value="<?php echo $orders[0]->payment_detail ?>" >
                         </div>
                     </div>
+                    <div class="form-group row payment-info" style="display:<?php if($orders[0]->is_paid == '1'){ echo "block"; } else { echo "none"; } ?>">
+                        <label class="col-sm-6 col-form-label col-form-label-sm">Tipe Transaksi</label>
+                        <div class="col-sm-10">
+                            <div class="form-check form-check-inline">
+                                <input class="form-check-input" type="radio" name="tipe_order" id="REK" value="REK" <?php if($orders[0]->tipe_order == 'REK'){ echo "checked"; } ?>>
+                                <label class="form-check-label" for="inlineRadio1">Rekening</label>
+                            </div>
+                            <div class="form-check form-check-inline">
+                                <input class="form-check-input" type="radio" name="tipe_order" id="TUNAI" value="TUNAI" <?php if($orders[0]->tipe_order == 'TUNAI'){ echo "checked"; } ?>>
+                                <label class="form-check-label" for="inlineRadio1">Tunai</label>
+                            </div>
+                            <div class="form-check form-check-inline">
+                                <input class="form-check-input" type="radio" name="tipe_order" id="FREE" value="FREE" <?php if($orders[0]->tipe_order == 'FREE'){ echo "checked"; } ?>>
+                                <label class="form-check-label" for="inlineRadio1">Free</label>
+                            </div>
+                        </div>
 
                 </div>
                 <div class="modal-footer">
@@ -232,6 +248,14 @@
 
     document.title = "Pesanan #"+ $('#no_order').html() +" - Amarthya Group";
 
+    tipe_order_radio = $('input[type=radio][name=tipe_order]');
+
+    tipe_order = tipe_order_radio.val();
+
+    tipe_order_radio.change(function() {
+        tipe_order = this.value;
+    });
+
     $('.delete').click(function(e){
         if(confirm("Data akan dihapus permanen. Yakin ingin menghapus data?")) {
             $('.loading').css("display", "block");
@@ -278,7 +302,8 @@
                 diskon_order: $('#diskon_order').val(),
                 is_paid: $('#is_paid').prop("checked"),
                 payment_detail: $('#payment_detail').val(),
-                is_tentative: $('#is_tentative').prop("checked")
+                is_tentative: $('#is_tentative').prop("checked"),
+                tipe_order: tipe_order
             },
             success: function (response) {
                 if(response.Status == "OK"){
@@ -317,12 +342,12 @@
 
     $('#is_paid').click(function(){
         if(this.checked) {
-            $('#ref_payment_form').css("display", "block");
+            $('.payment-info').css("display", "block");
             $('#is-paid-alert').html('<div class="alert alert-success alert-payment" role="alert">\n' +
                 '                            <strong>LUNAS</strong>\n' +
                 '                        </div>');
         } else {
-            $('#ref_payment_form').css("display", "none");
+            $('.payment-info').css("display", "none");
             $('#is-paid-alert').html('<div class="alert alert-danger alert-payment" role="alert">\n' +
                 '                            <strong>BELUM DIBAYAR</strong>\n' +
                 '                        </div>');

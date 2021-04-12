@@ -3,8 +3,13 @@
   <component name="ChangeListManager">
     <list default="true" id="822c5f09-bd0b-4858-81e7-523fc1d476f6" name="Default Changelist" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/application/modules/main/controllers/Main.php" beforeDir="false" afterPath="$PROJECT_DIR$/application/modules/main/controllers/Main.php" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/application/modules/main/models/Main_model.php" beforeDir="false" afterPath="$PROJECT_DIR$/application/modules/main/models/Main_model.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/application/modules/main/views/template/admin_header.php" beforeDir="false" afterPath="$PROJECT_DIR$/application/modules/main/views/template/admin_header.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/application/modules/main/views/jurnal_umum.php" beforeDir="false" afterPath="$PROJECT_DIR$/application/modules/main/views/jurnal_umum.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/application/modules/main/views/order_detail.php" beforeDir="false" afterPath="$PROJECT_DIR$/application/modules/main/views/order_detail.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/application/modules/main/views/order_form.php" beforeDir="false" afterPath="$PROJECT_DIR$/application/modules/main/views/order_form.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/application/modules/main/views/order_vendor_detail.php" beforeDir="false" afterPath="$PROJECT_DIR$/application/modules/main/views/order_vendor_detail.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/application/modules/main/views/order_vendor_form.php" beforeDir="false" afterPath="$PROJECT_DIR$/application/modules/main/views/order_vendor_form.php" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
@@ -35,19 +40,10 @@
   <component name="FileEditorManager">
     <leaf SIDE_TABS_SIZE_LIMIT_KEY="300">
       <file pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/application/modules/main/views/vendor.php">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="15">
-              <caret line="50" column="39" selection-start-line="50" selection-start-column="39" selection-end-line="50" selection-end-column="39" />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/application/modules/main/controllers/Main.php">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="1137">
-              <caret line="1209" column="100" selection-start-line="1209" selection-start-column="100" selection-end-line="1209" selection-end-column="100" />
+            <state relative-caret-position="373">
+              <caret line="35" column="33" selection-start-line="35" selection-start-column="33" selection-end-line="35" selection-end-column="33" />
               <folding>
                 <element signature="e#70#88#0#PHP" expanded="true" />
                 <element signature="n#slip_gaji#0;n#Main#0;n#!!top" />
@@ -82,6 +78,7 @@
                 <element signature="n#order_list#0;n#Main#0;n#!!top" />
                 <element signature="n#add_delivery#0;n#Main#0;n#!!top" />
                 <element signature="n#get_order_s#0;n#Main#0;n#!!top" />
+                <element signature="n#get_order_m#0;n#Main#0;n#!!top" />
                 <element signature="n#update_order_m#0;n#Main#0;n#!!top" />
                 <element signature="n#order_detail#0;n#Main#0;n#!!top" />
                 <element signature="n#order_form#0;n#Main#0;n#!!top" />
@@ -122,8 +119,17 @@
       <file pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/application/config/config.php">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="282">
+            <state relative-caret-position="298">
               <caret line="385" column="33" lean-forward="true" selection-start-line="385" selection-start-column="33" selection-end-line="385" selection-end-column="33" />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/application/modules/main/models/Main_model.php">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="301">
+              <caret line="268" column="44" selection-start-line="268" selection-start-column="44" selection-end-line="268" selection-end-column="44" />
             </state>
           </provider>
         </entry>
@@ -141,11 +147,6 @@
   </component>
   <component name="FindInProjectRecents">
     <findStrings>
-      <find>staff</find>
-      <find>get_staff</find>
-      <find>get_order_m_deliv</find>
-      <find>get_staff_by_id</find>
-      <find>delivery</find>
       <find>get_order_Vendor</find>
       <find>get_pick</find>
       <find>get_order_ven</find>
@@ -171,9 +172,13 @@
       <find>get_deliver</find>
       <find>order_vendor</find>
       <find>order_vendor_m_pi</find>
+      <find>HJ</find>
+      <find>payment-info</find>
+      <find>add_order_m</find>
+      <find>$tipe_order != &quot;REK&quot; &amp;&amp; $tipe_order != &quot;TUNAI&quot;</find>
+      <find>ref_payment_form</find>
     </findStrings>
     <replaceStrings>
-      <replace>rekening_mutasi</replace>
       <replace>data.neraca.trim()</replace>
       <replace>$year</replace>
       <replace>rgba(20,143,143,1)</replace>
@@ -203,6 +208,7 @@
       <replace>vendor</replace>
       <replace>get_order_vendor_m</replace>
       <replace>Pick Up</replace>
+      <replace>$tipe_order != &quot;REK&quot; &amp;&amp; $tipe_order != &quot;TUNAI&quot; &amp;&amp; $tipe_order != &quot;FREE&quot;</replace>
     </replaceStrings>
   </component>
   <component name="Git.Settings">
@@ -245,22 +251,22 @@
         <option value="$PROJECT_DIR$/application/modules/main/views/delivery_detail.php" />
         <option value="$PROJECT_DIR$/application/modules/main/views/template/upload_excel.html" />
         <option value="$PROJECT_DIR$/application/modules/main/views/template/upload_excel.php" />
-        <option value="$PROJECT_DIR$/application/modules/main/views/order_vendor_form.php" />
-        <option value="$PROJECT_DIR$/application/modules/main/views/order_form.php" />
         <option value="$PROJECT_DIR$/application/modules/main/views/product.php" />
         <option value="$PROJECT_DIR$/application/modules/main/views/stok_in_out.php" />
         <option value="$PROJECT_DIR$/application/modules/home/controllers/Home.php" />
         <option value="$PROJECT_DIR$/application/modules/main/views/delivery_list.php" />
         <option value="$PROJECT_DIR$/application/modules/main/views/pickup_list.php" />
-        <option value="$PROJECT_DIR$/application/modules/main/views/jurnal_umum.php" />
-        <option value="$PROJECT_DIR$/application/modules/main/controllers/Main.php" />
         <option value="$PROJECT_DIR$/application/modules/main/views/order_vendor_list.php" />
         <option value="$PROJECT_DIR$/application/modules/main/views/order_list.php" />
-        <option value="$PROJECT_DIR$/application/modules/main/views/order_detail.php" />
-        <option value="$PROJECT_DIR$/application/modules/main/views/order_vendor_detail.php" />
         <option value="$PROJECT_DIR$/application/modules/main/views/template/admin_header.php" />
         <option value="$PROJECT_DIR$/application/modules/main/views/vendor.php" />
+        <option value="$PROJECT_DIR$/application/modules/main/views/jurnal_umum.php" />
         <option value="$PROJECT_DIR$/application/modules/main/models/Main_model.php" />
+        <option value="$PROJECT_DIR$/application/modules/main/views/order_form.php" />
+        <option value="$PROJECT_DIR$/application/modules/main/views/order_vendor_form.php" />
+        <option value="$PROJECT_DIR$/application/modules/main/views/order_vendor_detail.php" />
+        <option value="$PROJECT_DIR$/application/modules/main/views/order_detail.php" />
+        <option value="$PROJECT_DIR$/application/modules/main/controllers/Main.php" />
         <option value="$PROJECT_DIR$/application/config/config.php" />
       </list>
     </option>
@@ -319,6 +325,7 @@
       <foldersAlwaysOnTop value="true" />
     </navigator>
     <panes>
+      <pane id="Scope" />
       <pane id="ProjectPane">
         <subPane>
           <expand>
@@ -356,7 +363,15 @@
               <item name="application" type="462c0819:PsiDirectoryNode" />
               <item name="modules" type="462c0819:PsiDirectoryNode" />
               <item name="main" type="462c0819:PsiDirectoryNode" />
-              <item name="views" type="462c0819:PsiDirectoryNode" />
+              <item name="controllers" type="462c0819:PsiDirectoryNode" />
+            </path>
+            <path>
+              <item name="amarthya" type="b2602c69:ProjectViewProjectNode" />
+              <item name="amarthya" type="462c0819:PsiDirectoryNode" />
+              <item name="application" type="462c0819:PsiDirectoryNode" />
+              <item name="modules" type="462c0819:PsiDirectoryNode" />
+              <item name="main" type="462c0819:PsiDirectoryNode" />
+              <item name="models" type="462c0819:PsiDirectoryNode" />
             </path>
             <path>
               <item name="amarthya" type="b2602c69:ProjectViewProjectNode" />
@@ -365,13 +380,11 @@
               <item name="modules" type="462c0819:PsiDirectoryNode" />
               <item name="main" type="462c0819:PsiDirectoryNode" />
               <item name="views" type="462c0819:PsiDirectoryNode" />
-              <item name="template" type="462c0819:PsiDirectoryNode" />
             </path>
           </expand>
           <select />
         </subPane>
       </pane>
-      <pane id="Scope" />
     </panes>
   </component>
   <component name="PropertiesComponent">
@@ -558,18 +571,20 @@
       <workItem from="1617606582865" duration="5819000" />
       <workItem from="1617686689309" duration="3357000" />
       <workItem from="1617874629232" duration="495000" />
-      <workItem from="1617946145149" duration="832000" />
+      <workItem from="1617946145149" duration="1168000" />
+      <workItem from="1618103786974" duration="1798000" />
+      <workItem from="1618188118822" duration="6796000" />
     </task>
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="1527410000" />
+    <option name="totallyTimeSpent" value="1536340000" />
   </component>
   <component name="ToolWindowManager">
     <frame x="0" y="23" width="1280" height="777" extended-state="0" />
     <editor active="true" />
     <layout>
-      <window_info active="true" content_ui="combo" id="Project" order="0" sideWeight="0.49927008" visible="true" weight="0.22940226" />
+      <window_info active="true" content_ui="combo" id="Project" order="0" sideWeight="0.49927008" visible="true" weight="0.2358643" />
       <window_info id="Structure" order="1" sideWeight="0.5007299" side_tool="true" weight="0.26332796" />
       <window_info id="Favorites" order="2" side_tool="true" />
       <window_info anchor="bottom" id="Message" order="0" />
@@ -822,27 +837,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/application/modules/main/views/order_vendor_form.php">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="105">
-          <caret line="380" lean-forward="true" selection-start-line="380" selection-end-line="380" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/application/modules/main/views/order_form.php">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="103">
-          <caret line="623" column="32" selection-start-line="623" selection-start-column="32" selection-end-line="623" selection-end-column="32" />
-          <folding>
-            <element signature="n#style#0;n#span#0;n#!!top" expanded="true" />
-            <element signature="n#style#0;n#td#1;n#tr#0;n#table#0;n#!!top" expanded="true" />
-            <element signature="n#style#0;n#span#0;n#td#1;n#tr#0;n#table#0;n#!!top" expanded="true" />
-            <element signature="n#style#0;n#strong#0;n#td#1;n#tr#0;n#table#0;n#!!top" expanded="true" />
-            <element signature="n#style#0;n#span#0;n#!!top" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/application/modules/home/controllers/Home.php">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="165">
@@ -929,54 +923,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/application/modules/main/views/order_list.php">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="255">
-          <caret line="17" column="36" selection-start-line="17" selection-start-column="36" selection-end-line="17" selection-end-column="36" />
-          <folding>
-            <element signature="n#style#0;n#div#1;n#div#0;n#!!top" expanded="true" />
-            <element signature="n#style#0;n#strong#0;n#div#1;n#div#0;n#!!top" expanded="true" />
-            <element signature="n#style#0;n#td#0;n#!!top" expanded="true" />
-            <element signature="n#style#0;n#span#0;n#td#0;n#!!top" expanded="true" />
-            <element signature="n#style#0;n#strong#0;n#td#0;n#!!top" expanded="true" />
-            <element signature="n#style#0;n#table#0;n#!!top" expanded="true" />
-            <element signature="n#style#0;n#td#0;n#tr#0;n#table#0;n#!!top" expanded="true" />
-            <element signature="n#style#0;n#td#1;n#tr#0;n#table#0;n#!!top" expanded="true" />
-            <element signature="n#style#0;n#td#2;n#tr#0;n#table#0;n#!!top" expanded="true" />
-            <element signature="n#style#0;n#td#0;n#tr#1;n#table#0;n#!!top" expanded="true" />
-            <element signature="n#style#0;n#td#1;n#tr#1;n#table#0;n#!!top" expanded="true" />
-            <element signature="n#style#0;n#td#0;n#!!top" expanded="true" />
-            <element signature="n#style#0;n#td#0;n#tr#0;n#!!top" expanded="true" />
-            <element signature="n#style#0;n#td#1;n#tr#0;n#!!top" expanded="true" />
-            <element signature="n#style#0;n#td#2;n#tr#0;n#!!top" expanded="true" />
-            <element signature="n#style#0;n#td#0;n#tr#1;n#!!top" expanded="true" />
-            <element signature="n#style#0;n#td#1;n#tr#1;n#!!top" expanded="true" />
-            <element signature="n#style#0;n#td#2;n#tr#1;n#!!top" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/application/modules/main/views/order_detail.php">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="337">
-          <caret line="283" column="44" lean-forward="true" selection-start-line="283" selection-start-column="44" selection-end-line="283" selection-end-column="44" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/application/modules/main/views/order_vendor_detail.php">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="504">
-          <caret line="217" column="51" lean-forward="true" selection-start-line="217" selection-start-column="51" selection-end-line="217" selection-end-column="51" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/application/modules/main/views/jurnal_umum.php">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="180">
-          <caret line="12" column="34" selection-start-line="12" selection-start-column="34" selection-end-line="12" selection-end-column="34" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/application/modules/main/views/template/admin_header.php">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="2850">
@@ -986,22 +932,82 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/application/modules/main/views/vendor.php">
       <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="600">
+          <caret line="163" column="5" lean-forward="true" selection-start-line="127" selection-start-column="4" selection-end-line="163" selection-end-column="5" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/application/modules/main/views/order_list.php">
+      <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="15">
-          <caret line="50" column="39" selection-start-line="50" selection-start-column="39" selection-end-line="50" selection-end-column="39" />
+          <caret line="17" column="36" selection-start-line="17" selection-start-column="36" selection-end-line="17" selection-end-column="36" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/application/modules/main/views/jurnal_umum.php">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="353">
+          <caret line="125" column="32" selection-start-line="125" selection-start-column="32" selection-end-line="125" selection-end-column="32" />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/application/modules/main/models/Main_model.php">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="257">
-          <caret line="201" column="22" lean-forward="true" selection-start-line="201" selection-start-column="22" selection-end-line="201" selection-end-column="22" />
+        <state relative-caret-position="301">
+          <caret line="268" column="44" selection-start-line="268" selection-start-column="44" selection-end-line="268" selection-end-column="44" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/application/modules/main/views/order_form.php">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="450">
+          <caret line="289" column="34" lean-forward="true" selection-start-line="286" selection-start-column="28" selection-end-line="289" selection-end-column="34" />
+          <folding>
+            <element signature="n#style#0;n#span#0;n#!!top" expanded="true" />
+            <element signature="n#style#0;n#td#1;n#tr#0;n#table#0;n#!!top" expanded="true" />
+            <element signature="n#style#0;n#span#0;n#td#1;n#tr#0;n#table#0;n#!!top" expanded="true" />
+            <element signature="n#style#0;n#strong#0;n#td#1;n#tr#0;n#table#0;n#!!top" expanded="true" />
+            <element signature="n#style#0;n#span#0;n#!!top" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/application/modules/main/views/order_vendor_form.php">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="699">
+          <caret line="70" column="26" selection-start-line="70" selection-start-column="26" selection-end-line="70" selection-end-column="26" />
+          <folding>
+            <element signature="n#style#0;n#span#0;n#!!top" expanded="true" />
+            <element signature="n#style#0;n#td#1;n#tr#0;n#table#0;n#!!top" expanded="true" />
+            <element signature="n#style#0;n#span#0;n#td#1;n#tr#0;n#table#0;n#!!top" expanded="true" />
+            <element signature="n#style#0;n#strong#0;n#td#1;n#tr#0;n#table#0;n#!!top" expanded="true" />
+            <element signature="n#style#0;n#span#0;n#!!top" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/application/modules/main/views/order_detail.php">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="451">
+          <caret line="197" column="182" selection-start-line="197" selection-start-column="182" selection-end-line="197" selection-end-column="182" />
+          <folding>
+            <element signature="n#style#0;n#div#4;n#div#1;n#div#0;n#div#0;n#div#3;n#div#0;n#!!top" expanded="true" />
+            <element signature="n#style#0;n#div#5;n#div#1;n#div#0;n#div#0;n#div#3;n#div#0;n#!!top" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/application/modules/main/views/order_vendor_detail.php">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="392">
+          <caret line="81" column="174" selection-start-line="81" selection-start-column="110" selection-end-line="81" selection-end-column="174" />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/application/modules/main/controllers/Main.php">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="1137">
-          <caret line="1209" column="100" selection-start-line="1209" selection-start-column="100" selection-end-line="1209" selection-end-column="100" />
+        <state relative-caret-position="373">
+          <caret line="35" column="33" selection-start-line="35" selection-start-column="33" selection-end-line="35" selection-end-column="33" />
           <folding>
             <element signature="e#70#88#0#PHP" expanded="true" />
             <element signature="n#slip_gaji#0;n#Main#0;n#!!top" />
@@ -1036,6 +1042,7 @@
             <element signature="n#order_list#0;n#Main#0;n#!!top" />
             <element signature="n#add_delivery#0;n#Main#0;n#!!top" />
             <element signature="n#get_order_s#0;n#Main#0;n#!!top" />
+            <element signature="n#get_order_m#0;n#Main#0;n#!!top" />
             <element signature="n#update_order_m#0;n#Main#0;n#!!top" />
             <element signature="n#order_detail#0;n#Main#0;n#!!top" />
             <element signature="n#order_form#0;n#Main#0;n#!!top" />
@@ -1074,7 +1081,7 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/application/config/config.php">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="282">
+        <state relative-caret-position="298">
           <caret line="385" column="33" lean-forward="true" selection-start-line="385" selection-start-column="33" selection-end-line="385" selection-end-column="33" />
         </state>
       </provider>

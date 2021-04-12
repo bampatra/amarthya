@@ -67,6 +67,23 @@
                 <label class="col-form-label">Catatan</label>
                 <textarea id="catatan_order_vendor" name="catatan_order_vendor" class="form-control form-active-control" <?php if($orders[0]->status_pick_up == '0' || $orders[0]->status_pick_up == '1'){ echo "disabled"; } ?>><?php echo $orders[0]->catatan_order_vendor; ?></textarea>
             </div>
+            <div class="form-group row payment-info">
+                <label class="col-sm-4 col-form-label col-form-label-sm">Tipe Transaksi</label>
+                <div class="col-sm-8 col-form-label-sm">
+                    <div class="form-check form-check-inline">
+                        <input class="form-check-input" type="radio" name="tipe_order" id="REK" value="REK" <?php if($orders[0]->tipe_order == 'REK'){ echo "checked"; } ?>>
+                        <label class="form-check-label" for="inlineRadio1">Rekening</label>
+                    </div>
+                    <div class="form-check form-check-inline">
+                        <input class="form-check-input" type="radio" name="tipe_order" id="TUNAI" value="TUNAI" <?php if($orders[0]->tipe_order == 'TUNAI'){ echo "checked"; } ?>>
+                        <label class="form-check-label" for="inlineRadio1">Tunai</label>
+                    </div>
+                    <div class="form-check form-check-inline">
+                        <input class="form-check-input" type="radio" name="tipe_order" id="FREE" value="FREE" <?php if($orders[0]->tipe_order == 'FREE'){ echo "checked"; } ?> >
+                        <label class="form-check-label" for="inlineRadio1">Free</label>
+                    </div>
+                </div>
+            </div>
 
         </div>
         <div class="two">
@@ -156,10 +173,17 @@
     var temp_harga = 0, subtotal = 0, temp_product;
     var selected_vendor, temp_product;
 
+    document.title = "Order Vendor #"+ $('#no_order').html() +" - Amarthya Group";
+
     item_lists = [];
 
+    tipe_order_radio = $('input[type=radio][name=tipe_order]');
+    tipe_order = tipe_order_radio.val();
+    tipe_order_radio.change(function() {
+        tipe_order = this.value;
+    });
 
-    document.title = "Order Vendor #"+ $('#no_order').html() +" - Amarthya Group";
+
 
     $('.delete').click(function(e){
         if(confirm("Data akan dihapus permanen. Yakin ingin menghapus data?")) {
@@ -205,7 +229,8 @@
                     catatan_order_vendor: $('#catatan_order_vendor').val(),
                     tgl_order_vendor: $('#tgl_order_vendor').val(),
                     is_paid_vendor: $('#is_paid_vendor').prop("checked"),
-                    payment_detail: $('#payment_detail').val()
+                    payment_detail: $('#payment_detail').val(),
+                    tipe_order: tipe_order
                 },
                 success: function (response) {
                     if(response.Status == "OK"){

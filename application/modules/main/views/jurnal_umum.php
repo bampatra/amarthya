@@ -90,6 +90,49 @@
     document.title = "Jurnal Umum - Amarthya Group";
 
 
+    get_data();
+
+    //get all products
+    function get_data(){
+        $('.loading').css("display", "block");
+        $('.Veil-non-hover').fadeIn();
+
+        $('#dataTable').DataTable().destroy();
+        $('#dataTable').DataTable({
+            processing: true,
+            serverSide: true,
+            responsive: true,
+            lengthChange: false,
+            pageLength: 20,
+            searching: false,
+            bInfo: false,
+            language: {
+                search: ""
+            },
+            pagingType: "simple",
+            ajax: {
+                url     : admin_url + 'get_data_jurnal_umum',
+                type    : 'POST',
+            },
+            createdRow: function ( row, data, index ) {
+                $('td', row).eq(0).css("display", "none");
+            },
+            columns: [
+                {"data": "ID"},
+                {"data": "tgl_order"},
+                {"data": "no_order"},
+                {"data": "DEBET"},
+                {"data": "KREDIT"},
+                {"data": "MUTASI"}
+
+
+            ],
+            initComplete: function (settings, json) {
+                $('.loading').css("display", "none");
+                $('.Veil-non-hover').fadeOut();
+            }
+        });
+    }
 
 
 </script>

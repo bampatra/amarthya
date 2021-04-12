@@ -54,6 +54,23 @@
                 <textarea id="catatan_order_vendor" name="catatan_order_vendor" class="form-control form-active-control"> </textarea>
             </div>
 
+            <div class="form-group row payment-info">
+                <label class="col-sm-4 col-form-label col-form-label-sm">Tipe Transaksi</label>
+                <div class="col-sm-8 col-form-label-sm">
+                    <div class="form-check form-check-inline">
+                        <input class="form-check-input" type="radio" name="tipe_order" id="REK" value="REK" checked>
+                        <label class="form-check-label" for="inlineRadio1">Rekening</label>
+                    </div>
+                    <div class="form-check form-check-inline">
+                        <input class="form-check-input" type="radio" name="tipe_order" id="TUNAI" value="TUNAI" >
+                        <label class="form-check-label" for="inlineRadio1">Tunai</label>
+                    </div>
+                    <div class="form-check form-check-inline">
+                        <input class="form-check-input" type="radio" name="tipe_order" id="FREE" value="FREE" >
+                        <label class="form-check-label" for="inlineRadio1">Free</label>
+                    </div>
+                </div>
+            </div>
         </div>
         <div class="two">
             <table style="border-spacing: 0 10px; border-collapse:separate; width: 100%;">
@@ -101,7 +118,7 @@
         <div class="modal-dialog" role="document">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h5 class="modal-title">Customer</h5>
+                    <h5 class="modal-title">Vendor</h5>
                     <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                         <span aria-hidden="true">&times;</span>
                     </button>
@@ -115,7 +132,7 @@
                                 <th style="display: none;"> No HP </th>
                                 <th style="display: none;"> Nama Customer </th>
                                 <th style="display: none;"> Alamat Customer </th>
-                                <th> Customer </th>
+                                <th> Vendor </th>
                             </tr>
                             </thead>
                             <tbody id="main-content">
@@ -227,7 +244,7 @@
 
 <script>
 
-    var tipe_harga = 'HP';
+    var tipe_harga = 'HP', tipe_order = 'REK';
     var temp_harga = 0, subtotal = 0, temp_product;
     var selected_vendor, temp_product;
 
@@ -235,9 +252,11 @@
     get_product();
     set_harga();
 
-
     document.title = "Formulir Order Vendor - Amarthya Group";
 
+    $('input[type=radio][name=tipe_order]').change(function() {
+        tipe_order = this.value;
+    });
 
     $('.save').click(function(e){
 
@@ -256,6 +275,7 @@
                     is_paid_vendor: $('#is_paid_vendor').prop("checked"),
                     payment_detail: $('#payment_detail').val(),
                     is_in_store: $('#is_in_store').prop("checked"),
+                    tipe_order: tipe_order,
                     order_vendor_s: item_lists
                 },
                 success: function (response) {

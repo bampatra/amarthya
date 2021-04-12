@@ -30,6 +30,25 @@ class Main extends MX_Controller
         $this->load->view('template/admin_footer');
     }
 
+    function get_data_jurnal_umum(){
+        // server-side pagination
+        $draw = $_REQUEST['draw'];
+        $length = $_REQUEST['length'];
+        $start = $_REQUEST['start'];
+
+        $total = $this->Main_model->jurnal_umum_gabung(date('m'))->num_rows();
+
+        $output = array();
+        $output['draw'] = $draw;
+        $output['recordsTotal'] = $output['recordsFiltered'] = $total;
+        $output['data']=array();
+
+        $output['data'] = $this->Main_model->jurnal_umum_gabung(date('m'), $length, $start)->result_object();
+
+        echo json_encode($output);
+    }
+
+
     function slip_gaji(){
 
 //        $id_staff = $this->session->userdata('id_staff');
@@ -698,14 +717,22 @@ class Main extends MX_Controller
         }
 
         $no_order = strtoupper(trim(htmlentities($_REQUEST['no_order'], ENT_QUOTES)));
-        $catatan_order_vendor = strtoupper(trim(htmlentities($_REQUEST['catatan_order_vendor'], ENT_QUOTES)));
+        $catatan_order_vendor = trim(htmlentities($_REQUEST['catatan_order_vendor'], ENT_QUOTES));
         $tgl_order_vendor = strtoupper(trim(htmlentities($_REQUEST['tgl_order_vendor'], ENT_QUOTES)));
         $is_paid_vendor = strtoupper(trim(htmlentities($_REQUEST['is_paid_vendor'], ENT_QUOTES)));
         $payment_detail = trim(htmlentities($_REQUEST['payment_detail'], ENT_QUOTES));
+        $tipe_order = trim(htmlentities($_REQUEST['tipe_order'], ENT_QUOTES));
 
 
         if(empty($tgl_order_vendor)){
             $return_arr = array("Status" => 'ERROR', "Message" => 'Tanggal order tidak boleh kosong');
+            echo json_encode($return_arr);
+            return;
+        }
+
+        // ERROR    : if paid but invalid tipe_order
+        if($is_paid_vendor && $tipe_order != "REK" && $tipe_order != "TUNAI" && $tipe_order != "FREE"){
+            $return_arr = array("Status" => 'ERROR', "Message" => 'Tipe transaksi tidak valid');
             echo json_encode($return_arr);
             return;
         }
@@ -717,9 +744,9 @@ class Main extends MX_Controller
 
         // cant change if product is on delivery or delivered or deleted, but can change payment
         if($order_vendor_m_data->status_pick_up == '0' || $order_vendor_m_data->status_pick_up == '1' || $order_vendor_m_data->status_order_vendor == '0'){
-            $updated_data = compact('is_paid_vendor', 'payment_detail');
+            $updated_data = compact('is_paid_vendor', 'payment_detail', 'tipe_order');
         } else {
-            $updated_data = compact('catatan_order_vendor', 'tgl_order_vendor', 'is_paid_vendor', 'payment_detail');
+            $updated_data = compact('catatan_order_vendor', 'tgl_order_vendor', 'is_paid_vendor', 'payment_detail', 'tipe_order');
         }
 
 
@@ -756,6 +783,7 @@ class Main extends MX_Controller
         $is_paid_vendor = filter_var($_REQUEST['is_paid_vendor'], FILTER_VALIDATE_BOOLEAN);
         $payment_detail = trim(htmlentities($_REQUEST['payment_detail'], ENT_QUOTES));
         $is_in_store = filter_var($_REQUEST['is_in_store'], FILTER_VALIDATE_BOOLEAN);
+        $tipe_order = trim(htmlentities($_REQUEST['tipe_order'], ENT_QUOTES));
 
         // ERROR    : if online purchase but no customer
         // OK       : if offline purchase with no customer
@@ -778,6 +806,13 @@ class Main extends MX_Controller
             return;
         }
 
+        // ERROR    : if paid but invalid tipe_order
+        if($is_paid_vendor && $tipe_order != "REK" && $tipe_order != "TUNAI" && $tipe_order != "FREE"){
+            $return_arr = array("Status" => 'ERROR', "Message" => 'Tipe transaksi tidak valid');
+            echo json_encode($return_arr);
+            return;
+        }
+
         $no_order_vendor = "V".date("Ymdhis").$this->randStr(2);
         $grand_total_order = 0;
         $status_order_vendor = '1';
@@ -786,7 +821,7 @@ class Main extends MX_Controller
         $is_in_store = ($is_in_store == true ? "1" : "0");
 
         $data_m = compact('id_vendor', 'no_order_vendor', 'catatan_order_vendor', 'tgl_order_vendor',
-                            'grand_total_order', 'status_order_vendor', 'is_paid_vendor', 'payment_detail', 'is_in_store');
+                            'grand_total_order', 'status_order_vendor', 'is_paid_vendor', 'payment_detail', 'is_in_store', 'tipe_order');
 
         $this->db->trans_begin();
 
@@ -1232,11 +1267,19 @@ class Main extends MX_Controller
         $diskon_order = strtoupper(trim(htmlentities($_REQUEST['diskon_order'], ENT_QUOTES)));
         $is_paid = filter_var($_REQUEST['is_paid'], FILTER_VALIDATE_BOOLEAN);
         $payment_detail = trim(htmlentities($_REQUEST['payment_detail'], ENT_QUOTES));
+        $tipe_order = trim(htmlentities($_REQUEST['tipe_order'], ENT_QUOTES));
 
         // ERROR    : if not tentative but no date
         // OK       : if tentative but no date
         if(!$is_tentative && empty($tgl_order)){
             $return_arr = array("Status" => 'ERROR', "Message" => 'Tanggal order tidak boleh kosong');
+            echo json_encode($return_arr);
+            return;
+        }
+
+        // ERROR    : if paid but invalid tipe_order
+        if($is_paid && $tipe_order != "REK" && $tipe_order != "TUNAI" && $tipe_order != "FREE"){
+            $return_arr = array("Status" => 'ERROR', "Message" => 'Tipe transaksi tidak valid');
             echo json_encode($return_arr);
             return;
         }
@@ -1267,10 +1310,10 @@ class Main extends MX_Controller
 
 
         if($order_m_data->status_delivery != null && ($order_m_data->status_delivery == '1' || $order_m_data->status_delivery == '2')){
-            $data = compact('is_paid', 'payment_detail');
+            $data = compact('is_paid', 'payment_detail', 'tipe_order');
         } else {
             $data = compact('catatan_order', 'tgl_order', 'is_tentative', 'ongkir_order', 'is_ongkir_kas',
-                'diskon_order', 'is_paid', 'payment_detail', 'grand_total_order');
+                'diskon_order', 'is_paid', 'payment_detail', 'grand_total_order', 'tipe_order');
         }
 
 
@@ -1344,6 +1387,7 @@ class Main extends MX_Controller
         $diskon_order = strtoupper(trim(htmlentities($_REQUEST['diskon_order'], ENT_QUOTES)));
         $is_paid = filter_var($_REQUEST['is_paid'], FILTER_VALIDATE_BOOLEAN);
         $payment_detail = trim(htmlentities($_REQUEST['payment_detail'], ENT_QUOTES));
+        $tipe_order = trim(htmlentities($_REQUEST['tipe_order'], ENT_QUOTES));
         $is_in_store = filter_var($_REQUEST['is_in_store'], FILTER_VALIDATE_BOOLEAN);
         $is_tentative = filter_var($_REQUEST['is_tentative'], FILTER_VALIDATE_BOOLEAN);
         $is_changeable = '1';
@@ -1372,10 +1416,19 @@ class Main extends MX_Controller
             return;
         }
 
+
+        // ERROR    : if paid but invalid tipe_order
+        if($is_paid && $tipe_order != "REK" && $tipe_order != "TUNAI" && $tipe_order != "FREE"){
+            $return_arr = array("Status" => 'ERROR', "Message" => 'Tipe transaksi tidak valid');
+            echo json_encode($return_arr);
+            return;
+        }
+
         $no_order = "C".date("Ymdhis").$this->randStr(2);
         $subtotal_order = 0;
         $grand_total_order = 0;
         $status_order = '1';
+
 
         $is_ongkir_kas = ($is_ongkir_kas == true ? "1" : "0");
         $is_paid = ($is_paid == true ? "1" : "0");
@@ -1384,7 +1437,7 @@ class Main extends MX_Controller
 
         $data_m = compact('id_customer', 'no_order', 'catatan_order', 'tgl_order', 'subtotal_order',
                             'ongkir_order', 'is_ongkir_kas', 'diskon_order', 'grand_total_order', 'status_order',
-                            'is_paid', 'payment_detail', 'is_in_store', 'is_tentative', 'is_changeable');
+                            'is_paid', 'payment_detail', 'is_in_store', 'is_tentative', 'is_changeable', 'tipe_order');
 
         $this->db->trans_begin();
 

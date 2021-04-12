@@ -2,6 +2,30 @@
 class Main_model extends CI_Model
 {
 
+    function jurnal_umum_gabung($month, $length = 10000000000, $start = 0){
+        $sql = "SELECT *
+                FROM (
+                    SELECT a.*, (@mutasi := @mutasi + IF(a.DEBET <> 0, a.DEBET, (-1 * a.KREDIT))) AS MUTASI, (@count := @count + 1) AS COUNT
+                    FROM (
+                        SELECT id_order_m AS ID, tgl_order, no_order, grand_total_order AS DEBET, 0 AS KREDIT
+                        FROM order_m
+                        WHERE is_paid = '1' AND MONTH(tgl_order) = '{$month}'
+                        UNION 
+                        SELECT id_order_vendor_m as ID, tgl_order_vendor, no_order_vendor, 0 AS DEBET, grand_total_order AS KREDIT
+                        FROM order_vendor_m
+                        WHERE is_paid_vendor = '1' AND MONTH(tgl_order_vendor) = '{$month}'
+                    )a
+                    CROSS JOIN (select @mutasi := 0) params
+                    CROSS JOIN (select @count := 0) counter
+                    ORDER BY a.tgl_order, ID
+                )a
+                ORDER BY COUNT DESC LIMIT {$start}, {$length}";
+
+        $query = $this->db->query($sql);
+        return $query;
+    }
+
+
     function get_posisi(){
         $sql = "SELECT * FROM posisi ORDER BY nama_posisi";
 
@@ -241,7 +265,8 @@ class Main_model extends CI_Model
             'status_order_vendor'=> $data['status_order_vendor'],
             'is_paid_vendor'=> $data['is_paid_vendor'],
             'payment_detail'=> $data['payment_detail'],
-            'is_in_store'=> $data['is_in_store']
+            'is_in_store'=> $data['is_in_store'],
+            'tipe_order'=> $data['tipe_order']
         );
 
         $this->db->insert('order_vendor_m',$input_data);
@@ -445,7 +470,8 @@ class Main_model extends CI_Model
             'payment_detail'=> $data['payment_detail'],
             'is_in_store'=> $data['is_in_store'],
             'is_tentative' => $data['is_tentative'],
-            'is_changeable' => $data['is_changeable']
+            'is_changeable' => $data['is_changeable'],
+            'tipe_order' => $data['tipe_order']
         );
 
         $this->db->insert('order_m',$input_data);

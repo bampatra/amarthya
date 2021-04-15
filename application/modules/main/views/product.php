@@ -88,6 +88,17 @@
                         <div class="invalid-feedback invalid-HJ">Data tidak valid</div>
                     </div>
 
+                    <div class="form-group" >
+                        <label class="col-form-label">Brand</label>
+                        <select id="brand_product" name="brand_product" class="form-control form-active-control">
+                            <option value="KA"> Kedai Amarthya </option>
+                            <option value="AF"> Amarthya Fashion </option>
+                            <option value="AHF"> Amarthya Healthy Food </option>
+                            <option value="AH"> Amarthya Herbal </option>
+                        </select>
+                        <div class="invalid-feedback invalid-brand">Data tidak valid</div>
+                    </div>
+
 
                     <input type="hidden" id="id_product" name="id_product" val="0">
                 </form>
@@ -152,6 +163,7 @@
 
             </div>
             <div class="modal-footer">
+                <button type="button" class="btn btn-danger delete">Hapus</button>
                 <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
             </div>
         </div>
@@ -176,6 +188,33 @@
     document.title = "Product - Amarthya Group";
 
     detail_toggled = false;
+
+    $('.delete').click(function(){
+        if(confirm("Data akan dihapus permanen. Lanjutkan?")){
+            $('.loading').css("display", "block");
+            $('.Veil-non-hover').fadeIn();
+
+            $.ajax({
+                type: 'POST', // define the type of HTTP verb we want to use (POST for our form)
+                url: admin_url + 'delete_product', // the url where we want to POST// our data object
+                dataType: 'json',
+                data: {id_product: $('#id_product').val()},
+                success: function (response) {
+                    if(response.Status == "OK"){
+                        show_snackbar(response.Message);
+                        $('#detail-product-modal').modal('hide');
+                        get_product();
+                    } else if(response.Status == "ERROR" ){
+                        show_snackbar(response.Message);
+                    }
+
+                    $('.loading').css("display", "none");
+                    $('.Veil-non-hover').fadeOut();
+
+                }
+            })
+        }
+    })
 
     get_product();
 
@@ -324,6 +363,7 @@
         $('#HP_product').val(htmlDecode(data.HP_product));
         $('#HJ_product').val(htmlDecode(data.HJ_product));
         $('#HR_product').val(htmlDecode(data.HR_product));
+        $('#brand_product').val(htmlDecode(data.brand_product));
 
         $('.stok_product').html(data.STOK);
 

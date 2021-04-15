@@ -5,7 +5,20 @@
 
     <!-- Page Heading -->
     <h1 class="h3 mb-2 text-gray-800">Detail Order</h1>
-    <br>
+    <span>
+        <?php   if($orders[0]->brand_order == 'KA'){
+            echo "Kedai Amarthya";
+        } else if ($orders[0]->brand_order == 'AHF'){
+            echo "Amarthya Healthy Food";
+        } else if ($orders[0]->brand_order == 'AH'){
+            echo "Amarthya Herbal";
+        } else if ($orders[0]->brand_order == 'AF'){
+            echo "Amarthya Fashion";
+        }
+
+        ?>
+    </span>
+    <br><br>
     <!-- DataTales Example -->
 
     <div class="wrapper">
@@ -15,7 +28,7 @@
             <div id="customer_info" style="font-size: 14px">
                 <strong> <?php echo $orders[0]->nama_customer; echo " (".$orders[0]->no_hp_customer.")"?></strong><br>
                 <span style="font-size: 12px"> <?php echo $orders[0]->alamat_customer; ?> </span>
-                <?php if($orders[0]->is_in_store == '1'){ echo "<br><br><p>In Store (Tanpa Delivery)</p>"; } ?>
+                <?php   if($orders[0]->is_in_store == '1'){ echo "<br><br><p>In Store (Tanpa Delivery)</p>"; } ?>
 
             </div>
 

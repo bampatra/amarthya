@@ -2,14 +2,17 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="822c5f09-bd0b-4858-81e7-523fc1d476f6" name="Default Changelist" comment="">
+      <change afterPath="$PROJECT_DIR$/assets/images/amarthya_herbal.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/assets/images/fashion.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/assets/images/phonto.PNG" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/application/modules/main/controllers/Main.php" beforeDir="false" afterPath="$PROJECT_DIR$/application/modules/main/controllers/Main.php" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/application/modules/main/models/Main_model.php" beforeDir="false" afterPath="$PROJECT_DIR$/application/modules/main/models/Main_model.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/application/modules/main/views/jurnal_umum.php" beforeDir="false" afterPath="$PROJECT_DIR$/application/modules/main/views/jurnal_umum.php" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/application/modules/main/views/order_detail.php" beforeDir="false" afterPath="$PROJECT_DIR$/application/modules/main/views/order_detail.php" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/application/modules/main/views/order_form.php" beforeDir="false" afterPath="$PROJECT_DIR$/application/modules/main/views/order_form.php" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/application/modules/main/views/order_vendor_detail.php" beforeDir="false" afterPath="$PROJECT_DIR$/application/modules/main/views/order_vendor_detail.php" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/application/modules/main/views/order_vendor_form.php" beforeDir="false" afterPath="$PROJECT_DIR$/application/modules/main/views/order_vendor_form.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/application/modules/main/views/product.php" beforeDir="false" afterPath="$PROJECT_DIR$/application/modules/main/views/product.php" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
@@ -40,13 +43,32 @@
   <component name="FileEditorManager">
     <leaf SIDE_TABS_SIZE_LIMIT_KEY="300">
       <file pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/application/modules/main/views/order_vendor_detail.php">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="300">
+              <caret line="20" column="12" selection-start-line="20" selection-start-column="12" selection-end-line="20" selection-end-column="12" />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/application/modules/main/views/order_detail.php">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="98">
+              <caret line="7" column="4" lean-forward="true" selection-start-line="7" selection-start-column="4" selection-end-line="19" selection-end-column="11" />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/application/modules/main/controllers/Main.php">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="373">
-              <caret line="35" column="33" selection-start-line="35" selection-start-column="33" selection-end-line="35" selection-end-column="33" />
+            <state relative-caret-position="1244">
+              <caret line="2262" column="25" selection-start-line="2262" selection-start-column="25" selection-end-line="2262" selection-end-column="25" />
               <folding>
                 <element signature="e#70#88#0#PHP" expanded="true" />
                 <element signature="n#slip_gaji#0;n#Main#0;n#!!top" />
+                <element signature="n#delete_product#0;n#Main#0;n#!!top" />
                 <element signature="n#delete_delivery#0;n#Main#0;n#!!top" />
                 <element signature="n#delete_pick_up#0;n#Main#0;n#!!top" />
                 <element signature="n#delete_stok_in_out#0;n#Main#0;n#!!top" />
@@ -116,20 +138,20 @@
           </provider>
         </entry>
       </file>
-      <file pinned="false" current-in-tab="true">
-        <entry file="file://$PROJECT_DIR$/application/config/config.php">
+      <file pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/application/modules/main/models/Main_model.php">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="298">
-              <caret line="385" column="33" lean-forward="true" selection-start-line="385" selection-start-column="33" selection-end-line="385" selection-end-column="33" />
+            <state relative-caret-position="203">
+              <caret line="591" column="24" selection-start-line="591" selection-start-column="13" selection-end-line="591" selection-end-column="24" />
             </state>
           </provider>
         </entry>
       </file>
-      <file pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/application/modules/main/models/Main_model.php">
+      <file pinned="false" current-in-tab="true">
+        <entry file="file://$PROJECT_DIR$/application/config/config.php">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="301">
-              <caret line="268" column="44" selection-start-line="268" selection-start-column="44" selection-end-line="268" selection-end-column="44" />
+            <state relative-caret-position="99">
+              <caret line="385" column="33" lean-forward="true" selection-start-line="385" selection-start-column="33" selection-end-line="385" selection-end-column="33" />
             </state>
           </provider>
         </entry>
@@ -147,15 +169,6 @@
   </component>
   <component name="FindInProjectRecents">
     <findStrings>
-      <find>get_order_Vendor</find>
-      <find>get_pick</find>
-      <find>get_order_ven</find>
-      <find>vendor</find>
-      <find>get_ve</find>
-      <find>add_customer</find>
-      <find>add_vendor</find>
-      <find>stok_in_</find>
-      <find>get_prod</find>
       <find>get_vendor</find>
       <find>get_product_stok_in_out</find>
       <find>get_order_m</find>
@@ -177,6 +190,15 @@
       <find>add_order_m</find>
       <find>$tipe_order != &quot;REK&quot; &amp;&amp; $tipe_order != &quot;TUNAI&quot;</find>
       <find>ref_payment_form</find>
+      <find>add_produ</find>
+      <find>sssss</find>
+      <find>order_s</find>
+      <find>delete_stok</find>
+      <find>tipe_in_out</find>
+      <find>add_order</find>
+      <find>brand_order</find>
+      <find>brand</find>
+      <find>get_product</find>
     </findStrings>
     <replaceStrings>
       <replace>data.neraca.trim()</replace>
@@ -251,7 +273,6 @@
         <option value="$PROJECT_DIR$/application/modules/main/views/delivery_detail.php" />
         <option value="$PROJECT_DIR$/application/modules/main/views/template/upload_excel.html" />
         <option value="$PROJECT_DIR$/application/modules/main/views/template/upload_excel.php" />
-        <option value="$PROJECT_DIR$/application/modules/main/views/product.php" />
         <option value="$PROJECT_DIR$/application/modules/main/views/stok_in_out.php" />
         <option value="$PROJECT_DIR$/application/modules/home/controllers/Home.php" />
         <option value="$PROJECT_DIR$/application/modules/main/views/delivery_list.php" />
@@ -261,11 +282,12 @@
         <option value="$PROJECT_DIR$/application/modules/main/views/template/admin_header.php" />
         <option value="$PROJECT_DIR$/application/modules/main/views/vendor.php" />
         <option value="$PROJECT_DIR$/application/modules/main/views/jurnal_umum.php" />
-        <option value="$PROJECT_DIR$/application/modules/main/models/Main_model.php" />
+        <option value="$PROJECT_DIR$/application/modules/main/views/product.php" />
         <option value="$PROJECT_DIR$/application/modules/main/views/order_form.php" />
-        <option value="$PROJECT_DIR$/application/modules/main/views/order_vendor_form.php" />
-        <option value="$PROJECT_DIR$/application/modules/main/views/order_vendor_detail.php" />
         <option value="$PROJECT_DIR$/application/modules/main/views/order_detail.php" />
+        <option value="$PROJECT_DIR$/application/modules/main/views/order_vendor_form.php" />
+        <option value="$PROJECT_DIR$/application/modules/main/models/Main_model.php" />
+        <option value="$PROJECT_DIR$/application/modules/main/views/order_vendor_detail.php" />
         <option value="$PROJECT_DIR$/application/modules/main/controllers/Main.php" />
         <option value="$PROJECT_DIR$/application/config/config.php" />
       </list>
@@ -325,7 +347,6 @@
       <foldersAlwaysOnTop value="true" />
     </navigator>
     <panes>
-      <pane id="Scope" />
       <pane id="ProjectPane">
         <subPane>
           <expand>
@@ -381,17 +402,29 @@
               <item name="main" type="462c0819:PsiDirectoryNode" />
               <item name="views" type="462c0819:PsiDirectoryNode" />
             </path>
+            <path>
+              <item name="amarthya" type="b2602c69:ProjectViewProjectNode" />
+              <item name="amarthya" type="462c0819:PsiDirectoryNode" />
+              <item name="assets" type="462c0819:PsiDirectoryNode" />
+            </path>
+            <path>
+              <item name="amarthya" type="b2602c69:ProjectViewProjectNode" />
+              <item name="amarthya" type="462c0819:PsiDirectoryNode" />
+              <item name="assets" type="462c0819:PsiDirectoryNode" />
+              <item name="images" type="462c0819:PsiDirectoryNode" />
+            </path>
           </expand>
           <select />
         </subPane>
       </pane>
+      <pane id="Scope" />
     </panes>
   </component>
   <component name="PropertiesComponent">
     <property name="DefaultHtmlFileTemplate" value="HTML File" />
     <property name="SHARE_PROJECT_CONFIGURATION_FILES" value="true" />
     <property name="WebServerToolWindowFactoryState" value="false" />
-    <property name="last_opened_file_path" value="$PROJECT_DIR$/application/modules/main/views" />
+    <property name="last_opened_file_path" value="$PROJECT_DIR$/assets/images" />
     <property name="list.type.of.created.stylesheet" value="CSS" />
     <property name="node.js.detected.package.eslint" value="true" />
     <property name="node.js.detected.package.tslint" value="true" />
@@ -406,19 +439,19 @@
     <property name="settings.editor.selected.configurable" value="reference.webide.settings.project.settings.php" />
   </component>
   <component name="RecentsManager">
+    <key name="CopyFile.RECENT_KEYS">
+      <recent name="$PROJECT_DIR$/assets/images" />
+      <recent name="$PROJECT_DIR$/assets/images/sample_disc" />
+      <recent name="$PROJECT_DIR$/application/modules/main/views" />
+      <recent name="$PROJECT_DIR$/application/modules/home/views" />
+      <recent name="$PROJECT_DIR$/application/modules/admin/views" />
+    </key>
     <key name="MoveFile.RECENT_KEYS">
       <recent name="$PROJECT_DIR$/assets/images" />
       <recent name="$PROJECT_DIR$/application/third_party/fpdf182/font" />
       <recent name="$PROJECT_DIR$/application/third_party" />
       <recent name="$PROJECT_DIR$/assets" />
       <recent name="$PROJECT_DIR$/application/libraries" />
-    </key>
-    <key name="CopyFile.RECENT_KEYS">
-      <recent name="$PROJECT_DIR$/application/modules/main/views" />
-      <recent name="$PROJECT_DIR$/application/modules/home/views" />
-      <recent name="$PROJECT_DIR$/application/modules/admin/views" />
-      <recent name="$PROJECT_DIR$/application/modules/home/models" />
-      <recent name="$PROJECT_DIR$/application/modules/home/controllers" />
     </key>
   </component>
   <component name="RunDashboard">
@@ -573,18 +606,19 @@
       <workItem from="1617874629232" duration="495000" />
       <workItem from="1617946145149" duration="1168000" />
       <workItem from="1618103786974" duration="1798000" />
-      <workItem from="1618188118822" duration="6796000" />
+      <workItem from="1618188118822" duration="16846000" />
+      <workItem from="1618489155849" duration="2366000" />
     </task>
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="1536340000" />
+    <option name="totallyTimeSpent" value="1548756000" />
   </component>
   <component name="ToolWindowManager">
     <frame x="0" y="23" width="1280" height="777" extended-state="0" />
     <editor active="true" />
     <layout>
-      <window_info active="true" content_ui="combo" id="Project" order="0" sideWeight="0.49927008" visible="true" weight="0.2358643" />
+      <window_info active="true" content_ui="combo" id="Project" order="0" sideWeight="0.49927008" visible="true" weight="0.23909532" />
       <window_info id="Structure" order="1" sideWeight="0.5007299" side_tool="true" weight="0.26332796" />
       <window_info id="Favorites" order="2" side_tool="true" />
       <window_info anchor="bottom" id="Message" order="0" />
@@ -865,20 +899,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/application/modules/main/views/stok_in_out.php">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="-290">
-          <caret line="164" column="37" selection-start-line="164" selection-start-column="37" selection-end-line="164" selection-end-column="37" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/application/modules/main/views/product.php">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="2813">
-          <caret line="343" column="34" lean-forward="true" selection-start-line="343" selection-start-column="34" selection-end-line="343" selection-end-column="34" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/application/modules/main/views/pickup_list.php">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="135">
@@ -951,19 +971,37 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/application/modules/main/models/Main_model.php">
+    <entry file="file://$PROJECT_DIR$/application/modules/main/views/stok_in_out.php">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="301">
-          <caret line="268" column="44" selection-start-line="268" selection-start-column="44" selection-end-line="268" selection-end-column="44" />
+        <state relative-caret-position="517">
+          <caret line="175" column="6" lean-forward="true" selection-start-line="150" selection-start-column="4" selection-end-line="175" selection-end-column="6" />
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/application/modules/main/views/order_form.php">
+    <entry file="file://$PROJECT_DIR$/application/modules/main/views/product.php">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="450">
-          <caret line="289" column="34" lean-forward="true" selection-start-line="286" selection-start-column="28" selection-end-line="289" selection-end-column="34" />
+        <state relative-caret-position="-2139">
+          <caret line="85" column="47" selection-start-line="85" selection-start-column="47" selection-end-line="85" selection-end-column="47" />
           <folding>
             <element signature="n#style#0;n#span#0;n#!!top" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/application/modules/main/models/Main_model.php">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="203">
+          <caret line="591" column="24" selection-start-line="591" selection-start-column="13" selection-end-line="591" selection-end-column="24" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/application/modules/main/views/order_vendor_form.php">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="5085">
+          <caret line="339" column="57" selection-start-line="339" selection-start-column="57" selection-end-line="339" selection-end-column="57" />
+          <folding>
+            <element signature="n#style#0;n#span#0;n#!!top" expanded="true" />
+            <element signature="e#11637#12290#0#HTML" />
             <element signature="n#style#0;n#td#1;n#tr#0;n#table#0;n#!!top" expanded="true" />
             <element signature="n#style#0;n#span#0;n#td#1;n#tr#0;n#table#0;n#!!top" expanded="true" />
             <element signature="n#style#0;n#strong#0;n#td#1;n#tr#0;n#table#0;n#!!top" expanded="true" />
@@ -972,10 +1010,10 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/application/modules/main/views/order_vendor_form.php">
+    <entry file="file://$PROJECT_DIR$/application/modules/main/views/order_form.php">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="699">
-          <caret line="70" column="26" selection-start-line="70" selection-start-column="26" selection-end-line="70" selection-end-column="26" />
+        <state relative-caret-position="341">
+          <caret line="443" column="57" lean-forward="true" selection-start-line="443" selection-start-column="20" selection-end-line="443" selection-end-column="57" />
           <folding>
             <element signature="n#style#0;n#span#0;n#!!top" expanded="true" />
             <element signature="n#style#0;n#td#1;n#tr#0;n#table#0;n#!!top" expanded="true" />
@@ -988,29 +1026,26 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/application/modules/main/views/order_detail.php">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="451">
-          <caret line="197" column="182" selection-start-line="197" selection-start-column="182" selection-end-line="197" selection-end-column="182" />
-          <folding>
-            <element signature="n#style#0;n#div#4;n#div#1;n#div#0;n#div#0;n#div#3;n#div#0;n#!!top" expanded="true" />
-            <element signature="n#style#0;n#div#5;n#div#1;n#div#0;n#div#0;n#div#3;n#div#0;n#!!top" expanded="true" />
-          </folding>
+        <state relative-caret-position="98">
+          <caret line="7" column="4" lean-forward="true" selection-start-line="7" selection-start-column="4" selection-end-line="19" selection-end-column="11" />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/application/modules/main/views/order_vendor_detail.php">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="392">
-          <caret line="81" column="174" selection-start-line="81" selection-start-column="110" selection-end-line="81" selection-end-column="174" />
+        <state relative-caret-position="300">
+          <caret line="20" column="12" selection-start-line="20" selection-start-column="12" selection-end-line="20" selection-end-column="12" />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/application/modules/main/controllers/Main.php">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="373">
-          <caret line="35" column="33" selection-start-line="35" selection-start-column="33" selection-end-line="35" selection-end-column="33" />
+        <state relative-caret-position="1244">
+          <caret line="2262" column="25" selection-start-line="2262" selection-start-column="25" selection-end-line="2262" selection-end-column="25" />
           <folding>
             <element signature="e#70#88#0#PHP" expanded="true" />
             <element signature="n#slip_gaji#0;n#Main#0;n#!!top" />
+            <element signature="n#delete_product#0;n#Main#0;n#!!top" />
             <element signature="n#delete_delivery#0;n#Main#0;n#!!top" />
             <element signature="n#delete_pick_up#0;n#Main#0;n#!!top" />
             <element signature="n#delete_stok_in_out#0;n#Main#0;n#!!top" />
@@ -1081,7 +1116,7 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/application/config/config.php">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="298">
+        <state relative-caret-position="99">
           <caret line="385" column="33" lean-forward="true" selection-start-line="385" selection-start-column="33" selection-end-line="385" selection-end-column="33" />
         </state>
       </provider>

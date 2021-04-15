@@ -32,6 +32,19 @@
                     <input type="date" id="tgl_order" name="tgl_order" class="form-control form-control-sm form-active-control">
                 </div>
             </div>
+
+            <div class="form-group row">
+                <label class="col-sm-3 col-form-label col-form-label-sm">Brand</label>
+                <div class="col-sm-9">
+                    <select id="brand_order" name="brand_order" class="form-control form-active-control form-control-sm">
+                        <option value="KA"> Kedai Amarthya </option>
+                        <option value="AF"> Amarthya Fashion </option>
+                        <option value="AHF"> Amarthya Healthy Food </option>
+                        <option value="AH"> Amarthya Herbal </option>
+                    </select>
+                </div>
+                <div class="invalid-feedback invalid-brand">Data tidak valid</div>
+            </div>
         </div>
     </div>
 
@@ -338,11 +351,65 @@
     var selected_customer;
 
     item_lists = [];
-    get_product();
+    get_product("KA");
     set_harga();
 
+    $('#brand_order').change(function(){
+        get_product(this.value);
+    })
 
     document.title = "Formulir Order - Amarthya Group";
+
+    function get_product(brand = "KA"){
+        $('#productDataTable').DataTable().destroy();
+        $('#productDataTable').DataTable({
+            processing: true,
+            serverSide: true,
+            responsive: true,
+            lengthChange: false,
+            searching: true,
+            bInfo: false,
+            language: {
+                search: ""
+            },
+            pagingType: "simple",
+            ajax: {
+                url     : admin_url + 'get_product?brand=' + brand,
+                type    : 'POST',
+            },
+            createdRow: function ( row, data, index ) {
+                $('td', row).eq(0).css("display", "none");
+                $('td', row).eq(1).css("display", "none");
+                $('td', row).eq(2).css("display", "none");
+                $('td', row).eq(3).css("display", "none");
+                $('td', row).eq(4).css("display", "none");
+                $('td', row).eq(5).css("display", "none");
+            },
+            columns: [
+                {"data": "id_product"},
+                {"data": "HJ_product"},
+                {"data": "HR_product"},
+                {"data": "HP_product"},
+                {"data": "STOK"},
+                {"data": "nama_product"},
+                {
+                    "data": {
+                        "nama_product":"nama_product",
+                        "STOK":"STOK"
+                    },
+                    mRender : function(data, type, full) {
+                        html = data.nama_product +'<br> <span style="font-size: 11px">Stok: '+ data.STOK +'</span>';
+                        return html;
+                    }
+                }
+
+            ],
+            initComplete: function (settings, json) {
+
+            }
+        });
+
+    }
 
     $('input[type=radio][name=tipe_order]').change(function() {
         tipe_order = this.value;
@@ -374,6 +441,7 @@
                     is_in_store: $('#is_in_store').prop("checked"),
                     is_tentative: $('#is_tentative').prop("checked"),
                     tipe_order: tipe_order,
+                    brand_order: $('#brand_order').val(),
                     order_s: item_lists
                 },
                 success: function (response) {
@@ -466,57 +534,6 @@
         }
 
         $('#grandtotal').html(convertToRupiah(grandtotal));
-    }
-
-    function get_product(){
-        $('#productDataTable').DataTable().destroy();
-        $('#productDataTable').DataTable({
-            processing: true,
-            serverSide: true,
-            responsive: true,
-            lengthChange: false,
-            searching: true,
-            bInfo: false,
-            language: {
-                search: ""
-            },
-            pagingType: "simple",
-            ajax: {
-                url     : admin_url + 'get_product',
-                type    : 'POST',
-            },
-            createdRow: function ( row, data, index ) {
-                $('td', row).eq(0).css("display", "none");
-                $('td', row).eq(1).css("display", "none");
-                $('td', row).eq(2).css("display", "none");
-                $('td', row).eq(3).css("display", "none");
-                $('td', row).eq(4).css("display", "none");
-                $('td', row).eq(5).css("display", "none");
-            },
-            columns: [
-                {"data": "id_product"},
-                {"data": "HJ_product"},
-                {"data": "HR_product"},
-                {"data": "HP_product"},
-                {"data": "STOK"},
-                {"data": "nama_product"},
-                {
-                    "data": {
-                        "nama_product":"nama_product",
-                        "STOK":"STOK"
-                    },
-                    mRender : function(data, type, full) {
-                        html = data.nama_product +'<br> <span style="font-size: 11px">Stok: '+ data.STOK +'</span>';
-                        return html;
-                    }
-                }
-
-            ],
-            initComplete: function (settings, json) {
-
-            }
-        });
-
     }
 
     $('#productDataTable').on( 'click', 'tbody tr', function () {

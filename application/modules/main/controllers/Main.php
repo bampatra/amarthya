@@ -59,6 +59,54 @@ class Main extends MX_Controller
 
     }
 
+    function delete_product(){
+        if($this->session->userdata('is_admin') == "0"){
+            redirect(base_url('main'));
+        }
+
+        $id_product = strtoupper(trim(htmlentities($_REQUEST['id_product'], ENT_QUOTES)));
+
+        $product_data = $this->Main_model->get_product_by_id($id_product);
+
+        if($product_data->num_rows() == 0){
+            $return_arr = array("Status" => 'ERROR', "Message" => 'Data tidak ditemukan');
+            echo json_encode($return_arr);
+            return;
+        }
+
+        if($product_data->row()->active_product == '0'){
+            $return_arr = array("Status" => 'ERROR', "Message" => 'Produk sudah dihapus');
+            echo json_encode($return_arr);
+            return;
+        }
+
+        // change active product
+
+        $active_product = '0';
+        $updated_data_product = compact('active_product');
+
+        if($this->Main_model->update_product($updated_data_product, $id_product)){
+
+            // delete stok in and out data
+            if($this->Main_model->delete_stok_in_out_by_product($id_product)) {
+                $return_arr = array("Status" => 'OK', "Message" => 'Data berhasil dihapus');
+                echo json_encode($return_arr);
+                return;
+            } else {
+                $return_arr = array("Status" => 'ERROR', "Message" => 'Gagal menghapus data stok');
+                echo json_encode($return_arr);
+                return;
+            }
+
+        } else {
+            $return_arr = array("Status" => 'ERROR', "Message" => 'Gagal menghapus produk');
+            echo json_encode($return_arr);
+            return;
+        }
+
+
+    }
+
     function delete_delivery(){
         if($this->session->userdata('is_admin') == "0"){
             redirect(base_url('main'));
@@ -73,7 +121,6 @@ class Main extends MX_Controller
             echo json_encode($return_arr);
             return;
         }
-
 
         if($delivery_data->row()->status_delivery != '0'){
             $return_arr = array("Status" => 'ERROR', "Message" => 'Data tidak bisa dihapus karena sedang dikirim atau sudah dikirm');
@@ -784,6 +831,7 @@ class Main extends MX_Controller
         $payment_detail = trim(htmlentities($_REQUEST['payment_detail'], ENT_QUOTES));
         $is_in_store = filter_var($_REQUEST['is_in_store'], FILTER_VALIDATE_BOOLEAN);
         $tipe_order = trim(htmlentities($_REQUEST['tipe_order'], ENT_QUOTES));
+        $brand_order = trim(htmlentities($_REQUEST['brand_order'], ENT_QUOTES));
 
         // ERROR    : if online purchase but no customer
         // OK       : if offline purchase with no customer
@@ -813,6 +861,13 @@ class Main extends MX_Controller
             return;
         }
 
+        // ERROR    : if brand is not recognized
+        if(empty($brand_order) || ($brand_order != "AHF" && $brand_order != "AF" && $brand_order != "AH" && $brand_order != "KA")){
+            $return_arr = array("Status" => 'ERROR', "Message" => 'Brand tidak valid');
+            echo json_encode($return_arr);
+            return;
+        }
+
         $no_order_vendor = "V".date("Ymdhis").$this->randStr(2);
         $grand_total_order = 0;
         $status_order_vendor = '1';
@@ -821,7 +876,7 @@ class Main extends MX_Controller
         $is_in_store = ($is_in_store == true ? "1" : "0");
 
         $data_m = compact('id_vendor', 'no_order_vendor', 'catatan_order_vendor', 'tgl_order_vendor',
-                            'grand_total_order', 'status_order_vendor', 'is_paid_vendor', 'payment_detail', 'is_in_store', 'tipe_order');
+                            'grand_total_order', 'status_order_vendor', 'is_paid_vendor', 'payment_detail', 'is_in_store', 'tipe_order', 'brand_order');
 
         $this->db->trans_begin();
 
@@ -1388,6 +1443,7 @@ class Main extends MX_Controller
         $is_paid = filter_var($_REQUEST['is_paid'], FILTER_VALIDATE_BOOLEAN);
         $payment_detail = trim(htmlentities($_REQUEST['payment_detail'], ENT_QUOTES));
         $tipe_order = trim(htmlentities($_REQUEST['tipe_order'], ENT_QUOTES));
+        $brand_order = trim(htmlentities($_REQUEST['brand_order'], ENT_QUOTES));
         $is_in_store = filter_var($_REQUEST['is_in_store'], FILTER_VALIDATE_BOOLEAN);
         $is_tentative = filter_var($_REQUEST['is_tentative'], FILTER_VALIDATE_BOOLEAN);
         $is_changeable = '1';
@@ -1424,6 +1480,13 @@ class Main extends MX_Controller
             return;
         }
 
+        // ERROR    : if brand is not recognized
+        if(empty($brand_order) || ($brand_order != "AHF" && $brand_order != "AF" && $brand_order != "AH" && $brand_order != "KA")){
+            $return_arr = array("Status" => 'ERROR', "Message" => 'Brand tidak valid');
+            echo json_encode($return_arr);
+            return;
+        }
+
         $no_order = "C".date("Ymdhis").$this->randStr(2);
         $subtotal_order = 0;
         $grand_total_order = 0;
@@ -1437,7 +1500,7 @@ class Main extends MX_Controller
 
         $data_m = compact('id_customer', 'no_order', 'catatan_order', 'tgl_order', 'subtotal_order',
                             'ongkir_order', 'is_ongkir_kas', 'diskon_order', 'grand_total_order', 'status_order',
-                            'is_paid', 'payment_detail', 'is_in_store', 'is_tentative', 'is_changeable', 'tipe_order');
+                            'is_paid', 'payment_detail', 'is_in_store', 'is_tentative', 'is_changeable', 'tipe_order', 'brand_order');
 
         $this->db->trans_begin();
 
@@ -1716,8 +1779,13 @@ class Main extends MX_Controller
         $output['recordsTotal'] = $output['recordsFiltered'] = $total;
         $output['data']=array();
 
+        if(isset($_GET['brand'])){
+            $brand = htmlentities($_GET['brand'], ENT_QUOTES);
+        } else {
+            $brand = "all";
+        }
 
-        $output['data'] = $this->Main_model->get_product($search, $length, $start)->result_object();
+        $output['data'] = $this->Main_model->get_product($search, $length, $start, $brand)->result_object();
 
         echo json_encode($output);
     }
@@ -1748,6 +1816,7 @@ class Main extends MX_Controller
         $HP_product = strtoupper(trim(htmlentities($_REQUEST['HP_product'], ENT_QUOTES)));
         $HJ_product = strtoupper(trim(htmlentities($_REQUEST['HJ_product'], ENT_QUOTES)));
         $HR_product = strtoupper(trim(htmlentities($_REQUEST['HR_product'], ENT_QUOTES)));
+        $brand_product = strtoupper(trim(htmlentities($_REQUEST['brand_product'], ENT_QUOTES)));
 
         //validation
         $error = array();
@@ -1774,6 +1843,10 @@ class Main extends MX_Controller
             array_push($error, "invalid-HR");
         }
 
+        if(empty($brand_product) || ($brand_product != "AHF" && $brand_product != "AF" && $brand_product != "AH" && $brand_product != "KA")){
+            array_push($error, "invalid-brand");
+        }
+
         if(!empty($error)){
             $return_arr = array("Status" => 'FORMERROR', "Error" => $error);
             $this->db->trans_rollback();
@@ -1782,7 +1855,7 @@ class Main extends MX_Controller
         }
 
         $data = compact('nama_product', 'SKU_product', 'satuan_product',
-                        'HJ_product', 'HR_product', 'HP_product');
+                        'HJ_product', 'HR_product', 'HP_product', 'brand_product');
 
 
         if($this->Main_model->get_product_by_id($id_product)->num_rows() == 0){
@@ -2220,7 +2293,22 @@ class Main extends MX_Controller
                 //====================== HEADER ======================
 
                 $pdf->Cell(130 ,5,'',0,0);
-                $pdf->Image(base_url('assets/images/logopdf.jpg'), 10, 10, 48, 22 ,'');
+
+                if($data_order->row()->brand_order == "KA"){
+                    $pdf->Image(base_url('assets/images/logopdf.jpg'), 10, 10, 48, 22 ,'');
+                    $brand = "Kedai Amarthya";
+                } else if ($data_order->row()->brand_order == "AH"){
+                    $pdf->Image(base_url('assets/images/amarthya_herbal.png'), 10, 10, 30, 30 ,'');
+                    $brand = "Amarthya Herbal";
+                } else if ($data_order->row()->brand_order == "AHF") {
+                    $pdf->Image(base_url('assets/images/phonto.png'), 10, 10, 30, 30 ,'');
+                    $brand = "Amarthya Healthy Food";
+                } else if ($data_order->row()->brand_order == "AF") {
+                    $pdf->Image(base_url('assets/images/fashion.png'), 10, 0, 48, 48 ,'');
+                    $brand = "Amarthya Fashion";
+                }
+
+
                 $x = $pdf->GetX();
 
                 $pdf->Cell(59 ,5,'INVOICE',0,1, 'R');//end of line
@@ -2232,7 +2320,7 @@ class Main extends MX_Controller
 
                 $pdf->SetX($x);
                 $pdf->Cell(25 ,5,'',0,0, 'R');
-                $pdf->Cell(34 ,5,'Kedai Amarthya',0,1, 'R');//end of line
+                $pdf->Cell(34 ,5,$brand,0,1, 'R');//end of line
 
                 $pdf->SetFont('Nunito','',11);
 
@@ -2242,7 +2330,7 @@ class Main extends MX_Controller
 
                 $pdf->SetX($x);
                 $pdf->Cell(25 ,5,'',0,0, 'R');
-                $pdf->Cell(34 ,5,'kedai.amarthya@gmail.com',0,1, 'R');//end of line
+                $pdf->Cell(34 ,5,'amarthyagroup@gmail.com',0,1, 'R');//end of line
 
                 $pdf->SetX($x);
                 $pdf->Cell(25 ,5,'',0,0, 'R');
@@ -2406,7 +2494,21 @@ class Main extends MX_Controller
                 //====================== HEADER ======================
 
                 $pdf->Cell(130 ,5,'',0,0);
-                $pdf->Image(base_url('assets/images/logopdf.jpg'), 10, 10, 48, 22 ,'');
+
+                if($data_order->row()->brand_order == "KA"){
+                    $pdf->Image(base_url('assets/images/logopdf.jpg'), 10, 10, 48, 22 ,'');
+                    $brand = "Kedai Amarthya";
+                } else if ($data_order->row()->brand_order == "AH"){
+                    $pdf->Image(base_url('assets/images/amarthya_herbal.png'), 10, 10, 30, 30 ,'');
+                    $brand = "Amarthya Herbal";
+                } else if ($data_order->row()->brand_order == "AHF") {
+                    $pdf->Image(base_url('assets/images/phonto.png'), 10, 10, 30, 30 ,'');
+                    $brand = "Amarthya Healthy Food";
+                } else if ($data_order->row()->brand_order == "AF") {
+                    $pdf->Image(base_url('assets/images/fashion.png'), 10, 0, 48, 48 ,'');
+                    $brand = "Amarthya Fashion";
+                }
+
                 $x = $pdf->GetX();
 
                 $pdf->Cell(59 ,5,'TANDA TERIMA',0,1, 'R');//end of line
@@ -2418,7 +2520,7 @@ class Main extends MX_Controller
 
                 $pdf->SetX($x);
                 $pdf->Cell(25 ,5,'',0,0, 'R');
-                $pdf->Cell(34 ,5,'Kedai Amarthya',0,1, 'R');//end of line
+                $pdf->Cell(34 ,5,$brand,0,1, 'R');//end of line
 
                 $pdf->SetFont('Nunito','',11);
 
@@ -2428,7 +2530,7 @@ class Main extends MX_Controller
 
                 $pdf->SetX($x);
                 $pdf->Cell(25 ,5,'',0,0, 'R');
-                $pdf->Cell(34 ,5,'kedai.amarthya@gmail.com',0,1, 'R');//end of line
+                $pdf->Cell(34 ,5,'amarthyagroup@gmail.com',0,1, 'R');//end of line
 
                 $pdf->SetX($x);
                 $pdf->Cell(25 ,5,'',0,0, 'R');

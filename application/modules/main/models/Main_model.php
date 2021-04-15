@@ -266,7 +266,8 @@ class Main_model extends CI_Model
             'is_paid_vendor'=> $data['is_paid_vendor'],
             'payment_detail'=> $data['payment_detail'],
             'is_in_store'=> $data['is_in_store'],
-            'tipe_order'=> $data['tipe_order']
+            'tipe_order'=> $data['tipe_order'],
+            'brand_order' => $data['brand_order']
         );
 
         $this->db->insert('order_vendor_m',$input_data);
@@ -471,7 +472,8 @@ class Main_model extends CI_Model
             'is_in_store'=> $data['is_in_store'],
             'is_tentative' => $data['is_tentative'],
             'is_changeable' => $data['is_changeable'],
-            'tipe_order' => $data['tipe_order']
+            'tipe_order' => $data['tipe_order'],
+            'brand_order' => $data['brand_order']
         );
 
         $this->db->insert('order_m',$input_data);
@@ -556,6 +558,14 @@ class Main_model extends CI_Model
         return $query;
     }
 
+    function delete_stok_in_out_by_product($id_product){
+        $sql = "DELETE FROM stok_in_out
+                WHERE id_product = '{$id_product}'";
+
+        $query = $this->db->query($sql);
+        return $query;
+    }
+
     function add_stok_in_out($data){
         $input_data = array(
             'id_product' => $data['id_product'],
@@ -579,7 +589,7 @@ class Main_model extends CI_Model
         return $this->db->update('stok_in_out',$updated_data);
     }
 
-    function get_product($search = null, $length = 10000000000, $start = 0){
+    function get_product($search = null, $length = 10000000000, $start = 0, $brand = "all"){
 
         $sql = "SELECT a.*, IFNULL(b.stok_in, 0) - IFNULL(c.stok_out, 0) as STOK
                 FROM product a
@@ -595,10 +605,11 @@ class Main_model extends CI_Model
                     WHERE tipe_in_out = 'OUT'
                     GROUP BY id_product
                 )c ON a.id_product = c.id_product
-                WHERE a.active_product = '1'";
+                WHERE a.active_product = '1'
+                    AND (a.brand_product = '{$brand}' OR 'all' = '{$brand}')";
 
         if($search != "" || $search != null){
-            $sql .= " and a.nama_product LIKE '%$search%'";
+            $sql .= " AND a.nama_product LIKE '%$search%'";
         }
 
         $sql .= " ORDER BY a.nama_product LIMIT {$start}, {$length}";
@@ -646,7 +657,8 @@ class Main_model extends CI_Model
             'satuan_product' => $data['satuan_product'],
             'HP_product' => $data['HP_product'],
             'HJ_product' => $data['HJ_product'],
-            'HR_product' => $data['HR_product']
+            'HR_product' => $data['HR_product'],
+            'brand_product' => $data['brand_product']
         );
 
         $this->db->insert('product',$input_data);

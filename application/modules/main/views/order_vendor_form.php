@@ -61,7 +61,7 @@
     </div>
 
     <div class="wrapper" style="margin-top: 10px">
-        <div class="one">
+        <div class="one" style="min-height: 240px">
             <div class="form-group" >
                 <label class="col-form-label">Catatan</label>
                 <textarea id="catatan_order_vendor" name="catatan_order_vendor" class="form-control form-active-control"> </textarea>
@@ -88,6 +88,16 @@
         <div class="two">
             <table style="border-spacing: 0 10px; border-collapse:separate; width: 100%;">
 
+                <tr class="no-hover-style">
+                    <td style="width: 10%"> </td>
+                    <td style="text-align: right;width: 45%;" valign="top">
+                        Diskon
+                    </td>
+                    <td valign="top" style="text-align: right; width: 45%; font-size: 18px; font-weight: bold" id="diskon">
+                        <input type="number" id="diskon_order_vendor" name="diskon_order_vendor" class="form-control form-control-sm" style="width: 80%; float:right; text-align: right;" value="0">
+                    </td>
+                </tr>
+
                 <tr class="no-pointer">
                     <td style="width: 10%"> </td>
                     <td style="text-align: right;width: 45%;" valign="top">
@@ -95,6 +105,7 @@
                     </td>
                     <td valign="top" style="text-align: right; width: 45%; font-size: 18px; font-weight: bold" id="grandtotal"> ... </td>
                 </tr>
+
 
                 <tr class="no-pointer">
                     <td colspan="3" id="is-paid-alert">
@@ -107,7 +118,7 @@
             </table>
             <div class="form-group row">
                 <div class="col-sm-12">
-                    <input type="checkbox" id="is_paid_vendor">
+                    <input type="checkbox" id="is_paid_vendor" >
                     Sudah Dibayar
                 </div>
 
@@ -258,7 +269,7 @@
 <script>
 
     var tipe_harga = 'HP', tipe_order = 'REK';
-    var temp_harga = 0, subtotal = 0, temp_product;
+    var temp_harga = 0, subtotal = 0, diskon = 0, temp_product;
     var selected_vendor, temp_product;
 
     item_lists = [];
@@ -267,6 +278,11 @@
 
     $('#brand_order').change(function(){
         get_product(this.value);
+    })
+
+    $('#diskon_order_vendor').keyup(function(){
+        diskon = this.value;
+        set_harga();
     })
 
     document.title = "Formulir Order Vendor - Amarthya Group";
@@ -338,6 +354,7 @@
                     is_in_store: $('#is_in_store').prop("checked"),
                     tipe_order: tipe_order,
                     brand_order: $('#brand_order').val(),
+                    diskon_order_vendor: $('#diskon_order_vendor').val(),
                     order_vendor_s: item_lists
                 },
                 success: function (response) {
@@ -390,7 +407,7 @@
     })
 
     function set_harga(){
-        $('#grandtotal').html(convertToRupiah(subtotal));
+        $('#grandtotal').html(convertToRupiah(subtotal - diskon));
     }
 
     $('#productDataTable').on( 'click', 'tbody tr', function () {
@@ -434,13 +451,13 @@
             nama_product: nama_product,
             qty_order   : qty_order,
             harga_order : harga_order,
-            total_order : total_order
+            total_order : Math.round(total_order)
         });
 
         $('#product-modal').modal('hide');
         refresh_item();
 
-        subtotal += total_order;
+        subtotal += Math.round(total_order);
         set_harga();
 
 

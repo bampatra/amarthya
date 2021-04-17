@@ -616,7 +616,7 @@
         qty_order = $('#qty_order').val();
         harga_order = chosen_price;
         tipe_harga = tipe_harga;
-        total_order = parseFloat(qty_order) * parseFloat(harga_order);
+        total_order = Math.round(parseFloat(qty_order) * parseFloat(harga_order));
         is_free = $('#is_free').prop("checked");
 
         // ======= validations  =======
@@ -645,7 +645,7 @@
         $('#product-modal').modal('hide');
         refresh_item();
 
-        subtotal += total_order;
+        subtotal += Math.round(total_order);
         set_harga();
 
 

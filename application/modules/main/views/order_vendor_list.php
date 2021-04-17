@@ -12,11 +12,24 @@
         </div>
         <div class="card-body">
             <div class="table-responsive">
-                <select id="is_paid_vendor" name="is_paid_vendor" class="form-control form-control-sm form-active-control" data-live-search="true" style="width: 40%; float: left">
-                    <option value="all">Semua</option>
-                    <option value="0">Belum Bayar</option>
-                    <option value="1">Lunas</option>
-                </select>
+                <form class="form-inline" style="margin-bottom: 3px;">
+                    <div class="form-group" style="margin-right: 5px;">
+                        <select id="is_paid_vendor" name="is_paid_vendor" class="form-control form-control-sm form-active-control" data-live-search="true">
+                            <option value="all">Semua Status</option>
+                            <option value="0">Belum Bayar</option>
+                            <option value="1">Lunas</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <select id="brand_product" name="brand_product" class="form-control form-control-sm form-active-control" data-live-search="true">
+                            <option value="all">Semua Brand</option>
+                            <option value="KA"> Kedai Amarthya </option>
+                            <option value="AF"> Amarthya Fashion </option>
+                            <option value="AHF"> Amarthya Healthy Food </option>
+                            <option value="AH"> Amarthya Herbal </option>
+                        </select>
+                    </div>
+                </form>
                 <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
                     <thead>
                     <tr>
@@ -106,14 +119,21 @@
 
     document.title = "Daftar Order Vendor - Amarthya Group";
 
+    var status = "all", brand_order = "all";
+
     $('#is_paid_vendor').change(function(){
-        get_order_m($(this).val());
+        status = $(this).val();
+        get_order_m(status, brand_order);
+    })
+
+    $('#brand_product').change(function(){
+        brand_order = $(this).val();
+        get_order_m(status, brand_order);
     })
 
     get_order_m();
 
-    //get all products
-    function get_order_m(status = "all"){
+    function get_order_m(status = "all", brand_order = "all"){
         $('.loading').css("display", "block");
         $('.Veil-non-hover').fadeIn();
 
@@ -130,7 +150,7 @@
             },
             pagingType: "simple",
             ajax: {
-                url     : admin_url + 'get_order_vendor_m?status=' + status,
+                url     : admin_url + 'get_order_vendor_m?status=' + status + '&brand=' + brand_order,
                 type    : 'POST',
             },
             createdRow: function ( row, data, index ) {
@@ -146,7 +166,8 @@
                         "tgl_order_vendor":"tgl_order_vendor",
                         "grand_total_order":"grand_total_order",
                         "is_paid_vendor": "is_paid_vendor",
-                        "no_order_vendor": "no_order_vendor"
+                        "no_order_vendor": "no_order_vendor",
+                        "brand_order": "brand_order"
                     },
                     mRender : function(data, type, full) {
 
@@ -157,9 +178,20 @@
                         html = '<div class="detail-row">' +
                                 '<div class="detail-column">' +
                             '       <span>'+ temp_date.getDate() + '/' + (temp_date.getMonth() + 1) + '/' + temp_date.getFullYear() +'</span><br>' +
-                                    '<strong>'+ data.no_order_vendor +'</strong>\n' +
-                                    '<p>'+ data.nama_vendor +'</p>' +
-                                '</div>' +
+                                    '<strong>'+ data.no_order_vendor +'</strong><br>\n' +
+                                    '<span>'+ data.nama_vendor +'</span><br>';
+
+                        if(data.brand_order == "KA"){
+                            html += '<img src="<?php echo base_url('assets/images/logopdf.jpg');?>" style="float: left; margin-top: 3px" width="48px" height="22px">';
+                        } else if(data.brand_order == "AH"){
+                            html += '<img src="<?php echo base_url('assets/images/amarthya_herbal.png');?>" style="float: left; margin-top: 3px" width="40px" height="40px">';
+                        } else if(data.brand_order == "AF"){
+                            html += '<img src="<?php echo base_url('assets/images/fashion.png');?>" style="float: left margin-top: 3px" left="48px" height="48px">';
+                        } else if(data.brand_order == "AHF"){
+                            html += '<img src="<?php echo base_url('assets/images/phonto.PNG');?>" style="float: left; margin-top: 3px" left="40px" height="40px">';
+                        }
+
+                        html += '</div>' +
                                 '<div class="detail-column" style="text-align: left">' +
                                     '<strong style="font-size: 11px;">Total Order</strong>\n' +
                                     '<h6>'+ convertToRupiah(data.grand_total_order) +'</h6>';
@@ -270,6 +302,20 @@
 
 
         html_info_payment = '<table style="border-spacing: 0 10px; border-collapse:separate; width: 100%;">\n' +
+            '                        <tr class="no-pointer">\n' +
+            '                            <td style="width: 10%"> </td>\n' +
+            '                            <td style="text-align: right;width: 45%;" valign="top">\n' +
+            '                                Subtotal\n' +
+            '                            </td>\n' +
+            '                            <td valign="top" style="text-align: right; width: 45%; font-size: 18px;" id="diskon">'+ convertToRupiah(parseFloat(rowData.grand_total_order) + parseFloat(rowData.diskon_order_vendor)) +'</td>\n' +
+            '                        </tr>\n' +
+            '                        <tr class="no-pointer">\n' +
+            '                            <td style="width: 10%"> </td>\n' +
+            '                            <td style="text-align: right;width: 45%;" valign="top">\n' +
+            '                                Diskon\n' +
+            '                            </td>\n' +
+            '                            <td valign="top" style="text-align: right; width: 45%; font-size: 18px;" id="diskon">'+ convertToRupiah(rowData.diskon_order_vendor) +'</td>\n' +
+            '                        </tr>\n' +
             '                        <tr class="no-pointer">\n' +
             '                            <td style="width: 10%"> </td>\n' +
             '                            <td style="text-align: right;width: 45%;" valign="top">\n' +

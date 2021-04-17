@@ -12,11 +12,26 @@
         </div>
         <div class="card-body">
             <div class="table-responsive">
-                <select id="is_paid" name="is_paid" class="form-control form-control-sm form-active-control" data-live-search="true" style="width: 40%; float: left">
-                    <option value="all">Semua</option>
-                    <option value="0">Belum Bayar</option>
-                    <option value="1">Lunas</option>
-                </select>
+                <form class="form-inline" style="margin-bottom: 3px;">
+                    <div class="form-group" style="margin-right: 5px;">
+                        <select id="is_paid" name="is_paid" class="form-control form-control-sm form-active-control" data-live-search="true">
+                            <option value="all">Semua Status</option>
+                            <option value="0">Belum Bayar</option>
+                            <option value="1">Lunas</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <select id="brand_product" name="brand_product" class="form-control form-control-sm form-active-control" data-live-search="true">
+                            <option value="all">Semua Brand</option>
+                            <option value="KA"> Kedai Amarthya </option>
+                            <option value="AF"> Amarthya Fashion </option>
+                            <option value="AHF"> Amarthya Healthy Food </option>
+                            <option value="AH"> Amarthya Herbal </option>
+                        </select>
+                    </div>
+                </form>
+
+
                 <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
                     <thead>
                     <tr>
@@ -106,14 +121,21 @@
 
     document.title = "Daftar Order - Amarthya Group";
 
+    var status = "all", brand_order = "all";
+
     $('#is_paid').change(function(){
-        get_order_m($(this).val());
+        status = $(this).val();
+        get_order_m(status, brand_order);
+    })
+
+    $('#brand_product').change(function(){
+        brand_order = $(this).val();
+        get_order_m(status, brand_order);
     })
 
     get_order_m();
 
-    //get all products
-    function get_order_m(status = "all"){
+    function get_order_m(status = "all", brand_order = "all"){
         $('.loading').css("display", "block");
         $('.Veil-non-hover').fadeIn();
 
@@ -130,7 +152,7 @@
             },
             pagingType: "simple",
             ajax: {
-                url     : admin_url + 'get_order_m?status=' + status,
+                url     : admin_url + 'get_order_m?status=' + status + '&brand=' + brand_order,
                 type    : 'POST',
             },
             createdRow: function ( row, data, index ) {
@@ -146,7 +168,8 @@
                         "tgl_order":"tgl_order",
                         "grand_total_order":"grand_total_order",
                         "is_paid": "is_paid",
-                        "no_order": "no_order"
+                        "no_order": "no_order",
+                        "brand_order": "brand_order"
                     },
                     mRender : function(data, type, full) {
 
@@ -157,9 +180,22 @@
                         html = '<div class="detail-row">' +
                                 '<div class="detail-column">' +
                             '       <span>'+ temp_date.getDate() + '/' + (temp_date.getMonth() + 1) + '/' + temp_date.getFullYear() +'</span><br>' +
-                                    '<strong>'+ data.no_order +'</strong>\n' +
-                                    '<p>'+ data.nama_customer +'</p>' +
-                                '</div>' +
+                                    '<strong>'+ data.no_order +'</strong>\n<br>' +
+                                    '<span>'+ data.nama_customer +'</span><br>';
+
+                        if(data.brand_order == "KA"){
+                            html += '<img src="<?php echo base_url('assets/images/logopdf.jpg');?>" style="float: left; margin-top: 3px" width="48px" height="22px">';
+                        } else if(data.brand_order == "AH"){
+                            html += '<img src="<?php echo base_url('assets/images/amarthya_herbal.png');?>" style="float: left; margin-top: 3px" width="40px" height="40px">';
+                        } else if(data.brand_order == "AF"){
+                            html += '<img src="<?php echo base_url('assets/images/fashion.png');?>" style="float: right; margin-top: 3px" left="48px" height="48px">';
+                        } else if(data.brand_order == "AHF"){
+                            html += '<img src="<?php echo base_url('assets/images/phonto.PNG');?>" style="float: right; margin-top: 3px" left="40px" height="40px">';
+                        }
+
+
+
+                        html += '</div>' +
                                 '<div class="detail-column" style="text-align: left">' +
                                     '<strong style="font-size: 11px;">Total Order</strong>\n' +
                                     '<h6>'+ convertToRupiah(data.grand_total_order) +'</h6>';
@@ -211,6 +247,7 @@
             '                <strong>'+ rowData.no_order +'</strong> <a target="_blank" href="'+ admin_url +'pdf_order?no='+ rowData.no_order +'"><span class="link"> (Print Invoice) </span></a><br>' +
             '                <span>'+ rowData.nama_customer +' ('+ rowData.no_hp_customer +')</span><br>\n' +
                             '<span>'+ rowData.alamat_customer +'</span><br>';
+
 
         if(rowData.is_paid == "1"){
             html_info_customer += '<div class="alert alert-success alert-payment" role="alert">\n' +

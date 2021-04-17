@@ -744,12 +744,18 @@ class Main extends MX_Controller
             $status = 'all';
         }
 
+        if(isset($_GET['brand'])){
+            $brand = htmlentities($_GET['brand'], ENT_QUOTES);
+        } else {
+            $brand = "all";
+        }
+
         if(!isset($_GET['pick_up'])){
             $total = $this->Main_model->get_order_vendor_m()->num_rows();
-            $output['data'] = $this->Main_model->get_order_vendor_m($search, $length, $start, $status)->result_object();
+            $output['data'] = $this->Main_model->get_order_vendor_m($search, $length, $start, $status, $brand)->result_object();
         } else {
             $total = $this->Main_model->get_order_vendor_m_pickup()->num_rows();
-            $output['data'] = $this->Main_model->get_order_vendor_m_pickup($search, $length, $start, $status)->result_object();
+            $output['data'] = $this->Main_model->get_order_vendor_m_pickup($search, $length, $start, $status, $brand)->result_object();
         }
 
         $output['recordsTotal'] = $output['recordsFiltered'] = $total;
@@ -769,6 +775,7 @@ class Main extends MX_Controller
         $is_paid_vendor = strtoupper(trim(htmlentities($_REQUEST['is_paid_vendor'], ENT_QUOTES)));
         $payment_detail = trim(htmlentities($_REQUEST['payment_detail'], ENT_QUOTES));
         $tipe_order = trim(htmlentities($_REQUEST['tipe_order'], ENT_QUOTES));
+        $diskon_order_vendor = trim(htmlentities($_REQUEST['diskon_order_vendor'], ENT_QUOTES));
 
 
         if(empty($tgl_order_vendor)){
@@ -784,16 +791,38 @@ class Main extends MX_Controller
             return;
         }
 
+        // ERROR    : if diskon is not numeric
+        if(!is_numeric($diskon_order_vendor) && !empty($diskon_order_vendor)){
+            $return_arr = array("Status" => 'ERROR', "Message" => 'Diskon tidak valid');
+            echo json_encode($return_arr);
+            return;
+        }
+
         $order_vendor_m_data = $this->Main_model->get_order_vendor_detail($no_order)->row();
+
 
 
         $is_paid_vendor = ($is_paid_vendor == true ? "1" : "0");
 
-        // cant change if product is on delivery or delivered or deleted, but can change payment
+        // cant change if product is picked up or deleted, but can change payment
         if($order_vendor_m_data->status_pick_up == '0' || $order_vendor_m_data->status_pick_up == '1' || $order_vendor_m_data->status_order_vendor == '0'){
             $updated_data = compact('is_paid_vendor', 'payment_detail', 'tipe_order');
         } else {
-            $updated_data = compact('catatan_order_vendor', 'tgl_order_vendor', 'is_paid_vendor', 'payment_detail', 'tipe_order');
+
+            // ============= Update diskon ==============
+
+            if(empty($diskon_order_vendor)){
+                $diskon_order_vendor = 0;
+            }
+
+            $current_grand_total = $order_vendor_m_data->grand_total_order;
+            $current_diskon = $order_vendor_m_data->diskon_order_vendor;
+
+            $grand_total_order = ($current_grand_total + $current_diskon) - $diskon_order_vendor;
+
+            // ==========================================
+
+            $updated_data = compact('catatan_order_vendor', 'tgl_order_vendor', 'is_paid_vendor', 'payment_detail', 'tipe_order','diskon_order_vendor', 'grand_total_order');
         }
 
 
@@ -832,6 +861,7 @@ class Main extends MX_Controller
         $is_in_store = filter_var($_REQUEST['is_in_store'], FILTER_VALIDATE_BOOLEAN);
         $tipe_order = trim(htmlentities($_REQUEST['tipe_order'], ENT_QUOTES));
         $brand_order = trim(htmlentities($_REQUEST['brand_order'], ENT_QUOTES));
+        $diskon_order_vendor = trim(htmlentities($_REQUEST['diskon_order_vendor'], ENT_QUOTES));
 
         // ERROR    : if online purchase but no customer
         // OK       : if offline purchase with no customer
@@ -868,6 +898,13 @@ class Main extends MX_Controller
             return;
         }
 
+        // ERROR    : if diskon is not numeric
+        if(!is_numeric($diskon_order_vendor) && !empty($diskon_order_vendor)){
+            $return_arr = array("Status" => 'ERROR', "Message" => 'Diskon tidak valid');
+            echo json_encode($return_arr);
+            return;
+        }
+
         $no_order_vendor = "V".date("Ymdhis").$this->randStr(2);
         $grand_total_order = 0;
         $status_order_vendor = '1';
@@ -875,7 +912,7 @@ class Main extends MX_Controller
         $is_paid_vendor = ($is_paid_vendor == true ? "1" : "0");
         $is_in_store = ($is_in_store == true ? "1" : "0");
 
-        $data_m = compact('id_vendor', 'no_order_vendor', 'catatan_order_vendor', 'tgl_order_vendor',
+        $data_m = compact('id_vendor', 'no_order_vendor', 'catatan_order_vendor', 'tgl_order_vendor', 'diskon_order_vendor',
                             'grand_total_order', 'status_order_vendor', 'is_paid_vendor', 'payment_detail', 'is_in_store', 'tipe_order', 'brand_order');
 
         $this->db->trans_begin();
@@ -941,6 +978,11 @@ class Main extends MX_Controller
 
             // ===========================================
 
+        }
+
+        // update diskon
+        if(!empty($diskon_order_vendor)){
+            $grand_total_order -= $diskon_order_vendor;
         }
 
         $data_m_update = compact('grand_total_order');
@@ -1292,12 +1334,18 @@ class Main extends MX_Controller
             $status = 'all';
         }
 
+        if(isset($_GET['brand'])){
+            $brand = htmlentities($_GET['brand'], ENT_QUOTES);
+        } else {
+            $brand = "all";
+        }
+
         if(!isset($_GET['delivery'])){
             $total = $this->Main_model->get_order_m()->num_rows();
-            $output['data'] = $this->Main_model->get_order_m($search, $length, $start, $status)->result_object();
+            $output['data'] = $this->Main_model->get_order_m($search, $length, $start, $status, $brand)->result_object();
         } else {
             $total = $this->Main_model->get_order_m_deliv()->num_rows();
-            $output['data'] = $this->Main_model->get_order_m_deliv($search, $length, $start, $status)->result_object();
+            $output['data'] = $this->Main_model->get_order_m_deliv($search, $length, $start, $status, $brand)->result_object();
         }
 
         $output['recordsTotal'] = $output['recordsFiltered'] = $total;
@@ -2419,7 +2467,7 @@ class Main extends MX_Controller
                 $pdf->Cell(25 ,$payment_detail_height,'Subtotal',0,0);
                 $pdf->Cell(34 ,$payment_detail_height,"Rp. " . number_format($order->subtotal_order,2,',','.'),0,1,'R');//end of line
 
-                $pdf->Cell(130 ,$payment_detail_height,'BCA 0490409181 An. A. A.A. Arina Saraswati Hardy',0,0);
+                $pdf->Cell(130 ,$payment_detail_height,'MNC Bank 206010001126284 An. Ngurah Bramantha Patra',0,0);
                 $pdf->Cell(25 ,$payment_detail_height,'Pengiriman',0,0);
 
                 if($data_order->row()->is_ongkir_kas == '0'){
@@ -2599,11 +2647,18 @@ class Main extends MX_Controller
 
                 $pdf->Cell(35 ,5,'Diterima oleh',0,0);
                 $pdf->Cell(35 ,5,': A.A.A. Saraswati Hardy ',0,1);
+
+                $pdf->Cell(139 ,5,'',0,0, 'L', TRUE);
+                $pdf->Cell(15 ,5,'Subtotal:',0,0, 'L', TRUE);
+                $pdf->Cell(35 ,5,"Rp. " . number_format($data_order->row()->diskon_order_vendor + $data_order->row()->grand_total_order,2,',','.'),0,1, 'R', TRUE);
+
+                $pdf->Cell(139 ,5,'',0,0, 'L', TRUE);
+                $pdf->Cell(15 ,5,'Diskon:',0,0, 'L', TRUE);
+                $pdf->Cell(35 ,5,"Rp. " . number_format($data_order->row()->diskon_order_vendor,2,',','.'),0,1, 'R', TRUE);
+
                 $pdf->setFillColor(201,201,201);
                 $pdf->Cell(139 ,5,'',0,0, 'L', TRUE);
-
                 $pdf->SetFont('Nunito','B',10);
-
                 $pdf->Cell(15 ,5,'Total:',0,0, 'L', TRUE);
                 $pdf->Cell(35 ,5,"Rp. " . number_format($data_order->row()->grand_total_order,2,',','.'),0,1, 'R', TRUE);
 

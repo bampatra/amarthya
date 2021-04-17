@@ -16,14 +16,21 @@
         </div>
         <div class="card-body">
             <div class="table-responsive">
+                <select id="brand_product" name="brand_product" class="form-control form-control-sm form-active-control" data-live-search="true" style="width: 40%; float: left">
+                    <option value="all">Semua Brand</option>
+                    <option value="KA"> Kedai Amarthya </option>
+                    <option value="AF"> Amarthya Fashion </option>
+                    <option value="AHF"> Amarthya Healthy Food </option>
+                    <option value="AH"> Amarthya Herbal </option>
+                </select>
                 <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
                     <thead>
                     <tr>
                         <th style="display: none;"> ID </th>
-                        <th> Nama Produk </th>
-                        <th> HP </th>
-                        <th> HR </th>
-                        <th> HJ </th>
+                        <th style="min-width: 400px"> Nama Produk </th>
+                        <th style="min-width: 170px"> HP </th>
+                        <th style="min-width: 170px"> HR </th>
+                        <th style="min-width: 170px"> HJ </th>
                     </tr>
                     </thead>
                     <tbody id="main-content">
@@ -185,7 +192,88 @@
 
 <script>
 
+    $('#brand_product').change(function(){
+        get_product($(this).val());
+    })
+
+    get_product();
+
     document.title = "Product - Amarthya Group";
+
+    //get all products
+    function get_product(brand = "all"){
+        $('.loading').css("display", "block");
+        $('.Veil-non-hover').fadeIn();
+
+        $('#dataTable').DataTable().destroy();
+        $('#dataTable').DataTable({
+            processing: true,
+            serverSide: true,
+            responsive: true,
+            lengthChange: false,
+            searching: true,
+            bInfo: false,
+            language: {
+                search: ""
+            },
+            pagingType: "simple",
+            ajax: {
+                url     : admin_url + 'get_product?brand=' + brand,
+                type    : 'POST',
+            },
+            createdRow: function ( row, data, index ) {
+                $('td', row).eq(0).css("display", "none");
+            },
+            columns: [
+                {"data": "id_product"},
+                {
+                    "data": {
+                        "nama_product":"nama_product",
+                        "STOK":"STOK",
+                        "brand_product": "brand_product"
+                    },
+                    mRender : function(data, type, full) {
+                        html = data.nama_product +'<br> <span style="font-size: 11px">Stok: '+ data.STOK +'</span>';
+
+                        if(data.brand_product == "KA"){
+                            html += '<img src="<?php echo base_url('assets/images/logopdf.jpg');?>" style="float: right" width="48px" height="22px">';
+                        } else if(data.brand_product == "AH"){
+                            html += '<img src="<?php echo base_url('assets/images/amarthya_herbal.png');?>" style="float: right" width="40px" height="40px">';
+                        } else if(data.brand_product == "AF"){
+                            html += '<img src="<?php echo base_url('assets/images/fashion.png');?>" style="float: right" width="48px" height="48px">';
+                        } else if(data.brand_product == "AHF"){
+                            html += '<img src="<?php echo base_url('assets/images/phonto.PNG');?>" style="float: right" width="40px" height="40px">';
+                        }
+
+                        return html;
+                    }
+                },
+                {
+                    "data": {"HP_product":"HP_product"},
+                    mRender : function(data, type, full) {
+                        return convertToRupiah(data.HP_product)
+                    }
+                },
+                {
+                    "data": {"HR_product":"HR_product"},
+                    mRender : function(data, type, full) {
+                        return convertToRupiah(data.HR_product)
+                    }
+                },
+                {
+                    "data": {"HJ_product":"HJ_product"},
+                    mRender : function(data, type, full) {
+                        return convertToRupiah(data.HJ_product)
+                    }
+                }
+
+            ],
+            initComplete: function (settings, json) {
+                $('.loading').css("display", "none");
+                $('.Veil-non-hover').fadeOut();
+            }
+        });
+    }
 
     detail_toggled = false;
 
@@ -215,72 +303,6 @@
             })
         }
     })
-
-    get_product();
-
-    //get all products
-    function get_product(){
-        $('.loading').css("display", "block");
-        $('.Veil-non-hover').fadeIn();
-
-        $('#dataTable').DataTable().destroy();
-        $('#dataTable').DataTable({
-            processing: true,
-            serverSide: true,
-            responsive: true,
-            lengthChange: false,
-            searching: true,
-            bInfo: false,
-            language: {
-                search: ""
-            },
-            pagingType: "simple",
-            ajax: {
-                url     : admin_url + 'get_product',
-                type    : 'POST',
-            },
-            createdRow: function ( row, data, index ) {
-                $('td', row).eq(0).css("display", "none");
-            },
-            columns: [
-                {"data": "id_product"},
-                {
-                    "data": {
-                        "nama_product":"nama_product",
-                        "STOK":"STOK"
-                    },
-                    mRender : function(data, type, full) {
-                        html = data.nama_product +'<br> <span style="font-size: 11px">Stok: '+ data.STOK +'</span>';
-                        return html;
-                    }
-                },
-                {
-                    "data": {"HP_product":"HP_product"},
-                    mRender : function(data, type, full) {
-                        return convertToRupiah(data.HP_product)
-                    }
-                },
-                {
-                    "data": {"HR_product":"HR_product"},
-                    mRender : function(data, type, full) {
-                        return convertToRupiah(data.HR_product)
-                    }
-                },
-                {
-                    "data": {"HJ_product":"HJ_product"},
-                    mRender : function(data, type, full) {
-                        return convertToRupiah(data.HJ_product)
-                    }
-                }
-
-            ],
-            initComplete: function (settings, json) {
-                $('.loading').css("display", "none");
-                $('.Veil-non-hover').fadeOut();
-            }
-        });
-
-    }
 
     function in_out_init(id_product){
 

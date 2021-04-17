@@ -75,7 +75,7 @@
     </div>
 
     <div class="wrapper" style="margin-top: 10px">
-        <div class="one">
+        <div class="one" style="min-height: 240px;">
             <div class="form-group" >
                 <label class="col-form-label">Catatan</label>
                 <textarea id="catatan_order_vendor" name="catatan_order_vendor" class="form-control form-active-control" <?php if($orders[0]->status_pick_up == '0' || $orders[0]->status_pick_up == '1'){ echo "disabled"; } ?>><?php echo $orders[0]->catatan_order_vendor; ?></textarea>
@@ -101,6 +101,16 @@
         </div>
         <div class="two">
             <table style="border-spacing: 0 10px; border-collapse:separate; width: 100%;">
+
+                <tr class="no-hover-style">
+                    <td style="width: 10%"> </td>
+                    <td style="text-align: right;width: 45%;" valign="top">
+                        Diskon
+                    </td>
+                    <td valign="top" style="text-align: right; width: 45%; font-size: 18px; font-weight: bold" id="diskon">
+                        <input type="number" id="diskon_order_vendor" name="diskon_order_vendor" class="form-control form-control-sm" style="width: 80%; float:right; text-align: right;" value="<?php echo $orders[0]->diskon_order_vendor?>" <?php if($orders[0]->status_pick_up == '0' || $orders[0]->status_pick_up == '1'){ echo "disabled"; } ?>>
+                    </td>
+                </tr>
 
                 <tr class="no-pointer">
                     <td style="width: 10%"> </td>
@@ -183,7 +193,9 @@
 <script>
 
     var tipe_harga = 'HP';
-    var temp_harga = 0, subtotal = 0, temp_product;
+    var temp_harga = 0, temp_product;
+    var grand_total = '<?php echo ($orders[0]->grand_total_order + $orders[0]->diskon_order_vendor) ?>';
+    var diskon = '<?php echo $orders[0]->diskon_order_vendor ?>';
     var selected_vendor, temp_product;
 
     document.title = "Order Vendor #"+ $('#no_order').html() +" - Amarthya Group";
@@ -196,7 +208,10 @@
         tipe_order = this.value;
     });
 
-
+    $('#diskon_order_vendor').keyup(function(){
+        diskon = this.value;
+        set_harga();
+    })
 
     $('.delete').click(function(e){
         if(confirm("Data akan dihapus permanen. Yakin ingin menghapus data?")) {
@@ -214,7 +229,7 @@
                 success: function (response) {
                     if(response.Status == "OK"){
                         show_snackbar(response.Message);
-                        window.location.href = admin_url + 'order_list';
+                        window.location.href = admin_url + 'order_vendor_list';
                     } else if(response.Status == "ERROR" ){
                         show_snackbar(response.Message);
                     }
@@ -243,6 +258,7 @@
                     tgl_order_vendor: $('#tgl_order_vendor').val(),
                     is_paid_vendor: $('#is_paid_vendor').prop("checked"),
                     payment_detail: $('#payment_detail').val(),
+                    diskon_order_vendor: $('#diskon_order_vendor').val(),
                     tipe_order: tipe_order
                 },
                 success: function (response) {
@@ -276,7 +292,9 @@
     })
 
 
-
+    function set_harga(){
+        $('#grandtotal').html(convertToRupiah(grand_total - diskon));
+    }
 
 
 

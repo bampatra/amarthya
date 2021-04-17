@@ -200,18 +200,19 @@
         </li>
 
         <li class="nav-item">
+            <a class="nav-link" href="<?php echo base_url('main/jurnal_umum')?>">
+                <i class="fas fa-fw fa-calculator"></i>
+                <span style="font-size: 11px !important">Jurnal Umum</span>
+            </a>
+        </li>
+
+        <li class="nav-item">
             <a class="nav-link" href="<?php echo base_url('main/salary_form')?>">
                 <i class="fas fa-fw fa-money-bill-wave"></i>
                 <span style="font-size: 11px !important">Salary</span>
             </a>
         </li>
 
-        <li class="nav-item">
-            <a class="nav-link" href="<?php echo base_url('main/jurnal_umum')?>">
-                <i class="fas fa-fw fa-calculator"></i>
-                <span style="font-size: 11px !important">Jurnal Umum</span>
-            </a>
-        </li>
         <?php } ?>
 
         <li class="nav-item">

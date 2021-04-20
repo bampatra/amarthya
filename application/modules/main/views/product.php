@@ -25,7 +25,7 @@
                 </select>
                 <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
                     <thead>
-                    <tr>
+                    <tr class="no-hover-style">
                         <th style="display: none;"> ID </th>
                         <th style="min-width: 400px"> Nama Produk </th>
                         <th style="min-width: 170px"> HP </th>

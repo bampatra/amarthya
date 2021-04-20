@@ -18,7 +18,7 @@
             <div class="table-responsive">
                 <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
                     <thead>
-                    <tr>
+                    <tr class="no-hover-style">
                         <th style="display: none;"> ID </th>
                         <th> Nama Customer </th>
                     </tr>

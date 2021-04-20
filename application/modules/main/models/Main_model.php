@@ -2,24 +2,114 @@
 class Main_model extends CI_Model
 {
 
-    function jurnal_umum_gabung($month, $length = 10000000000, $start = 0){
+    function laporan_purchase($start_date, $end_date, $search = '', $length = 10000000000, $start = 0){
+        $sql = "SELECT a.id_vendor,a.nama_vendor, IFNULL(b.total_order,0) as total_order
+                FROM vendor a
+                LEFT JOIN (
+                            SELECT id_vendor, SUM(grand_total_order) as total_order
+                    FROM order_vendor_m
+                    WHERE status_order_vendor = '1' AND is_paid_vendor = '1' 
+                      AND (tgl_order_vendor BETWEEN '{$start_date}' AND '{$end_date}') 
+                    GROUP BY id_vendor
+                )b ON a.id_vendor = b.id_vendor
+                WHERE a.nama_vendor NOT LIKE '%TEST%'";
+
+        if($search != "" || $search != null){
+            $sql .= " AND a.nama_vendor LIKE '%{$search}%'";
+        }
+
+        $sql.= " ORDER BY a.nama_vendor LIMIT {$start}, {$length}";
+
+        $query = $this->db->query($sql);
+        return $query;
+    }
+
+    function laporan_sales($start_date, $end_date, $search = '', $length = 10000000000, $start = 0){
+        $sql = "SELECT a.id_customer, a.nama_customer, IFNULL(b.total_order, 0) as total_order, IFNULL(b.ongkir_order, 0) as ongkir_order, IFNULL(b.total_order, 0) - IFNULL(b.ongkir_order, 0) AS total_belanja
+                FROM customer a
+                LEFT JOIN (
+                            SELECT a.id_customer, SUM(a.grand_total_order) as total_order, b.ongkir_order
+                    FROM order_m a
+                    LEFT JOIN (
+                            SELECT id_customer, SUM(ongkir_order) as ongkir_order
+                        FROM order_m
+                        WHERE status_order = '1' AND is_paid = '1' AND is_ongkir_kas = '0'
+                        AND (tgl_order BETWEEN '{$start_date}' AND '{$end_date}') 
+                        GROUP BY id_customer
+                    )b ON a.id_customer = b.id_customer
+                    WHERE a.status_order = '1' AND a.is_paid = '1'
+                        AND (a.tgl_order BETWEEN '{$start_date}' AND '{$end_date}') 
+                    GROUP BY a.id_customer
+                )b ON a.id_customer = b.id_customer
+                WHERE a.nama_customer NOT LIKE '%TEST%'";
+
+        if($search != "" || $search != null){
+            $sql .= " AND a.nama_customer LIKE '%{$search}%'";
+        }
+
+        $sql.= " ORDER BY a.nama_customer LIMIT {$start}, {$length}";
+
+        $query = $this->db->query($sql);
+        return $query;
+    }
+
+    function laporan_produk($start_date, $end_date, $search = '', $length = 10000000000, $start = 0){
+        $sql = "SELECT a.id_product, a.nama_product, a.brand_product,
+                    CASE (b.stok_out MOD 1 > 0)
+                        WHEN TRUE THEN ROUND(b.stok_out, 2)
+                        ELSE IFNULL(b.stok_out, 0)
+                    END AS stok_out, 
+                    a.satuan_product
+                FROM product a
+                LEFT JOIN (
+                            SELECT id_product, SUM(stok_in_out) AS stok_out
+                    FROM stok_in_out 
+                    WHERE tipe_in_out = 'OUT'
+                        AND (tgl_out BETWEEN '{$start_date}' AND '{$end_date}') 
+                    GROUP BY id_product
+                )b ON a.id_product = b.id_product
+                WHERE a.nama_product NOT LIKE '%TEST%'";
+
+        if($search != "" || $search != null){
+            $sql .= " AND a.nama_product LIKE '%{$search}%'";
+        }
+
+        $sql.= " ORDER BY a.nama_product LIMIT {$start}, {$length}";
+
+        $query = $this->db->query($sql);
+        return $query;
+    }
+
+    function jurnal_umum_gabung($start_date, $end_date, $brand_order, $tipe_order, $cash_flow, $excel, $length = 10000000000, $start = 0){
         $sql = "SELECT *
                 FROM (
                     SELECT a.*, (@mutasi := @mutasi + IF(a.DEBET <> 0, a.DEBET, (-1 * a.KREDIT))) AS MUTASI, (@count := @count + 1) AS COUNT
                     FROM (
-                        SELECT id_order_m AS ID, tgl_order, no_order, grand_total_order AS DEBET, 0 AS KREDIT
+                        SELECT id_order_m AS ID, tgl_order, no_order, grand_total_order AS DEBET, 0 AS KREDIT, 'ordercustomer' AS TIPE, brand_order, tipe_order
                         FROM order_m
-                        WHERE is_paid = '1' AND MONTH(tgl_order) = '{$month}'
+                        WHERE is_paid = '1' AND status_order = '1' 
+                          AND (tgl_order BETWEEN '{$start_date}' AND '{$end_date}') 
+                          AND (brand_order = '{$brand_order}' || 'all' = '{$brand_order}')
+                          AND (tipe_order = '{$tipe_order}' || 'all' = '{$tipe_order}') 
+                          AND ('IN' = '{$cash_flow}' || 'all' = '{$cash_flow}')
                         UNION 
-                        SELECT id_order_vendor_m as ID, tgl_order_vendor, no_order_vendor, 0 AS DEBET, grand_total_order AS KREDIT
+                        SELECT id_order_vendor_m as ID, tgl_order_vendor, no_order_vendor, 0 AS DEBET, grand_total_order AS KREDIT, 'ordervendor' AS TIPE, brand_order, tipe_order
                         FROM order_vendor_m
-                        WHERE is_paid_vendor = '1' AND MONTH(tgl_order_vendor) = '{$month}'
+                        WHERE is_paid_vendor = '1' AND status_order_vendor = '1' 
+                          AND (tgl_order_vendor BETWEEN '{$start_date}' AND '{$end_date}') 
+                          AND (brand_order = '{$brand_order}' || 'all' = '{$brand_order}')
+                          AND (tipe_order = '{$tipe_order}' || 'all' = '{$tipe_order}')
+                          AND ('OUT' = '{$cash_flow}' || 'all' = '{$cash_flow}')
                     )a
                     CROSS JOIN (select @mutasi := 0) params
                     CROSS JOIN (select @count := 0) counter
                     ORDER BY a.tgl_order, ID
-                )a
-                ORDER BY COUNT DESC LIMIT {$start}, {$length}";
+                )a ";
+
+            if(!$excel){
+                $sql.= " ORDER BY COUNT DESC LIMIT {$start}, {$length}";
+            }
+
 
         $query = $this->db->query($sql);
         return $query;

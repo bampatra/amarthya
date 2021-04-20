@@ -4,15 +4,15 @@
 <div class="container-fluid">
 
     <!-- Page Heading -->
-    <h1 class="h3 mb-2 text-gray-800">Data Vendor</h1>
+    <h1 class="h3 mb-2 text-gray-800">Problem Solving</h1>
     <br>
 
-    <button class="btn btn-primary add" style="background: #a50000; color: white; width: 300px;"> Tambah Vendor</button>
+    <button class="btn btn-primary add" style="background: #a50000; color: white; width: 300px;"> Tambah Problem </button>
     <br> <br>
     <!-- DataTales Example -->
     <div class="card shadow mb-4">
         <div class="card-header py-3">
-            <h6 class="m-0 font-weight-bold text-primary">Daftar Vendor</h6>
+            <h6 class="m-0 font-weight-bold text-primary">Daftar Problem</h6>
         </div>
         <div class="card-body">
             <div class="table-responsive">
@@ -20,7 +20,10 @@
                     <thead>
                     <tr class="no-hover-style">
                         <th style="display: none;"> ID </th>
-                        <th> Nama Vendor </th>
+                        <th> Kode Problem </th>
+                        <th> Pesanan/Produk </th>
+                        <th> Problem </th>
+                        <th> Solusi </th>
                     </tr>
                     </thead>
                     <tbody id="main-content">
@@ -38,58 +41,48 @@
 <!-- End of Main Content -->
 
 
-<div class="modal fade" tabindex="-1" role="dialog" id="vendor-modal" style="z-index: 5000">
+<div class="modal fade" tabindex="-1" role="dialog" id="customer-modal" style="z-index: 5000">
     <div class="modal-dialog" role="document">
         <div class="modal-content">
             <div class="modal-header">
-                <h5 class="modal-title">Vendor</h5>
+                <h5 class="modal-title">Customer</h5>
                 <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                     <span aria-hidden="true">&times;</span>
                 </button>
             </div>
             <div class="modal-body">
-                <form id="vendor-form">
+                <form id="customer-form">
                     <div class="form-group" >
-                        <label class="col-form-label">Nama Vendor</label>
-                        <input type="text" id="nama_vendor"  name="nama_vendor" class="form-control form-active-control">
-                        <div class="invalid-feedback invalid-namavendor">Data tidak valid</div>
+                        <label class="col-form-label">Nama Customer</label>
+                        <input type="text" id="nama_customer"  name="nama_customer" class="form-control form-active-control">
+                        <div class="invalid-feedback invalid-namacustomer">Data tidak valid</div>
                     </div>
 
                     <div class="form-group">
-                        <label class="col-form-label">Alamat Vendor</label>
-                        <textarea id="alamat_vendor" name="alamat_vendor" class="form-control form-active-control"> </textarea>
-                        <div class="invalid-feedback invalid-alamatvendor">Data tidak valid</div>
+                        <label class="col-form-label">Alamat Delivery</label>
+                        <textarea id="alamat_customer" name="alamat_customer" class="form-control form-active-control"> </textarea>
+                        <div class="invalid-feedback invalid-alamatcustomer">Data tidak valid</div>
                     </div>
 
                     <div class="form-group" >
                         <label class="col-form-label">No. HP</label>
-                        <input type="number" id="no_hp_vendor"  name="no_hp_vendor" class="form-control form-active-control">
+                        <input type="number" id="no_hp_customer"  name="no_hp_customer" class="form-control form-active-control">
                         <div class="invalid-feedback invalid-nohp">Data tidak valid</div>
                     </div>
 
                     <div class="form-group" >
                         <label class="col-form-label">Email</label>
-                        <input type="text" id="email_vendor"  name="email_vendor" class="form-control form-active-control">
+                        <input type="text" id="email_customer"  name="email_customer" class="form-control form-active-control">
                         <div class="invalid-feedback invalid-email">Data tidak valid</div>
-                    </div>
-
-                    <div class="form-group" >
-                        <label class="col-form-label">No. Rekening</label>
-                        <input type="number" id="no_rekening_vendor"  name="no_rekening_vendor" class="form-control form-active-control">
-                    </div>
-
-                    <div class="form-group" >
-                        <label class="col-form-label">Nama Bank</label>
-                        <input type="text" id="nama_bank_vendor"  name="nama_bank_vendor" class="form-control form-active-control">
                     </div>
 
                     <div class="form-group">
                         <label class="col-form-label">Catatan</label>
-                        <textarea id="catatan_vendor" name="catatan_vendor" class="form-control form-active-control"> </textarea>
+                        <textarea id="catatan_customer" name="catatan_customer" class="form-control form-active-control"> </textarea>
                     </div>
 
 
-                    <input type="hidden" id="id_vendor" name="id_vendor" val="0">
+                    <input type="hidden" id="id_customer" name="id_customer" val="0">
                 </form>
             </div>
             <div class="modal-footer">
@@ -123,12 +116,12 @@
 
 <script>
 
-    document.title = "Vendor - Amarthya Group";
+    document.title = "Problem Solving - Amarthya Group";
 
-    get_vendor();
+    // get_customer();
 
     //get all products
-    function get_vendor(){
+    function get_customer(){
         $('.loading').css("display", "block");
         $('.Veil-non-hover').fadeIn();
 
@@ -145,15 +138,15 @@
             },
             pagingType: "simple",
             ajax: {
-                url     : admin_url + 'get_vendor',
+                url     : admin_url + 'get_customer',
                 type    : 'POST',
             },
             createdRow: function ( row, data, index ) {
                 $('td', row).eq(0).css("display", "none");
             },
             columns: [
-                {"data": "id_vendor"},
-                {"data": "nama_vendor"}
+                {"data": "id_customer"},
+                {"data": "nama_customer"}
 
             ],
             initComplete: function (settings, json) {
@@ -169,33 +162,34 @@
 
         data = $('#dataTable').DataTable().row( this ).data()
 
-        setTimeout(function() {$('.modal-dialog').scrollTop(0);}, 200);
-        $('#id_vendor').val(htmlDecode(data.id_vendor));
-        $('#nama_vendor').val(htmlDecode(data.nama_vendor));
-        $('#alamat_vendor').val(htmlDecode(data.alamat_vendor));
-        $('#no_hp_vendor').val(htmlDecode(data.no_hp_vendor));
-        $('#email_vendor').val(htmlDecode(data.email_vendor));
-        $('#catatan_vendor').val(htmlDecode(data.catatan_vendor));
-        $('#no_rekening_vendor').val(htmlDecode(data.no_rekening_vendor));
-        $('#nama_bank_vendor').val(htmlDecode(data.nama_bank_vendor));
+        id_customer = $('#dataTable').DataTable().row( this ).data().id_customer;
 
+        setTimeout(function() {$('.modal-dialog').scrollTop(0);}, 200);
+        $('#id_customer').val(htmlDecode(data.id_customer));
+        $('#nama_customer').val(htmlDecode(data.nama_customer));
+        $('#alamat_customer').val(htmlDecode(data.alamat_customer));
+        $('#no_hp_customer').val(htmlDecode(data.no_hp_customer));
+        $('#email_customer').val(htmlDecode(data.email_customer));
+        $('#catatan_customer').val(htmlDecode(data.catatan_customer));
 
         $('.form-active-control').prop('disabled', true);
 
         $('.modal-button-save').css('display', 'none');
         $('.modal-button-view-only').css('display', 'block');
-        $('#vendor-modal').modal('toggle');
+        $('#customer-modal').modal('toggle');
+
+
     });
 
     $('.add').click(function (e) {
         e.preventDefault();
         $('.invalid-feedback').css('display', 'none');
-        $('#id_vendor').val(0);
+        $('#id_customer').val(0);
         setTimeout(function() {$('.modal-dialog').scrollTop(0);}, 200);
         $('.modal-button-view-only').css('display', 'none');
-        $('#vendor-form').trigger('reset');
+        $('#customer-form').trigger('reset');
         $('.form-active-control').prop('disabled', false);
-        $('#vendor-modal').modal('toggle');
+        $('#customer-modal').modal('toggle');
         $('.modal-button-save').css('display', 'block');
     })
 
@@ -212,20 +206,20 @@
         $('.Veil-non-hover').fadeIn();
         $.ajax({
             type: 'POST', // define the type of HTTP verb we want to use (POST for our form)
-            url: admin_url + 'add_vendor', // the url where we want to POST// our data object
+            url: admin_url + 'add_customer', // the url where we want to POST// our data object
             dataType: 'json',
-            data: $('#vendor-form').serialize(),
+            data: $('#customer-form').serialize(),
             success: function (response) {
                 $('.invalid-feedback').css('display', 'none');
                 if(response.Status == "OK"){
-                    get_vendor();
-                    $('#vendor-modal').modal('hide');
+                    get_customer();
+                    $('#customer-modal').modal('hide');
                 } else if(response.Status == "FORMERROR") {
                     response.Error.forEach(function(error){
                         $('.'+ error +'').css('display', 'block');
                     })
                 } else if(response.Status == "EXIST") {
-                    show_snackbar('Nama Vendor sudah terdaftar');
+                    show_snackbar('Nama Customer sudah terdaftar');
                 } else if(response.Status == "ERROR" ){
                     show_snackbar(response.Message);
                 }

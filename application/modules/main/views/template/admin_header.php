@@ -199,11 +199,21 @@
             </a>
         </li>
 
+
         <li class="nav-item">
-            <a class="nav-link" href="<?php echo base_url('main/jurnal_umum')?>">
+            <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseLaporan" aria-expanded="true" aria-controls="collapseMaster">
                 <i class="fas fa-fw fa-calculator"></i>
-                <span style="font-size: 11px !important">Jurnal Umum</span>
+                <span style="font-size: 11px !important">Laporan</span>
             </a>
+            <div id="collapseLaporan" class="collapse" aria-labelledby="headingTwo" data-parent="#accordionSidebar">
+                <div class="bg-white py-2 collapse-inner rounded">
+                    <h6 class="collapse-header">Option:</h6>
+                    <a class="collapse-item" href="<?php echo base_url('main/laporan_transaksi')?>">Transaksi Umum</a>
+                    <a class="collapse-item" href="<?php echo base_url('main/laporan_produk')?>">Penjualan Produk</a>
+                    <a class="collapse-item" href="<?php echo base_url('main/laporan_sales')?>">Sales per Customer</a>
+                    <a class="collapse-item" href="<?php echo base_url('main/laporan_purchase')?>">Purchase per Vendor</a>
+                </div>
+            </div>
         </li>
 
         <li class="nav-item">

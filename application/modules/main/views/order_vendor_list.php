@@ -32,7 +32,7 @@
                 </form>
                 <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
                     <thead>
-                    <tr>
+                    <tr class="no-hover-style">
                         <th style="display: none;"> No. Order Vendor </th>
                         <th> Order </th>
                     </tr>

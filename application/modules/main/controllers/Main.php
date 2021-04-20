@@ -24,30 +24,192 @@ class Main extends MX_Controller
         $this->load->view('template/admin_footer');
     }
 
-    function jurnal_umum(){
+    function problem_solving(){
+        $this->load->view('template/admin_header');
+        $this->load->view('problem_solving');
+        $this->load->view('template/admin_footer');
+    }
+
+    function laporan_transaksi(){
+        if($this->session->userdata('is_admin') == "0"){
+            redirect(base_url('main'));
+        }
+
         $this->load->view('template/admin_header');
         $this->load->view('jurnal_umum');
         $this->load->view('template/admin_footer');
     }
 
-    function get_data_jurnal_umum(){
+    function get_data_laporan(){
+
+        if($this->session->userdata('is_admin') == "0"){
+            redirect(base_url('main'));
+        }
+
         // server-side pagination
         $draw = $_REQUEST['draw'];
         $length = $_REQUEST['length'];
         $start = $_REQUEST['start'];
 
-        $total = $this->Main_model->jurnal_umum_gabung(date('m'))->num_rows();
-
         $output = array();
         $output['draw'] = $draw;
-        $output['recordsTotal'] = $output['recordsFiltered'] = $total;
         $output['data']=array();
 
-        $output['data'] = $this->Main_model->jurnal_umum_gabung(date('m'), $length, $start)->result_object();
+        if(isset($_GET['start']) && isset($_GET['end']) && isset($_GET['brand']) && isset($_GET['tipe']) && isset($_GET['flow'])){
+
+            $start_date = htmlentities($_GET['start'], ENT_QUOTES);
+            $end_date = htmlentities($_GET['end'], ENT_QUOTES);
+            $brand_order = htmlentities($_GET['brand'], ENT_QUOTES);
+            $tipe_order = htmlentities($_GET['tipe'], ENT_QUOTES);
+            $cash_flow = htmlentities($_GET['flow'], ENT_QUOTES);
+
+
+            $output['data'] = $this->Main_model->jurnal_umum_gabung($start_date, $end_date, $brand_order, $tipe_order, $cash_flow, false, $length, $start)->result_object();
+            $output['recordsTotal'] = $output['recordsFiltered'] = $this->Main_model->jurnal_umum_gabung($start_date, $end_date, $brand_order, $tipe_order, $cash_flow, false)->num_rows();
+
+
+        } else {
+            $output['data'] = '';
+            $output['recordsTotal'] = $output['recordsFiltered'] = 0;
+        }
 
         echo json_encode($output);
     }
 
+    function laporan_produk(){
+
+        if($this->session->userdata('is_admin') == "0"){
+            redirect(base_url('main'));
+        }
+
+        $this->load->view('template/admin_header');
+        $this->load->view('laporan_produk');
+        $this->load->view('template/admin_footer');
+    }
+
+    function get_laporan_produk(){
+
+        if($this->session->userdata('is_admin') == "0"){
+            redirect(base_url('main'));
+        }
+
+        // server-side pagination
+        $draw = $_REQUEST['draw'];
+        $length = $_REQUEST['length'];
+        $start = $_REQUEST['start'];
+        $search = trim(htmlentities($_REQUEST['search']["value"], ENT_QUOTES));
+
+        $output = array();
+        $output['draw'] = $draw;
+        $output['data']=array();
+
+        if(isset($_GET['start']) && isset($_GET['end'])){
+
+            $start_date = htmlentities($_GET['start'], ENT_QUOTES);
+            $end_date = htmlentities($_GET['end'], ENT_QUOTES);
+
+
+            $output['data'] = $this->Main_model->laporan_produk($start_date, $end_date, $search, $length, $start)->result_object();
+            $output['recordsTotal'] = $output['recordsFiltered'] = $this->Main_model->laporan_produk($start_date, $end_date)->num_rows();
+
+
+        } else {
+            $output['data'] = '';
+            $output['recordsTotal'] = $output['recordsFiltered'] = 0;
+        }
+
+        echo json_encode($output);
+    }
+
+    function laporan_sales(){
+
+        if($this->session->userdata('is_admin') == "0"){
+            redirect(base_url('main'));
+        }
+
+        $this->load->view('template/admin_header');
+        $this->load->view('laporan_sales');
+        $this->load->view('template/admin_footer');
+    }
+
+    function get_laporan_sales(){
+
+        if($this->session->userdata('is_admin') == "0"){
+            redirect(base_url('main'));
+        }
+
+        // server-side pagination
+        $draw = $_REQUEST['draw'];
+        $length = $_REQUEST['length'];
+        $start = $_REQUEST['start'];
+        $search = trim(htmlentities($_REQUEST['search']["value"], ENT_QUOTES));
+
+        $output = array();
+        $output['draw'] = $draw;
+        $output['data']=array();
+
+        if(isset($_GET['start']) && isset($_GET['end'])){
+
+            $start_date = htmlentities($_GET['start'], ENT_QUOTES);
+            $end_date = htmlentities($_GET['end'], ENT_QUOTES);
+
+
+            $output['data'] = $this->Main_model->laporan_sales($start_date, $end_date, $search, $length, $start)->result_object();
+            $output['recordsTotal'] = $output['recordsFiltered'] = $this->Main_model->laporan_sales($start_date, $end_date)->num_rows();
+
+
+        } else {
+            $output['data'] = '';
+            $output['recordsTotal'] = $output['recordsFiltered'] = 0;
+        }
+
+        echo json_encode($output);
+    }
+
+    function laporan_purchase(){
+        if($this->session->userdata('is_admin') == "0"){
+            redirect(base_url('main'));
+        }
+
+        $this->load->view('template/admin_header');
+        $this->load->view('laporan_purchase');
+        $this->load->view('template/admin_footer');
+    }
+
+    function get_laporan_purchase(){
+
+        if($this->session->userdata('is_admin') == "0"){
+            redirect(base_url('main'));
+        }
+
+        // server-side pagination
+        $draw = $_REQUEST['draw'];
+        $length = $_REQUEST['length'];
+        $start = $_REQUEST['start'];
+        $search = trim(htmlentities($_REQUEST['search']["value"], ENT_QUOTES));
+
+        $output = array();
+        $output['draw'] = $draw;
+        $output['data']=array();
+
+        if(isset($_GET['start']) && isset($_GET['end'])){
+
+            $start_date = htmlentities($_GET['start'], ENT_QUOTES);
+            $end_date = htmlentities($_GET['end'], ENT_QUOTES);
+
+
+            $output['data'] = $this->Main_model->laporan_purchase($start_date, $end_date, $search, $length, $start)->result_object();
+            $output['recordsTotal'] = $output['recordsFiltered'] = $this->Main_model->laporan_purchase($start_date, $end_date)->num_rows();
+
+
+        } else {
+            $output['data'] = '';
+            $output['recordsTotal'] = $output['recordsFiltered'] = 0;
+        }
+
+        echo json_encode($output);
+
+    }
 
     function slip_gaji(){
 
@@ -1341,10 +1503,10 @@ class Main extends MX_Controller
         }
 
         if(!isset($_GET['delivery'])){
-            $total = $this->Main_model->get_order_m()->num_rows();
+            $total = $this->Main_model->get_order_m($search, $length, $start, $status, $brand)->num_rows();
             $output['data'] = $this->Main_model->get_order_m($search, $length, $start, $status, $brand)->result_object();
         } else {
-            $total = $this->Main_model->get_order_m_deliv()->num_rows();
+            $total = $this->Main_model->get_order_m_deliv($search, $length, $start, $status, $brand)->num_rows();
             $output['data'] = $this->Main_model->get_order_m_deliv($search, $length, $start, $status, $brand)->result_object();
         }
 
@@ -3043,8 +3205,543 @@ class Main extends MX_Controller
         }
     }
 
+    function excel_jurnal_umum(){
+
+        if($this->session->userdata('is_admin') == "0"){
+            echo "Unauthorized";
+            return;
+        }
+
+        if(!isset($_GET['start']) || !isset($_GET['end']) || !isset($_GET['brand']) || !isset($_GET['tipe']) || !isset($_GET['flow'])){
+            echo "Invalid data";
+            return;
+        }
+
+        include APPPATH.'third_party/PHPExcel/PHPExcel.php';
+
+        $startRow = 1;
+        $objPHPExcel = new PHPExcel();
+
+        $start_date = htmlentities($_GET['start'], ENT_QUOTES);
+        $end_date = htmlentities($_GET['end'], ENT_QUOTES);
+        $brand_order = htmlentities($_GET['brand'], ENT_QUOTES);
+        $tipe_order = htmlentities($_GET['tipe'], ENT_QUOTES);
+        $cash_flow = htmlentities($_GET['flow'], ENT_QUOTES);
+
+        $data = $this->Main_model->jurnal_umum_gabung($start_date, $end_date, $brand_order, $tipe_order, $cash_flow, true)->result_object();
+
+        if(empty($data)){
+            echo "No data";
+            return;
+        }
+
+        $objPHPExcel->setActiveSheetIndex(0);
+
+        $objPHPExcel->getActiveSheet()->SetCellValue("A".$startRow, "Laporan Transaksi");
+        $objPHPExcel->getActiveSheet()->getStyle("A$startRow")->getFont()->setBold( true );
+        $objPHPExcel->getActiveSheet()->getStyle("A$startRow")->getFont()->setItalic( true );
+        $objPHPExcel->getActiveSheet()->getStyle("A$startRow")->getFont()->setSize(14);
+
+        $objPHPExcel->getActiveSheet()->getColumnDimension('A')->setWidth(6);
+        $objPHPExcel->getActiveSheet()->getColumnDimension('B')->setWidth(18);
+        $objPHPExcel->getActiveSheet()->getColumnDimension('C')->setWidth(18);
+        $objPHPExcel->getActiveSheet()->getColumnDimension('D')->setWidth(27);
+        $objPHPExcel->getActiveSheet()->getColumnDimension('E')->setWidth(16);
+        $objPHPExcel->getActiveSheet()->getColumnDimension('F')->setWidth(16);
+        $objPHPExcel->getActiveSheet()->getColumnDimension('G')->setWidth(16);
+
+        $startRow = 3;
+
+        $objPHPExcel->getActiveSheet()->SetCellValue("B".$startRow, "Periode");
+        $objPHPExcel->getActiveSheet()->SetCellValue("C".$startRow, "$start_date sampai dengan $end_date");
+
+        $startRow++;
+
+        $objPHPExcel->getActiveSheet()->SetCellValue("B".$startRow, "Brand");
+        $objPHPExcel->getActiveSheet()->SetCellValue("C".$startRow, $this->get_brand($brand_order));
+
+        $startRow++;
+
+        $objPHPExcel->getActiveSheet()->SetCellValue("B".$startRow, "Pembayaran");
+        $objPHPExcel->getActiveSheet()->SetCellValue("C".$startRow, $this->get_tipe_order($tipe_order));
+
+        $startRow++;
+
+        $objPHPExcel->getActiveSheet()->SetCellValue("B".$startRow, "Arus Kas");
+        $objPHPExcel->getActiveSheet()->SetCellValue("C".$startRow, $this->get_arus_kas($cash_flow));
+
+        $objPHPExcel->getActiveSheet()->getStyle("B3:D$startRow")->applyFromArray(
+            array(
+                'borders' => array(
+                    'outline' => array(
+                        'style' => PHPExcel_Style_Border::BORDER_THIN,
+                        'color' => array('rgb' => 'DDDDDD')
+                    )
+                )
+            )
+        );
+
+        $startRow+=2;
+
+        $objPHPExcel->getActiveSheet()->SetCellValue("A".$startRow, "No");
+        $objPHPExcel->getActiveSheet()->SetCellValue("B".$startRow, "Brand");
+        $objPHPExcel->getActiveSheet()->SetCellValue("C".$startRow, "Tanggal");
+        $objPHPExcel->getActiveSheet()->SetCellValue("D".$startRow, "Keterangan");
+        $objPHPExcel->getActiveSheet()->SetCellValue("E".$startRow, "Debet");
+        $objPHPExcel->getActiveSheet()->SetCellValue("F".$startRow, "Kredit");
+        $objPHPExcel->getActiveSheet()->SetCellValue("G".$startRow, "Mutasi");
+        $objPHPExcel->getActiveSheet()->SetCellValue("H".$startRow, "");
+
+        $objPHPExcel->getActiveSheet()
+            ->getStyle("E$startRow:G$startRow")
+            ->getAlignment()
+            ->setHorizontal(PHPExcel_Style_Alignment::HORIZONTAL_RIGHT);
+
+        $objPHPExcel->getActiveSheet()->getStyle("A$startRow:H$startRow")->getFill()->applyFromArray(array(
+            'type' => PHPExcel_Style_Fill::FILL_SOLID,
+            'startcolor' => array(
+                'rgb' => 'C0BEBF'
+            )
+        ));
+
+        $objPHPExcel->getActiveSheet()->getStyle("A$startRow:H$startRow")->getFont()->setBold( true );
+
+        $startRow++;
+        $data_start = $startRow;
+        $no = 1;
+
+        foreach($data as $row){
+            $objPHPExcel->getActiveSheet()->SetCellValue("A".$startRow, $no);
+            $objPHPExcel->getActiveSheet()->SetCellValue("B".$startRow, html_entity_decode($this->get_brand($row->brand_order), ENT_QUOTES,'UTF-8'));
+            $objPHPExcel->getActiveSheet()->SetCellValue("C".$startRow, date("D, M j, Y",strtotime($row->tgl_order)));
+            $objPHPExcel->getActiveSheet()->SetCellValue("D".$startRow, html_entity_decode($row->no_order, ENT_QUOTES,'UTF-8'));
+            $objPHPExcel->getActiveSheet()->SetCellValue("E".$startRow, (int)$row->DEBET);
+            $objPHPExcel->getActiveSheet()->SetCellValue("F".$startRow, (int)$row->KREDIT);
+            $objPHPExcel->getActiveSheet()->SetCellValue("G".$startRow, (int)$row->MUTASI);
+            $objPHPExcel->getActiveSheet()->SetCellValue("H".$startRow, $this->get_tipe_order($row->tipe_order));
+
+            if($no % 2 == 0){
+                $objPHPExcel->getActiveSheet()->getStyle("A$startRow:H$startRow")->getFill()->applyFromArray(array(
+                    'type' => PHPExcel_Style_Fill::FILL_SOLID,
+                    'startcolor' => array(
+                        'rgb' => 'F3F3F3'
+                    )
+                ));
+            }
+
+            $startRow++;
+            $no++;
+        }
 
 
+        $objPHPExcel->getActiveSheet()
+            ->getStyle("E$data_start:G$startRow")
+            ->getAlignment()
+            ->setHorizontal(PHPExcel_Style_Alignment::HORIZONTAL_RIGHT);
+
+        $objPHPExcel->getActiveSheet()->getStyle("E$data_start:G$startRow")->getNumberFormat()->setFormatCode('#,##0');
+        $objPHPExcel->getActiveSheet()->getStyle("C$data_start:D$startRow")->getAlignment()->setWrapText(true);
+        $objPHPExcel->getActiveSheet()->getStyle("A$data_start:H$startRow")->getAlignment()->setVertical(PHPExcel_Style_Alignment::VERTICAL_TOP);
+
+        $objPHPExcel->getActiveSheet()->setShowGridlines(false);
+
+
+        $filename = "Laporan Transaksi ($start_date sampai $end_date)";
+        header('Content-Type: application/vnd.ms-excel'); //mime type
+        header('Content-Disposition: attachment;filename="'.$filename.'.xlsx"'); //tell browser what's the file name
+        header('Cache-Control: max-age=0'); //no cache
+        $objWriter = PHPExcel_IOFactory::createWriter($objPHPExcel, 'Excel2007');
+        $objWriter->save('php://output');
+
+    }
+
+    function excel_laporan_produk(){
+
+        if($this->session->userdata('is_admin') == "0"){
+            echo "Unauthorized";
+            return;
+        }
+
+        if(!isset($_GET['start']) || !isset($_GET['end'])){
+            echo "Invalid data";
+            return;
+        }
+
+        include APPPATH.'third_party/PHPExcel/PHPExcel.php';
+
+        $startRow = 1;
+        $objPHPExcel = new PHPExcel();
+
+        $start_date = htmlentities($_GET['start'], ENT_QUOTES);
+        $end_date = htmlentities($_GET['end'], ENT_QUOTES);
+
+        $data = $this->Main_model->laporan_produk($start_date, $end_date)->result_object();
+
+        if(empty($data)){
+            echo "No data";
+            return;
+        }
+
+        $objPHPExcel->setActiveSheetIndex(0);
+
+        $objPHPExcel->getActiveSheet()->SetCellValue("A".$startRow, "Laporan Produk");
+        $objPHPExcel->getActiveSheet()->getStyle("A$startRow")->getFont()->setBold( true );
+        $objPHPExcel->getActiveSheet()->getStyle("A$startRow")->getFont()->setItalic( true );
+        $objPHPExcel->getActiveSheet()->getStyle("A$startRow")->getFont()->setSize(14);
+
+        $objPHPExcel->getActiveSheet()->getColumnDimension('A')->setWidth(6);
+        $objPHPExcel->getActiveSheet()->getColumnDimension('B')->setWidth(33);
+        $objPHPExcel->getActiveSheet()->getColumnDimension('C')->setWidth(18);
+        $objPHPExcel->getActiveSheet()->getColumnDimension('D')->setWidth(9);
+        $objPHPExcel->getActiveSheet()->getColumnDimension('E')->setWidth(9);
+
+        $startRow = 3;
+
+        $objPHPExcel->getActiveSheet()->SetCellValue("B".$startRow, "Periode");
+        $startRow++;
+        $objPHPExcel->getActiveSheet()->SetCellValue("B".$startRow, "$start_date sampai dengan $end_date");
+
+
+        $objPHPExcel->getActiveSheet()->getStyle("B3:D$startRow")->applyFromArray(
+            array(
+                'borders' => array(
+                    'outline' => array(
+                        'style' => PHPExcel_Style_Border::BORDER_THIN,
+                        'color' => array('rgb' => 'DDDDDD')
+                    )
+                )
+            )
+        );
+
+        $startRow+=2;
+
+        $objPHPExcel->getActiveSheet()->SetCellValue("A".$startRow, "No");
+        $objPHPExcel->getActiveSheet()->SetCellValue("B".$startRow, "Produk");
+        $objPHPExcel->getActiveSheet()->SetCellValue("C".$startRow, "Brand");
+        $objPHPExcel->getActiveSheet()->SetCellValue("D".$startRow, "Stok Out");
+        $objPHPExcel->getActiveSheet()->SetCellValue("E".$startRow, "Satuan");
+
+
+        $objPHPExcel->getActiveSheet()->getStyle("A$startRow:E$startRow")->getFill()->applyFromArray(array(
+            'type' => PHPExcel_Style_Fill::FILL_SOLID,
+            'startcolor' => array(
+                'rgb' => 'C0BEBF'
+            )
+        ));
+
+        $objPHPExcel->getActiveSheet()->getStyle("A$startRow:E$startRow")->getFont()->setBold( true );
+
+        $startRow++;
+        $data_start = $startRow;
+        $no = 1;
+
+        foreach($data as $row){
+            $objPHPExcel->getActiveSheet()->SetCellValue("A".$startRow, $no);
+            $objPHPExcel->getActiveSheet()->SetCellValue("B".$startRow, $row->nama_product);
+            $objPHPExcel->getActiveSheet()->SetCellValue("C".$startRow, html_entity_decode($this->get_brand($row->brand_product), ENT_QUOTES,'UTF-8'));
+            $objPHPExcel->getActiveSheet()->SetCellValue("D".$startRow, $row->stok_out);
+            $objPHPExcel->getActiveSheet()->SetCellValue("E".$startRow, $row->satuan_product);
+
+            if($no % 2 == 0){
+                $objPHPExcel->getActiveSheet()->getStyle("A$startRow:E$startRow")->getFill()->applyFromArray(array(
+                    'type' => PHPExcel_Style_Fill::FILL_SOLID,
+                    'startcolor' => array(
+                        'rgb' => 'F3F3F3'
+                    )
+                ));
+            }
+
+            $startRow++;
+            $no++;
+        }
+
+
+        $objPHPExcel->getActiveSheet()->getStyle("B$data_start:C$startRow")->getAlignment()->setWrapText(true);
+        $objPHPExcel->getActiveSheet()->getStyle("A$data_start:E$startRow")->getAlignment()->setVertical(PHPExcel_Style_Alignment::VERTICAL_TOP);
+
+        $objPHPExcel->getActiveSheet()->setShowGridlines(false);
+
+
+        $filename = "Laporan Produk ($start_date sampai $end_date)";
+        header('Content-Type: application/vnd.ms-excel'); //mime type
+        header('Content-Disposition: attachment;filename="'.$filename.'.xlsx"'); //tell browser what's the file name
+        header('Cache-Control: max-age=0'); //no cache
+        $objWriter = PHPExcel_IOFactory::createWriter($objPHPExcel, 'Excel2007');
+        $objWriter->save('php://output');
+
+    }
+
+    function excel_laporan_sales(){
+
+        if($this->session->userdata('is_admin') == "0"){
+            echo "Unauthorized";
+            return;
+        }
+
+        if(!isset($_GET['start']) || !isset($_GET['end'])){
+            echo "Invalid data";
+            return;
+        }
+
+        include APPPATH.'third_party/PHPExcel/PHPExcel.php';
+
+        $startRow = 1;
+        $objPHPExcel = new PHPExcel();
+
+        $start_date = htmlentities($_GET['start'], ENT_QUOTES);
+        $end_date = htmlentities($_GET['end'], ENT_QUOTES);
+
+        $data = $this->Main_model->laporan_sales($start_date, $end_date)->result_object();
+
+        if(empty($data)){
+            echo "No data";
+            return;
+        }
+
+        $objPHPExcel->setActiveSheetIndex(0);
+
+        $objPHPExcel->getActiveSheet()->SetCellValue("A".$startRow, "Laporan Sales per Customer");
+        $objPHPExcel->getActiveSheet()->getStyle("A$startRow")->getFont()->setBold( true );
+        $objPHPExcel->getActiveSheet()->getStyle("A$startRow")->getFont()->setItalic( true );
+        $objPHPExcel->getActiveSheet()->getStyle("A$startRow")->getFont()->setSize(14);
+
+        $objPHPExcel->getActiveSheet()->getColumnDimension('A')->setWidth(6);
+        $objPHPExcel->getActiveSheet()->getColumnDimension('B')->setWidth(33);
+        $objPHPExcel->getActiveSheet()->getColumnDimension('C')->setWidth(15);
+        $objPHPExcel->getActiveSheet()->getColumnDimension('D')->setWidth(15);
+        $objPHPExcel->getActiveSheet()->getColumnDimension('E')->setWidth(15);
+
+        $startRow = 3;
+
+        $objPHPExcel->getActiveSheet()->SetCellValue("B".$startRow, "Periode");
+        $startRow++;
+        $objPHPExcel->getActiveSheet()->SetCellValue("B".$startRow, "$start_date sampai dengan $end_date");
+
+
+        $objPHPExcel->getActiveSheet()->getStyle("B3:D$startRow")->applyFromArray(
+            array(
+                'borders' => array(
+                    'outline' => array(
+                        'style' => PHPExcel_Style_Border::BORDER_THIN,
+                        'color' => array('rgb' => 'DDDDDD')
+                    )
+                )
+            )
+        );
+
+        $startRow+=2;
+
+        $objPHPExcel->getActiveSheet()->SetCellValue("A".$startRow, "No");
+        $objPHPExcel->getActiveSheet()->SetCellValue("B".$startRow, "Customer");
+        $objPHPExcel->getActiveSheet()->SetCellValue("C".$startRow, "Total Pesanan");
+        $objPHPExcel->getActiveSheet()->SetCellValue("D".$startRow, "Ongkir");
+        $objPHPExcel->getActiveSheet()->SetCellValue("E".$startRow, "Total Belanja");
+
+
+        $objPHPExcel->getActiveSheet()->getStyle("A$startRow:E$startRow")->getFill()->applyFromArray(array(
+            'type' => PHPExcel_Style_Fill::FILL_SOLID,
+            'startcolor' => array(
+                'rgb' => 'C0BEBF'
+            )
+        ));
+
+        $objPHPExcel->getActiveSheet()->getStyle("A$startRow:E$startRow")->getFont()->setBold( true );
+
+        $startRow++;
+        $data_start = $startRow;
+        $no = 1;
+
+        foreach($data as $row){
+            $objPHPExcel->getActiveSheet()->SetCellValue("A".$startRow, $no);
+            $objPHPExcel->getActiveSheet()->SetCellValue("B".$startRow, $row->nama_customer);
+            $objPHPExcel->getActiveSheet()->SetCellValue("C".$startRow, (int)$row->total_order);
+            $objPHPExcel->getActiveSheet()->SetCellValue("D".$startRow, (int)$row->ongkir_order);
+            $objPHPExcel->getActiveSheet()->SetCellValue("E".$startRow, (int)$row->total_belanja);
+
+            if($no % 2 == 0){
+                $objPHPExcel->getActiveSheet()->getStyle("A$startRow:E$startRow")->getFill()->applyFromArray(array(
+                    'type' => PHPExcel_Style_Fill::FILL_SOLID,
+                    'startcolor' => array(
+                        'rgb' => 'F3F3F3'
+                    )
+                ));
+            }
+
+            $startRow++;
+            $no++;
+        }
+
+        $objPHPExcel->getActiveSheet()
+            ->getStyle("C$data_start:E$startRow")
+            ->getAlignment()
+            ->setHorizontal(PHPExcel_Style_Alignment::HORIZONTAL_RIGHT);
+
+        $objPHPExcel->getActiveSheet()->getStyle("C$data_start:E$startRow")->getNumberFormat()->setFormatCode('#,##0');
+        $objPHPExcel->getActiveSheet()->getStyle("B$data_start:B$startRow")->getAlignment()->setWrapText(true);
+        $objPHPExcel->getActiveSheet()->getStyle("A$data_start:E$startRow")->getAlignment()->setVertical(PHPExcel_Style_Alignment::VERTICAL_TOP);
+
+        $objPHPExcel->getActiveSheet()->setShowGridlines(false);
+
+
+        $filename = "Laporan Sales per Customer ($start_date sampai $end_date)";
+        header('Content-Type: application/vnd.ms-excel'); //mime type
+        header('Content-Disposition: attachment;filename="'.$filename.'.xlsx"'); //tell browser what's the file name
+        header('Cache-Control: max-age=0'); //no cache
+        $objWriter = PHPExcel_IOFactory::createWriter($objPHPExcel, 'Excel2007');
+        $objWriter->save('php://output');
+
+    }
+
+    function excel_laporan_purchase(){
+
+        if($this->session->userdata('is_admin') == "0"){
+            echo "Unauthorized";
+            return;
+        }
+
+        if(!isset($_GET['start']) || !isset($_GET['end'])){
+            echo "Invalid data";
+            return;
+        }
+
+        include APPPATH.'third_party/PHPExcel/PHPExcel.php';
+
+        $startRow = 1;
+        $objPHPExcel = new PHPExcel();
+
+        $start_date = htmlentities($_GET['start'], ENT_QUOTES);
+        $end_date = htmlentities($_GET['end'], ENT_QUOTES);
+
+        $data = $this->Main_model->laporan_purchase($start_date, $end_date)->result_object();
+
+        if(empty($data)){
+            echo "No data";
+            return;
+        }
+
+        $objPHPExcel->setActiveSheetIndex(0);
+
+        $objPHPExcel->getActiveSheet()->SetCellValue("A".$startRow, "Laporan Sales per Customer");
+        $objPHPExcel->getActiveSheet()->getStyle("A$startRow")->getFont()->setBold( true );
+        $objPHPExcel->getActiveSheet()->getStyle("A$startRow")->getFont()->setItalic( true );
+        $objPHPExcel->getActiveSheet()->getStyle("A$startRow")->getFont()->setSize(14);
+
+        $objPHPExcel->getActiveSheet()->getColumnDimension('A')->setWidth(6);
+        $objPHPExcel->getActiveSheet()->getColumnDimension('B')->setWidth(33);
+        $objPHPExcel->getActiveSheet()->getColumnDimension('C')->setWidth(15);
+
+        $startRow = 3;
+
+        $objPHPExcel->getActiveSheet()->SetCellValue("B".$startRow, "Periode");
+        $startRow++;
+        $objPHPExcel->getActiveSheet()->SetCellValue("B".$startRow, "$start_date sampai dengan $end_date");
+
+
+        $objPHPExcel->getActiveSheet()->getStyle("B3:D$startRow")->applyFromArray(
+            array(
+                'borders' => array(
+                    'outline' => array(
+                        'style' => PHPExcel_Style_Border::BORDER_THIN,
+                        'color' => array('rgb' => 'DDDDDD')
+                    )
+                )
+            )
+        );
+
+        $startRow+=2;
+
+        $objPHPExcel->getActiveSheet()->SetCellValue("A".$startRow, "No");
+        $objPHPExcel->getActiveSheet()->SetCellValue("B".$startRow, "Vendor");
+        $objPHPExcel->getActiveSheet()->SetCellValue("C".$startRow, "Total Pesanan");
+
+
+        $objPHPExcel->getActiveSheet()->getStyle("A$startRow:C$startRow")->getFill()->applyFromArray(array(
+            'type' => PHPExcel_Style_Fill::FILL_SOLID,
+            'startcolor' => array(
+                'rgb' => 'C0BEBF'
+            )
+        ));
+
+        $objPHPExcel->getActiveSheet()->getStyle("A$startRow:C$startRow")->getFont()->setBold( true );
+
+        $startRow++;
+        $data_start = $startRow;
+        $no = 1;
+
+        foreach($data as $row){
+            $objPHPExcel->getActiveSheet()->SetCellValue("A".$startRow, $no);
+            $objPHPExcel->getActiveSheet()->SetCellValue("B".$startRow, $row->nama_vendor);
+            $objPHPExcel->getActiveSheet()->SetCellValue("C".$startRow, (int)$row->total_order);
+
+            if($no % 2 == 0){
+                $objPHPExcel->getActiveSheet()->getStyle("A$startRow:C$startRow")->getFill()->applyFromArray(array(
+                    'type' => PHPExcel_Style_Fill::FILL_SOLID,
+                    'startcolor' => array(
+                        'rgb' => 'F3F3F3'
+                    )
+                ));
+            }
+
+            $startRow++;
+            $no++;
+        }
+
+        $objPHPExcel->getActiveSheet()
+            ->getStyle("C$data_start:C$startRow")
+            ->getAlignment()
+            ->setHorizontal(PHPExcel_Style_Alignment::HORIZONTAL_RIGHT);
+
+        $objPHPExcel->getActiveSheet()->getStyle("C$data_start:C$startRow")->getNumberFormat()->setFormatCode('#,##0');
+        $objPHPExcel->getActiveSheet()->getStyle("B$data_start:B$startRow")->getAlignment()->setWrapText(true);
+        $objPHPExcel->getActiveSheet()->getStyle("A$data_start:C$startRow")->getAlignment()->setVertical(PHPExcel_Style_Alignment::VERTICAL_TOP);
+
+        $objPHPExcel->getActiveSheet()->setShowGridlines(false);
+
+
+        $filename = "Laporan Purchase per Vendor ($start_date sampai $end_date)";
+        header('Content-Type: application/vnd.ms-excel'); //mime type
+        header('Content-Disposition: attachment;filename="'.$filename.'.xlsx"'); //tell browser what's the file name
+        header('Cache-Control: max-age=0'); //no cache
+        $objWriter = PHPExcel_IOFactory::createWriter($objPHPExcel, 'Excel2007');
+        $objWriter->save('php://output');
+
+    }
+
+    private function get_tipe_order($tipe){
+        if($tipe == "REK"){
+            return "Rek";
+        } else if($tipe == "TUNAI"){
+            return "Tunai";
+        } else if ($tipe == "FREE"){
+            return "Free";
+        } else if($tipe == "all"){
+            return "Semua Pembayaran";
+        }
+    }
+
+    private function get_brand($brand){
+        if($brand == "KA"){
+            return "Kedai Amarthya";
+        } else if ($brand == "AF") {
+            return "Amarthya Fashion";
+        } else if ($brand == "AHF") {
+            return "Amarthya Healthy Food";
+        } else if ($brand == "AH") {
+            return "Amarthya Herbal";
+        } else if ($brand == "all"){
+            return "Semua Brand";
+        }
+    }
+
+    private function get_arus_kas($arus){
+        if($arus == "all"){
+            return "Semua Arus Kas";
+        } else if ($arus == "pemasukan"){
+            return "Pemasukan";
+        } else if ($arus == "pengeluaran"){
+            return "Pengeluaran";
+        }
+    }
 
 
 }

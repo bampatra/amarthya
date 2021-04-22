@@ -25,9 +25,174 @@ class Main extends MX_Controller
     }
 
     function problem_solving(){
+
+        if($this->session->userdata('is_admin') == "0"){
+            redirect(base_url('main'));
+        }
+
         $this->load->view('template/admin_header');
         $this->load->view('problem_solving');
         $this->load->view('template/admin_footer');
+    }
+
+    function add_problem_solving(){
+
+        if($this->session->userdata('is_admin') == "0"){
+            redirect(base_url('main'));
+        }
+
+        date_default_timezone_set('Asia/Singapore');
+
+        $error = array();
+
+        $id_problem_solving = trim(htmlentities($_REQUEST['id_problem_solving'], ENT_QUOTES));
+        $kode_problem_solving = "P".date("Ymd").$this->randStr(5);
+        $no_order_problem_solving = trim(htmlentities($_REQUEST['no_order_problem_solving'], ENT_QUOTES));
+        $topik_problem_solving = trim(htmlentities($_REQUEST['topik_problem_solving'], ENT_QUOTES));
+        $detail_problem_solving = trim(htmlentities($_REQUEST['detail_problem_solving'], ENT_QUOTES));
+        $solusi_problem_solving = trim(htmlentities($_REQUEST['solusi_problem_solving'], ENT_QUOTES));
+        $active_problem_solving = '1';
+
+        if(empty($topik_problem_solving)){
+            array_push($error, "invalid-topik");
+        }
+
+        if(empty($detail_problem_solving)){
+            array_push($error, "invalid-detail");
+        }
+
+        if(!empty($no_order_problem_solving)){
+            $check_order_customer = $this->Main_model->get_order_m_by_no_order($no_order_problem_solving);
+            $check_order_vendor = $this->Main_model->get_order_vendor_m_by_no_order($no_order_problem_solving);
+
+            if($check_order_customer->num_rows() == 0 && $check_order_vendor->num_rows() == 0){
+                array_push($error, "invalid-pesanan");
+            }
+        }
+
+        if(!empty($error)){
+            $return_arr = array("Status" => 'FORMERROR', "Error" => $error);
+            $this->db->trans_rollback();
+            echo json_encode($return_arr);
+            return;
+        }
+
+        if($this->Main_model->get_problem_by_id($id_problem_solving)->num_rows() == 0){
+            $timestamp_create = date('Y-m-d H:i:s');
+            $username_create = $this->session->userdata('username');
+
+            if(!empty($solusi_problem_solving)){
+                $timestamp_solusi = $timestamp_create;
+                $username_solusi = $username_create;
+            } else {
+                $timestamp_solusi = "";
+                $username_solusi = "";
+            }
+
+            $data = compact('kode_problem_solving', 'no_order_problem_solving', 'topik_problem_solving',
+                            'detail_problem_solving', 'solusi_problem_solving', 'timestamp_create', 'timestamp_solusi',
+                            'username_create', 'username_solusi', 'active_problem_solving');
+
+            $this->db->trans_begin();
+
+            if($this->Main_model->add_problem_solving($data)){
+                $this->db->trans_commit();
+                $return_arr = array("Status" => 'OK', "Message" => '');
+            } else {
+                $this->db->trans_rollback();
+                $return_arr = array("Status" => 'ERROR', "Message" => 'Gagal menambahkan problem');
+            }
+
+        } else {
+            if(!empty($solusi_problem_solving)){
+                $timestamp_solusi = date('Y-m-d H:i:s');
+                $username_solusi = $this->session->userdata('username');
+            } else {
+                $timestamp_solusi = "";
+                $username_solusi = "";
+            }
+
+            $updated_data = compact('no_order_problem_solving', 'topik_problem_solving', 'detail_problem_solving',
+                            'solusi_problem_solving', 'timestamp_solusi', 'username_solusi');
+
+            if($this->Main_model->update_problem_solving($updated_data, $id_problem_solving)){
+                $this->db->trans_commit();
+                $return_arr = array("Status" => 'OK', "Message" => '');
+            } else {
+                $this->db->trans_rollback();
+                $return_arr = array("Status" => 'ERROR', "Message" => 'Gagal mengupdate problem');
+            }
+        }
+
+        echo json_encode($return_arr);
+
+
+    }
+
+    function delete_problem_solving(){
+
+        if($this->session->userdata('is_admin') == "0"){
+            redirect(base_url('main'));
+        }
+
+        $id_problem_solving = strtoupper(trim(htmlentities($_REQUEST['id_problem_solving'], ENT_QUOTES)));
+        $problem_data = $this->Main_model->get_problem_by_id($id_problem_solving);
+
+        if($problem_data->num_rows() == 0){
+            $return_arr = array("Status" => 'ERROR', "Message" => 'Data tidak ditemukan');
+            echo json_encode($return_arr);
+            return;
+        }
+
+        if($problem_data->row()->active_problem_solving == '0'){
+            $return_arr = array("Status" => 'ERROR', "Message" => 'Data sudah dihapus');
+            echo json_encode($return_arr);
+            return;
+        }
+
+        $active_problem_solving = '0';
+        $updated_data = compact('active_problem_solving');
+
+        if($this->Main_model->update_problem_solving($updated_data, $id_problem_solving)){
+            $this->db->trans_commit();
+            $return_arr = array("Status" => 'OK', "Message" => 'Problem berhasil dihapus');
+        } else {
+            $this->db->trans_rollback();
+            $return_arr = array("Status" => 'ERROR', "Message" => 'Gagal menghapus problem');
+        }
+
+        echo json_encode($return_arr);
+
+    }
+
+    function get_problem_solving(){
+
+        if($this->session->userdata('is_admin') == "0"){
+            redirect(base_url('main'));
+        }
+
+        // server-side pagination
+        $draw = $_REQUEST['draw'];
+        $length = $_REQUEST['length'];
+        $start = $_REQUEST['start'];
+        $search = trim(htmlentities($_REQUEST['search']["value"], ENT_QUOTES));
+
+        $total = $this->Main_model->get_problem_solving()->num_rows();
+
+        $output = array();
+        $output['draw'] = $draw;
+        $output['recordsTotal'] = $output['recordsFiltered'] = $total;
+        $output['data']=array();
+
+        if(isset($_GET['status'])){
+            $status = htmlentities($_GET['status'], ENT_QUOTES);
+        } else {
+            $status = "all";
+        }
+
+        $output['data'] = $this->Main_model->get_problem_solving($status, $search, $length, $start)->result_object();
+
+        echo json_encode($output);
     }
 
     function laporan_transaksi(){
@@ -913,10 +1078,10 @@ class Main extends MX_Controller
         }
 
         if(!isset($_GET['pick_up'])){
-            $total = $this->Main_model->get_order_vendor_m()->num_rows();
+            $total = $this->Main_model->get_order_vendor_m($search)->num_rows();
             $output['data'] = $this->Main_model->get_order_vendor_m($search, $length, $start, $status, $brand)->result_object();
         } else {
-            $total = $this->Main_model->get_order_vendor_m_pickup()->num_rows();
+            $total = $this->Main_model->get_order_vendor_m_pickup($search)->num_rows();
             $output['data'] = $this->Main_model->get_order_vendor_m_pickup($search, $length, $start, $status, $brand)->result_object();
         }
 

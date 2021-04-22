@@ -39,7 +39,7 @@
 
 
 <div class="modal fade" tabindex="-1" role="dialog" id="vendor-modal" style="z-index: 5000">
-    <div class="modal-dialog" role="document">
+    <div class="modal-dialog modal-lg" role="document">
         <div class="modal-content">
             <div class="modal-header">
                 <h5 class="modal-title">Vendor</h5>
@@ -49,6 +49,7 @@
             </div>
             <div class="modal-body">
                 <form id="vendor-form">
+
                     <div class="form-group" >
                         <label class="col-form-label">Nama Vendor</label>
                         <input type="text" id="nama_vendor"  name="nama_vendor" class="form-control form-active-control">
@@ -61,26 +62,29 @@
                         <div class="invalid-feedback invalid-alamatvendor">Data tidak valid</div>
                     </div>
 
-                    <div class="form-group" >
-                        <label class="col-form-label">No. HP</label>
-                        <input type="number" id="no_hp_vendor"  name="no_hp_vendor" class="form-control form-active-control">
-                        <div class="invalid-feedback invalid-nohp">Data tidak valid</div>
+                    <div class="form-row">
+                        <div class="col-md-6 mb-3">
+                            <label class="col-form-label">No. HP</label>
+                            <input type="number" id="no_hp_vendor"  name="no_hp_vendor" class="form-control form-active-control">
+                            <div class="invalid-feedback invalid-nohp">Data tidak valid</div>
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label class="col-form-label">Email</label>
+                            <input type="text" id="email_vendor"  name="email_vendor" class="form-control form-active-control">
+                            <div class="invalid-feedback invalid-email">Data tidak valid</div>
+                        </div>
                     </div>
 
-                    <div class="form-group" >
-                        <label class="col-form-label">Email</label>
-                        <input type="text" id="email_vendor"  name="email_vendor" class="form-control form-active-control">
-                        <div class="invalid-feedback invalid-email">Data tidak valid</div>
-                    </div>
 
-                    <div class="form-group" >
-                        <label class="col-form-label">No. Rekening</label>
-                        <input type="number" id="no_rekening_vendor"  name="no_rekening_vendor" class="form-control form-active-control">
-                    </div>
-
-                    <div class="form-group" >
-                        <label class="col-form-label">Nama Bank</label>
-                        <input type="text" id="nama_bank_vendor"  name="nama_bank_vendor" class="form-control form-active-control">
+                    <div class="form-row">
+                        <div class="col-md-6 mb-3">
+                            <label class="col-form-label">No. Rekening</label>
+                            <input type="number" id="no_rekening_vendor"  name="no_rekening_vendor" class="form-control form-active-control">
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label class="col-form-label">Nama Bank</label>
+                            <input type="text" id="nama_bank_vendor"  name="nama_bank_vendor" class="form-control form-active-control">
+                        </div>
                     </div>
 
                     <div class="form-group">

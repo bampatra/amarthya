@@ -263,7 +263,7 @@
                         dateTimeParts[1]--;
                         const temp_date = new Date(...dateTimeParts);
 
-                        html = '<span style="font-size: 12px">'+ (temp_date.getDate() + 1) + '/' + temp_date.getMonth() + '/' + temp_date.getFullYear() +'</span><br>' +
+                        html = '<span style="font-size: 12px">'+ temp_date.getDate() + '/' + (temp_date.getMonth() + 1) + '/' + temp_date.getFullYear() +'</span><br>' +
                             '   <strong>'+ data.no_order_vendor +'</strong><br>' +
                             '<span>'+ data.nama_vendor +'</span><br>' +
                             '<span>Total Order: '+ convertToRupiah(data.grand_total_order) +'</span>';
@@ -308,7 +308,7 @@
         dateTimeParts[1]--;
         const temp_date = new Date(...dateTimeParts);
 
-        html = '<span style="font-size: 12px">'+ (temp_date.getDate() + 1) + '/' + temp_date.getMonth() + '/' + temp_date.getFullYear() +'</span><br>' +
+        html = '<span style="font-size: 12px">'+ temp_date.getDate() + '/' + (temp_date.getMonth() + 1) + '/' + temp_date.getFullYear() +'</span><br>' +
             '   <strong>'+ no_order +'</strong><br>' +
             '<span>'+ nama_vendor +'</span><br>' +
             '<span>Total Order: '+ convertToRupiah(grand_total_order) +'</span>' +

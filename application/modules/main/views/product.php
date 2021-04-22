@@ -16,7 +16,7 @@
         </div>
         <div class="card-body">
             <div class="table-responsive">
-                <select id="brand_product" name="brand_product" class="form-control form-control-sm form-active-control" data-live-search="true" style="width: 40%; float: left">
+                <select id="brand_product_filter" name="brand_product_filter" class="form-control form-control-sm" data-live-search="true" style="width: 40%; float: left">
                     <option value="all">Semua Brand</option>
                     <option value="KA"> Kedai Amarthya </option>
                     <option value="AF"> Amarthya Fashion </option>
@@ -49,7 +49,7 @@
 
 
 <div class="modal fade" tabindex="-1" role="dialog" id="input-product-modal" style="z-index: 5000">
-    <div class="modal-dialog" role="document">
+    <div class="modal-dialog modal-lg" role="document">
         <div class="modal-content">
             <div class="modal-header">
                 <h5 class="modal-title">Product</h5>
@@ -59,53 +59,54 @@
             </div>
             <div class="modal-body">
                 <form id="product-form">
-                    <div class="form-group" >
-                        <label class="col-form-label">Nama Product</label>
-                        <input type="text" id="nama_product"  name="nama_product" class="form-control form-active-control">
-                        <div class="invalid-feedback invalid-namaproduct">Data tidak valid</div>
+
+                    <div class="form-row">
+                        <div class="col-md-8 mb-3">
+                            <label class="col-form-label">Nama Product</label>
+                            <input type="text" id="nama_product"  name="nama_product" class="form-control form-active-control">
+                            <div class="invalid-feedback invalid-namaproduct">Data tidak valid</div>
+                        </div>
+                        <div class="col-md-4 mb-3">
+                            <label class="col-form-label">Satuan</label>
+                            <input type="text" id="satuan_product"  name="satuan_product" class="form-control form-active-control">
+                            <div class="invalid-feedback invalid-satuanproduct">Data tidak valid</div>
+                        </div>
                     </div>
 
-                    <div class="form-group" >
-                        <label class="col-form-label">SKU Product</label>
-                        <input type="text" id="SKU_product"  name="SKU_product" class="form-control form-active-control">
+                    <div class="form-row">
+                        <div class="col-md-8 mb-3">
+                            <label class="col-form-label">Brand</label>
+                            <select id="brand_product" name="brand_product" class="form-control form-active-control">
+                                <option value="KA"> Kedai Amarthya </option>
+                                <option value="AF"> Amarthya Fashion </option>
+                                <option value="AHF"> Amarthya Healthy Food </option>
+                                <option value="AH"> Amarthya Herbal </option>
+                            </select>
+                            <div class="invalid-feedback invalid-brand">Data tidak valid</div>
+                        </div>
+                        <div class="col-md-4 mb-3">
+                            <label class="col-form-label">SKU Product</label>
+                            <input type="text" id="SKU_product"  name="SKU_product" class="form-control form-active-control">
+                        </div>
                     </div>
 
-
-                    <div class="form-group" >
-                        <label class="col-form-label">Satuan</label>
-                        <input type="text" id="satuan_product"  name="satuan_product" class="form-control form-active-control">
-                        <div class="invalid-feedback invalid-satuanproduct">Data tidak valid</div>
+                    <div class="form-row">
+                        <div class="col-md-4 mb-3">
+                            <label class="col-form-label">HP</label>
+                            <input type="number" id="HP_product"  name="HP_product" class="form-control form-active-control">
+                            <div class="invalid-feedback invalid-HP">Data tidak valid</div>
+                        </div>
+                        <div class="col-md-4 mb-3">
+                            <label class="col-form-label">HR</label>
+                            <input type="number" id="HR_product"  name="HR_product" class="form-control form-active-control">
+                            <div class="invalid-feedback invalid-HR">Data tidak valid</div>
+                        </div>
+                        <div class="col-md-4 mb-3">
+                            <label class="col-form-label">HJ</label>
+                            <input type="number" id="HJ_product"  name="HJ_product" class="form-control form-active-control">
+                            <div class="invalid-feedback invalid-HJ">Data tidak valid</div>
+                        </div>
                     </div>
-
-                    <div class="form-group" >
-                        <label class="col-form-label">HP</label>
-                        <input type="number" id="HP_product"  name="HP_product" class="form-control form-active-control">
-                        <div class="invalid-feedback invalid-HP">Data tidak valid</div>
-                    </div>
-
-                    <div class="form-group" >
-                        <label class="col-form-label">HR</label>
-                        <input type="number" id="HR_product"  name="HR_product" class="form-control form-active-control">
-                        <div class="invalid-feedback invalid-HR">Data tidak valid</div>
-                    </div>
-
-                    <div class="form-group" >
-                        <label class="col-form-label">HJ</label>
-                        <input type="number" id="HJ_product"  name="HJ_product" class="form-control form-active-control">
-                        <div class="invalid-feedback invalid-HJ">Data tidak valid</div>
-                    </div>
-
-                    <div class="form-group" >
-                        <label class="col-form-label">Brand</label>
-                        <select id="brand_product" name="brand_product" class="form-control form-active-control">
-                            <option value="KA"> Kedai Amarthya </option>
-                            <option value="AF"> Amarthya Fashion </option>
-                            <option value="AHF"> Amarthya Healthy Food </option>
-                            <option value="AH"> Amarthya Herbal </option>
-                        </select>
-                        <div class="invalid-feedback invalid-brand">Data tidak valid</div>
-                    </div>
-
 
                     <input type="hidden" id="id_product" name="id_product" val="0">
                 </form>
@@ -192,7 +193,7 @@
 
 <script>
 
-    $('#brand_product').change(function(){
+    $('#brand_product_filter').change(function(){
         get_product($(this).val());
     })
 

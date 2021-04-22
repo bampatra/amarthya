@@ -171,25 +171,20 @@
 
         <!-- Nav Item - Pages Collapse Menu -->
         <?php if($this->session->userdata('is_admin') == "1") { ?>
+
         <li class="nav-item">
-            <a class="nav-link" href="<?php echo base_url('main/staff')?>">
+            <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseMaster" aria-expanded="true" aria-controls="collapseMaster">
                 <i class="fas fa-fw fa-id-card"></i>
-                <span style="font-size: 11px !important">Staff</span>
+                <span style="font-size: 11px !important">Master Data</span>
             </a>
-        </li>
-
-        <li class="nav-item">
-            <a class="nav-link" href="<?php echo base_url('main/customer')?>">
-                <i class="fas fa-fw fa-user-circle"></i>
-                <span style="font-size: 11px !important">Customer</span>
-            </a>
-        </li>
-
-        <li class="nav-item">
-            <a class="nav-link" href="<?php echo base_url('main/vendor')?>">
-                <i class="fas fa-fw fa-user-circle"></i>
-                <span style="font-size: 11px !important">Vendor</span>
-            </a>
+            <div id="collapseMaster" class="collapse" aria-labelledby="headingTwo" data-parent="#accordionSidebar">
+                <div class="bg-white py-2 collapse-inner rounded">
+                    <h6 class="collapse-header">Option:</h6>
+                    <a class="collapse-item" href="<?php echo base_url('main/staff')?>">Staff</a>
+                    <a class="collapse-item" href="<?php echo base_url('main/customer')?>">Customer</a>
+                    <a class="collapse-item" href="<?php echo base_url('main/vendor')?>">Vendor</a>
+                </div>
+            </div>
         </li>
 
         <li class="nav-item">
@@ -215,6 +210,13 @@
                 </div>
             </div>
         </li>
+
+            <li class="nav-item">
+                <a class="nav-link" href="<?php echo base_url('main/problem_solving')?>">
+                    <i class="fas fa-fw fa-exclamation"></i>
+                    <span style="font-size: 11px !important">Problem</span>
+                </a>
+            </li>
 
         <li class="nav-item">
             <a class="nav-link" href="<?php echo base_url('main/salary_form')?>">

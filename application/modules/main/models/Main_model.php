@@ -2,6 +2,65 @@
 class Main_model extends CI_Model
 {
 
+    function add_problem_solving($data){
+        $input_data = array(
+            'kode_problem_solving' => $data['kode_problem_solving'],
+            'no_order_problem_solving' => $data['no_order_problem_solving'],
+            'topik_problem_solving' => $data['topik_problem_solving'],
+            'detail_problem_solving' => $data['detail_problem_solving'],
+            'solusi_problem_solving' => $data['solusi_problem_solving'],
+            'timestamp_create' => $data['timestamp_create'],
+            'timestamp_solusi' => $data['timestamp_solusi'],
+            'username_create' => $data['username_create'],
+            'username_solusi' => $data['username_solusi'],
+            'active_problem_solving' => $data['active_problem_solving']
+        );
+
+        $this->db->insert('problem_solving',$input_data);
+        $insert_id = $this->db->insert_id();
+        return $insert_id;
+    }
+
+    function update_problem_solving($updated_data, $id_problem_solving){
+        $this->db->where('id_problem_solving', $id_problem_solving);
+        return $this->db->update('problem_solving',$updated_data);
+    }
+
+
+    function get_problem_by_id($id_problem_solving){
+        $sql ="SELECT *
+               FROM problem_solving a
+               WHERE a.id_problem_solving = '{$id_problem_solving}' 
+                    AND a.active_problem_solving = '1'";
+
+        $query = $this->db->query($sql);
+        return $query;
+    }
+
+    function get_problem_solving($status = "all", $search = null, $length = 10000000000, $start = 0){
+        $sql = "SELECT *
+                FROM problem_solving a
+                WHERE a.active_problem_solving = '1'";
+
+        if($status == "all"){
+            $sql .= " AND 1 = 1";
+        } else if ($status == "unsolved") {
+            $sql .= " AND (a.solusi_problem_solving = '' || a.solusi_problem_solving IS NULL)";
+        } else if ($status == "solved") {
+            $sql .= " AND (a.solusi_problem_solving != '' && a.solusi_problem_solving IS NOT NULL)";
+        }
+
+        if($search != "" || $search != null){
+            $sql .= " AND CONCAT(a.no_order_problem_solving, ' ', a.detail_problem_solving, ' ', a.kode_problem_solving, ' ', a.topik_problem_solving) LIKE '%$search%'";
+        }
+
+        $sql .= " ORDER BY a.id_problem_solving DESC LIMIT {$start}, {$length}";
+
+        $query = $this->db->query($sql);
+        return $query;
+    }
+
+
     function laporan_purchase($start_date, $end_date, $search = '', $length = 10000000000, $start = 0){
         $sql = "SELECT a.id_vendor,a.nama_vendor, IFNULL(b.total_order,0) as total_order
                 FROM vendor a
@@ -533,6 +592,15 @@ class Main_model extends CI_Model
                 FROM order_m a
                 LEFT JOIN delivery b ON a.id_order_m = b.id_order_m
                 WHERE a.no_order = '".$no_order."'";
+
+        $query = $this->db->query($sql);
+        return $query;
+    }
+
+    function get_order_vendor_m_by_no_order($no_order){
+        $sql = "SELECT *, a.id_order_vendor_m
+                FROM order_vendor_m a
+                WHERE a.no_order_vendor = '".$no_order."'";
 
         $query = $this->db->query($sql);
         return $query;

@@ -22,6 +22,7 @@
                         <th style="display: none;"> ID </th>
                         <th> Nama Staff </th>
                         <th> Posisi </th>
+                        <th></th>
                     </tr>
                     </thead>
                     <tbody id="main-content">
@@ -140,6 +141,7 @@
         transition: background-color 0.15s ease-in-out;
     }
 
+
 </style>
 
 <!-- Page level custom scripts -->
@@ -178,7 +180,19 @@
             columns: [
                 {"data": "id_staff"},
                 {"data": "nama_staff"},
-                {"data": "nama_posisi"}
+                {"data": "nama_posisi"},
+                {
+                    "data": {
+                        "id_staff":"id_staff"
+
+                    },
+                    mRender : function(data, type, full) {
+                        html = '<a href="<?php echo base_url('main/laporan_delivery?staff=') ?>'+ data.id_staff +'" target="_blank"><button onclick="event.stopPropagation();" class="btn btn-info control-btn"> Delivery </button></a>' +
+                                '<a href="<?php echo base_url('main/laporan_pick_up?staff=') ?>'+ data.id_staff +'" target="_blank"><button onclick="event.stopPropagation();" class="btn btn-warning control-btn"> Pick Up </button></a>'+
+                                '<a href="<?php echo base_url('main/salary_form?staff=') ?>'+ data.id_staff +'" target="_blank"><button onclick="event.stopPropagation();" class="btn btn-success control-btn"> Salary </button></a>';
+                        return html;
+                    }
+                }
 
             ],
             initComplete: function (settings, json) {

@@ -24,6 +24,305 @@ class Main extends MX_Controller
         $this->load->view('template/admin_footer');
     }
 
+    function riwayat_belanja(){
+
+        if($this->session->userdata('is_admin') == "0"){
+            redirect(base_url('main'));
+        }
+
+        $this->load->view('template/admin_header');
+        if(isset($_GET['customer']) && isset($_GET['vendor'])){
+            // invalid
+            return;
+        } else if(isset($_GET['customer'])){
+            $customer = htmlentities($_GET['customer'], ENT_QUOTES);
+            $data_cust = $this->Main_model->get_customer_by_id($customer);
+            if($data_cust->num_rows() > 0){
+                $data['top_10s'] = $this->Main_model->get_top_10_product_per_customer($customer)->result_object();
+                $data['person'] = $data_cust->row();
+
+                $this->load->view('riwayat_belanja', $data);
+            } else {
+                // customer not found
+            }
+
+        } else if(isset($_GET['vendor'])){
+            $vendor = htmlentities($_GET['vendor'], ENT_QUOTES);
+            $data_vendor = $this->Main_model->get_vendor_by_id($vendor);
+
+            if($data_vendor->num_rows() > 0){
+                $data['top_10s'] = $this->Main_model->get_top_10_product_per_vendor($vendor)->result_object();
+                $data['person'] = $data_vendor->row();
+
+                $this->load->view('riwayat_belanja_vendor', $data);
+            } else {
+                // vendor not found
+            }
+        } else {
+            // invalid
+            return;
+        }
+        $this->load->view('template/admin_footer');
+
+    }
+
+    function get_riwayat_belanja_vendor(){
+        if($this->session->userdata('is_admin') == "0"){
+            redirect(base_url('main'));
+        }
+
+        // server-side pagination
+        $draw = $_REQUEST['draw'];
+        $length = $_REQUEST['length'];
+        $start = $_REQUEST['start'];
+
+        $output = array();
+        $output['draw'] = $draw;
+        $output['data']=array();
+
+        if(isset($_GET['start']) && isset($_GET['end']) && isset($_GET['vendor'])){
+
+            $vendor = htmlentities($_GET['vendor'], ENT_QUOTES);
+            $start_date = htmlentities($_GET['start'], ENT_QUOTES);
+            $end_date = htmlentities($_GET['end'], ENT_QUOTES);
+
+            $output['data'] = $this->Main_model->get_order_vendor_m_by_vendor($vendor, $start_date, $end_date, $length, $start)->result_object();
+            $output['recordsTotal'] = $output['recordsFiltered'] = $this->Main_model->get_order_vendor_m_by_vendor($vendor, $start_date, $end_date)->num_rows();
+
+        } else {
+            $output['data'] = '';
+            $output['recordsTotal'] = $output['recordsFiltered'] = 0;
+        }
+        echo json_encode($output);
+    }
+
+    function get_riwayat_belanja_customer(){
+        if($this->session->userdata('is_admin') == "0"){
+            redirect(base_url('main'));
+        }
+
+        // server-side pagination
+        $draw = $_REQUEST['draw'];
+        $length = $_REQUEST['length'];
+        $start = $_REQUEST['start'];
+
+        $output = array();
+        $output['draw'] = $draw;
+        $output['data']=array();
+
+        if(isset($_GET['start']) && isset($_GET['end']) && isset($_GET['customer'])){
+
+            $customer = htmlentities($_GET['customer'], ENT_QUOTES);
+            $start_date = htmlentities($_GET['start'], ENT_QUOTES);
+            $end_date = htmlentities($_GET['end'], ENT_QUOTES);
+
+            $output['data'] = $this->Main_model->get_order_m_by_customer($customer, $start_date, $end_date, $length, $start)->result_object();
+            $output['recordsTotal'] = $output['recordsFiltered'] = $this->Main_model->get_order_m_by_customer($customer, $start_date, $end_date)->num_rows();
+
+        } else {
+            $output['data'] = '';
+            $output['recordsTotal'] = $output['recordsFiltered'] = 0;
+        }
+        echo json_encode($output);
+    }
+
+    function laporan_pick_up(){
+
+        if($this->session->userdata('is_admin') == "0"){
+            redirect(base_url('main'));
+        }
+
+        $data['staffs'] = $this->Main_model->get_staff()->result_object();
+
+        $this->load->view('template/admin_header');
+        $this->load->view('pick_up_per_staff', $data);
+        $this->load->view('template/admin_footer');
+    }
+
+    function get_laporan_pick_up(){
+        if($this->session->userdata('is_admin') == "0"){
+            redirect(base_url('main'));
+        }
+
+        date_default_timezone_set('Asia/Singapore');
+
+
+        $id_staff = htmlentities($_GET['staff'], ENT_QUOTES);
+        $periode = htmlentities($_GET['periode'], ENT_QUOTES);
+        $bulan = htmlentities($_GET['bulan'], ENT_QUOTES);
+        $tahun = htmlentities($_GET['tahun'], ENT_QUOTES);
+
+        if($periode == "AWAL"){
+
+            $tgl_awal = $tahun."-".sprintf('%02d', $bulan)."-01";
+            $tgl_akhir = $tahun."-".sprintf('%02d', $bulan)."-15";
+
+        } else if($periode == "AKHIR"){
+            $tgl_awal = $tahun."-".sprintf('%02d', $bulan)."-16";
+            $tgl_akhir = $tahun."-".sprintf('%02d', $bulan)."-".date('t');
+        }
+
+        // server-side pagination
+        $draw = $_REQUEST['draw'];
+        $length = $_REQUEST['length'];
+        $start = $_REQUEST['start'];
+        $search = trim(htmlentities($_REQUEST['search']["value"], ENT_QUOTES));
+
+        $total = $this->Main_model->laporan_pick_up_per_staff($id_staff, $tgl_awal, $tgl_akhir)->num_rows();
+
+        $output = array();
+        $output['draw'] = $draw;
+        $output['recordsTotal'] = $output['recordsFiltered'] = $total;
+        $output['data']=array();
+
+
+        $output['data'] = $this->Main_model->laporan_pick_up_per_staff($id_staff, $tgl_awal, $tgl_akhir, $search, $length, $start)->result_object();
+        echo json_encode($output);
+        return;
+    }
+
+    function laporan_delivery(){
+
+        if($this->session->userdata('is_admin') == "0"){
+            redirect(base_url('main'));
+        }
+
+        $data['staffs'] = $this->Main_model->get_staff()->result_object();
+
+        $this->load->view('template/admin_header');
+        $this->load->view('delivery_per_staff', $data);
+        $this->load->view('template/admin_footer');
+    }
+
+    function get_laporan_delivery(){
+
+        if($this->session->userdata('is_admin') == "0"){
+            redirect(base_url('main'));
+        }
+
+        date_default_timezone_set('Asia/Singapore');
+
+
+        $id_staff = htmlentities($_GET['staff'], ENT_QUOTES);
+        $periode = htmlentities($_GET['periode'], ENT_QUOTES);
+        $bulan = htmlentities($_GET['bulan'], ENT_QUOTES);
+        $tahun = htmlentities($_GET['tahun'], ENT_QUOTES);
+
+        if($periode == "AWAL"){
+
+            $tgl_awal = $tahun."-".sprintf('%02d', $bulan)."-01";
+            $tgl_akhir = $tahun."-".sprintf('%02d', $bulan)."-15";
+
+        } else if($periode == "AKHIR"){
+            $tgl_awal = $tahun."-".sprintf('%02d', $bulan)."-16";
+            $tgl_akhir = $tahun."-".sprintf('%02d', $bulan)."-".date('t');
+        }
+
+        // server-side pagination
+        $draw = $_REQUEST['draw'];
+        $length = $_REQUEST['length'];
+        $start = $_REQUEST['start'];
+        $search = trim(htmlentities($_REQUEST['search']["value"], ENT_QUOTES));
+
+        $total = $this->Main_model->laporan_delivery_per_staff($id_staff, $tgl_awal, $tgl_akhir)->num_rows();
+
+        $output = array();
+        $output['draw'] = $draw;
+        $output['recordsTotal'] = $output['recordsFiltered'] = $total;
+        $output['data']=array();
+
+
+        $output['data'] = $this->Main_model->laporan_delivery_per_staff($id_staff, $tgl_awal, $tgl_akhir, $search, $length, $start)->result_object();
+        echo json_encode($output);
+        return;
+
+    }
+
+    function add_jurnal_umum(){
+
+        if($this->session->userdata('is_admin') == "0"){
+            redirect(base_url('main'));
+        }
+
+        $cash_flow = trim(htmlentities($_REQUEST['cash_flow'], ENT_QUOTES));
+
+        $id_jurnal_umum = strtoupper(trim(htmlentities($_REQUEST['id_jurnal_umum'], ENT_QUOTES)));
+        $tgl_jurnal_umum = strtoupper(trim(htmlentities($_REQUEST['tgl_jurnal_umum'], ENT_QUOTES)));
+        $keterangan_jurnal_umum = trim(htmlentities($_REQUEST['keterangan_jurnal_umum'], ENT_QUOTES));
+        $tipe_jurnal_umum = trim(htmlentities($_REQUEST['tipe_jurnal_umum'], ENT_QUOTES));
+        $brand_jurnal_umum = trim(htmlentities($_REQUEST['brand_jurnal_umum'], ENT_QUOTES));
+        $nominal = strtoupper(trim(htmlentities($_REQUEST['nominal'], ENT_QUOTES)));
+
+        //validation
+        $error = array();
+
+        $this->db->trans_begin();
+
+        if(empty($tgl_jurnal_umum) || !preg_match("/^[0-9]{4}-(0[1-9]|1[0-2])-(0[1-9]|[1-2][0-9]|3[0-1])$/",$tgl_jurnal_umum)){
+            array_push($error, "invalid-tanggal");
+        }
+
+        if(empty($keterangan_jurnal_umum)){
+            array_push($error, "invalid-keterangan");
+        }
+
+        if($tipe_jurnal_umum != "REK" && $tipe_jurnal_umum != "TUNAI"){
+            array_push($error, "invalid-tipe");
+        }
+
+        if(empty($brand_jurnal_umum) || ($brand_jurnal_umum != "NONE" && $brand_jurnal_umum != "AHF" && $brand_jurnal_umum != "AF" && $brand_jurnal_umum != "AH" && $brand_jurnal_umum != "KA")){
+            array_push($error, "invalid-brand");
+        }
+
+        if(empty($nominal)){
+            array_push($error, "invalid-nominal");
+        }
+
+
+        if($cash_flow == "debet"){
+            $debet_jurnal_umum = $nominal;
+            $kredit_jurnal_umum = 0;
+        } else if($cash_flow == "kredit"){
+            $kredit_jurnal_umum = $nominal;
+            $debet_jurnal_umum = 0;
+        } else {
+            array_push($error, "invalid-cashflow");
+        }
+
+        if(!empty($error)){
+            $return_arr = array("Status" => 'FORMERROR', "Error" => $error);
+            $this->db->trans_rollback();
+            echo json_encode($return_arr);
+            return;
+        }
+
+        $data = compact('tgl_jurnal_umum', 'keterangan_jurnal_umum', 'debet_jurnal_umum',
+                        'kredit_jurnal_umum', 'tipe_jurnal_umum', 'brand_jurnal_umum');
+
+
+        if($this->Main_model->get_jurnal_umum_by_id($id_jurnal_umum)->num_rows() == 0){
+            if($this->Main_model->add_jurnal_umum($data)){
+                $this->db->trans_commit();
+                $return_arr = array("Status" => 'OK', "Message" => 'Berhasil ditambahkan');
+            } else {
+                $this->db->trans_rollback();
+                $return_arr = array("Status" => 'ERROR', "Message" => 'Gagal menambahkan data');
+            }
+        } else {
+            if($this->Main_model->update_jurnal_umum($data, $id_jurnal_umum)){
+                $this->db->trans_commit();
+                $return_arr = array("Status" => 'OK', "Message" => 'Berhasil diupdate');
+            } else {
+                $this->db->trans_rollback();
+                $return_arr = array("Status" => 'ERROR', "Message" => 'Gagal mengupdate data');
+            }
+
+        }
+
+        echo json_encode($return_arr);
+
+    }
+
     function problem_solving(){
 
         if($this->session->userdata('is_admin') == "0"){
@@ -977,7 +1276,7 @@ class Main extends MX_Controller
 
         date_default_timezone_set('Asia/Singapore');
 
-        $alamat_pick_up = strtoupper(trim(htmlentities($_REQUEST['alamat_pick_up'], ENT_QUOTES)));
+        $alamat_pick_up = trim(htmlentities($_REQUEST['alamat_pick_up'], ENT_QUOTES));
         $no_hp_pick_up = strtoupper(trim(htmlentities($_REQUEST['no_hp_pick_up'], ENT_QUOTES)));
         $id_order_vendor_m = strtoupper(trim(htmlentities($_REQUEST['id_order_vendor_m'], ENT_QUOTES)));
         $tgl_pick_up = strtoupper(trim(htmlentities($_REQUEST['tgl_pick_up'], ENT_QUOTES)));
@@ -1606,7 +1905,7 @@ class Main extends MX_Controller
 
         date_default_timezone_set('Asia/Singapore');
 
-        $alamat_delivery = strtoupper(trim(htmlentities($_REQUEST['alamat_delivery'], ENT_QUOTES)));
+        $alamat_delivery = trim(htmlentities($_REQUEST['alamat_delivery'], ENT_QUOTES));
         $no_hp_delivery = strtoupper(trim(htmlentities($_REQUEST['no_hp_delivery'], ENT_QUOTES)));
         $tgl_delivery = strtoupper(trim(htmlentities($_REQUEST['tgl_delivery'], ENT_QUOTES)));
         $catatan_delivery = trim(htmlentities($_REQUEST['catatan_delivery'], ENT_QUOTES));
@@ -2160,7 +2459,13 @@ class Main extends MX_Controller
             $brand = "all";
         }
 
-        $output['data'] = $this->Main_model->get_product($search, $length, $start, $brand)->result_object();
+        if(isset($_GET['stock_status'])){
+            $stock_status = htmlentities($_GET['stock_status'], ENT_QUOTES);
+        } else {
+            $stock_status = "all";
+        }
+
+        $output['data'] = $this->Main_model->get_product($search, $length, $start, $brand, $stock_status)->result_object();
 
         echo json_encode($output);
     }
@@ -3864,6 +4169,108 @@ class Main extends MX_Controller
 
 
         $filename = "Laporan Purchase per Vendor ($start_date sampai $end_date)";
+        header('Content-Type: application/vnd.ms-excel'); //mime type
+        header('Content-Disposition: attachment;filename="'.$filename.'.xlsx"'); //tell browser what's the file name
+        header('Cache-Control: max-age=0'); //no cache
+        $objWriter = PHPExcel_IOFactory::createWriter($objPHPExcel, 'Excel2007');
+        $objWriter->save('php://output');
+
+    }
+
+    function excel_product(){
+        if($this->session->userdata('is_admin') == "0"){
+            echo "Unauthorized";
+            return;
+        }
+
+        if(!isset($_GET['brand']) || !isset($_GET['stock_status'])){
+            echo "Invalid data";
+            return;
+        }
+
+        date_default_timezone_set('Asia/Singapore');
+
+        include APPPATH.'third_party/PHPExcel/PHPExcel.php';
+
+        $startRow = 1;
+        $objPHPExcel = new PHPExcel();
+
+        $brand = htmlentities($_GET['brand'], ENT_QUOTES);
+        $stock_status = htmlentities($_GET['stock_status'], ENT_QUOTES);
+
+        $data = $this->Main_model->get_product(null, 10000000000, 0, $brand, $stock_status)->result_object();
+
+        $objPHPExcel->setActiveSheetIndex(0);
+
+        $objPHPExcel->getActiveSheet()->SetCellValue("A".$startRow, "Laporan Stok Produk");
+        $objPHPExcel->getActiveSheet()->getStyle("A$startRow")->getFont()->setBold( true );
+        $objPHPExcel->getActiveSheet()->getStyle("A$startRow")->getFont()->setItalic( true );
+        $objPHPExcel->getActiveSheet()->getStyle("A$startRow")->getFont()->setSize(14);
+
+        $objPHPExcel->getActiveSheet()->getColumnDimension('A')->setWidth(6);
+        $objPHPExcel->getActiveSheet()->getColumnDimension('B')->setWidth(33);
+        $objPHPExcel->getActiveSheet()->getColumnDimension('C')->setWidth(10);
+        $objPHPExcel->getActiveSheet()->getColumnDimension('D')->setWidth(13);
+        $objPHPExcel->getActiveSheet()->getColumnDimension('E')->setWidth(13);
+        $objPHPExcel->getActiveSheet()->getColumnDimension('F')->setWidth(13);
+
+        $startRow = 3;
+
+        $objPHPExcel->getActiveSheet()->SetCellValue("A".$startRow, "No");
+        $objPHPExcel->getActiveSheet()->SetCellValue("B".$startRow, "Product");
+        $objPHPExcel->getActiveSheet()->SetCellValue("C".$startRow, "Stok");
+        $objPHPExcel->getActiveSheet()->SetCellValue("D".$startRow, "HP");
+        $objPHPExcel->getActiveSheet()->SetCellValue("E".$startRow, "HR");
+        $objPHPExcel->getActiveSheet()->SetCellValue("F".$startRow, "HJ");
+
+        $objPHPExcel->getActiveSheet()->getStyle("A$startRow:F$startRow")->getFill()->applyFromArray(array(
+            'type' => PHPExcel_Style_Fill::FILL_SOLID,
+            'startcolor' => array(
+                'rgb' => 'C0BEBF'
+            )
+        ));
+
+        $objPHPExcel->getActiveSheet()->getStyle("A$startRow:F$startRow")->getFont()->setBold( true );
+
+        $startRow++;
+        $data_start = $startRow;
+        $no = 1;
+
+        foreach($data as $row){
+            $objPHPExcel->getActiveSheet()->SetCellValue("A".$startRow, $no);
+            $objPHPExcel->getActiveSheet()->SetCellValue("B".$startRow, $row->nama_product);
+            $objPHPExcel->getActiveSheet()->SetCellValue("C".$startRow, (int)$row->STOK);
+            $objPHPExcel->getActiveSheet()->SetCellValue("D".$startRow, (int)$row->HP_product);
+            $objPHPExcel->getActiveSheet()->SetCellValue("E".$startRow, (int)$row->HR_product);
+            $objPHPExcel->getActiveSheet()->SetCellValue("F".$startRow, (int)$row->HJ_product);
+
+            if($no % 2 == 0){
+                $objPHPExcel->getActiveSheet()->getStyle("A$startRow:F$startRow")->getFill()->applyFromArray(array(
+                    'type' => PHPExcel_Style_Fill::FILL_SOLID,
+                    'startcolor' => array(
+                        'rgb' => 'F3F3F3'
+                    )
+                ));
+            }
+
+            $startRow++;
+            $no++;
+        }
+
+        $objPHPExcel->getActiveSheet()
+            ->getStyle("C1:F$startRow")
+            ->getAlignment()
+            ->setHorizontal(PHPExcel_Style_Alignment::HORIZONTAL_RIGHT);
+
+
+        $objPHPExcel->getActiveSheet()->getStyle("D$data_start:F$startRow")->getNumberFormat()->setFormatCode('#,##0');
+        $objPHPExcel->getActiveSheet()->getStyle("B$data_start:B$startRow")->getAlignment()->setWrapText(true);
+        $objPHPExcel->getActiveSheet()->getStyle("A$data_start:F$startRow")->getAlignment()->setVertical(PHPExcel_Style_Alignment::VERTICAL_TOP);
+
+        $objPHPExcel->getActiveSheet()->setShowGridlines(false);
+
+
+        $filename = "Laporan Stok Produk (".date('d-m-Y H:i:s').")";
         header('Content-Type: application/vnd.ms-excel'); //mime type
         header('Content-Disposition: attachment;filename="'.$filename.'.xlsx"'); //tell browser what's the file name
         header('Cache-Control: max-age=0'); //no cache

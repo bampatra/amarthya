@@ -2,6 +2,101 @@
 class Main_model extends CI_Model
 {
 
+    function get_top_10_product_per_customer($id_customer){
+        $sql = "SELECT d.id_customer, d.nama_customer, b.id_product, b.nama_product , SUM(a.qty_order) as total_qty_order
+                FROM order_s a
+                INNER JOIN product b ON a.id_product = b.id_product
+                INNER JOIN order_m c ON a.id_order_m = c.id_order_m
+                INNER JOIN customer d ON c.id_customer = d.id_customer
+                WHERE d.id_customer = '{$id_customer}'
+                GROUP BY d.id_customer, b.id_product
+                ORDER BY SUM(a.qty_order) DESC
+                LIMIT 0, 10";
+
+        $query = $this->db->query($sql);
+        return $query;
+    }
+
+    function get_top_10_product_per_vendor($id_vendor){
+        $sql = "SELECT d.id_vendor, d.nama_vendor, b.id_product, b.nama_product , SUM(a.qty_order_vendor) as total_qty_order
+                FROM order_vendor_s a
+                INNER JOIN product b ON a.id_product = b.id_product
+                INNER JOIN order_vendor_m c ON a.id_order_vendor_m = c.id_order_vendor_m
+                INNER JOIN vendor d ON c.id_vendor = d.id_vendor
+                WHERE d.id_vendor = '{$id_vendor}'
+                GROUP BY d.id_vendor, b.id_product
+                ORDER BY SUM(a.qty_order_vendor) DESC
+                LIMIT 0, 10";
+
+        $query = $this->db->query($sql);
+        return $query;
+    }
+
+    function laporan_pick_up_per_staff($id_staff, $start_date, $end_date, $search = null, $length = 10000000000, $start = 0){
+        $sql = "SELECT b.nama_vendor, c.no_order_vendor, c.grand_total_order, c.tgl_order_vendor, a.*
+                FROM pick_up a
+                INNER JOIN order_vendor_m c ON a.id_order_vendor_m = c.id_order_vendor_m
+                INNER JOIN vendor b ON a.id_vendor = b.id_vendor
+                WHERE a.id_staff = '{$id_staff}'
+                    AND (timestamp_pick_up BETWEEN '{$start_date}' AND '{$end_date}')";
+
+        if($search != "" || $search != null){
+            $sql .= " AND CONCAT(b.nama_vendor, ' ', c.no_order_vendor, ' ', a.alamat_pick_up) LIKE '%$search%'";
+        }
+
+        $sql .= " ORDER BY a.timestamp_pick_up DESC LIMIT {$start}, {$length}";
+
+        $query = $this->db->query($sql);
+        return $query;
+    }
+
+    function laporan_delivery_per_staff($id_staff, $start_date, $end_date, $search = null, $length = 10000000000, $start = 0){
+        $sql = "SELECT b.nama_customer, c.no_order, c.grand_total_order, c.ongkir_order, c.tgl_order, a.*
+                FROM delivery a
+                INNER JOIN order_m c ON a.id_order_m = c.id_order_m
+                INNER JOIN customer b ON a.id_customer = b.id_customer
+                WHERE a.id_staff = '{$id_staff}'
+                    AND (timestamp_delivery BETWEEN '{$start_date}' AND '{$end_date}')";
+
+        if($search != "" || $search != null){
+            $sql .= " AND CONCAT(b.nama_customer, ' ', c.no_order, ' ', a.alamat_delivery) LIKE '%$search%'";
+        }
+
+        $sql .= " ORDER BY a.timestamp_delivery DESC LIMIT {$start}, {$length}";
+
+        $query = $this->db->query($sql);
+        return $query;
+    }
+
+    function add_jurnal_umum($data){
+        $input_data = array(
+            'tgl_jurnal_umum' => $data['tgl_jurnal_umum'],
+            'keterangan_jurnal_umum' => $data['keterangan_jurnal_umum'],
+            'debet_jurnal_umum' => $data['debet_jurnal_umum'],
+            'kredit_jurnal_umum' => $data['kredit_jurnal_umum'],
+            'tipe_jurnal_umum' => $data['tipe_jurnal_umum'],
+            'brand_jurnal_umum' => $data['brand_jurnal_umum']
+        );
+
+        $this->db->insert('jurnal_umum',$input_data);
+        $insert_id = $this->db->insert_id();
+        return $insert_id;
+    }
+
+    function update_jurnal_umum($updated_data, $id_jurnal_umum){
+        $this->db->where('id_jurnal_umum', $id_jurnal_umum);
+        return $this->db->update('jurnal_umum',$updated_data);
+    }
+
+    function get_jurnal_umum_by_id($id_jurnal_umum){
+        $sql ="SELECT *
+               FROM jurnal_umum a
+               WHERE a.id_jurnal_umum = '{$id_jurnal_umum}'";
+
+        $query = $this->db->query($sql);
+        return $query;
+    }
+
     function add_problem_solving($data){
         $input_data = array(
             'kode_problem_solving' => $data['kode_problem_solving'],
@@ -140,7 +235,7 @@ class Main_model extends CI_Model
     }
 
     function jurnal_umum_gabung($start_date, $end_date, $brand_order, $tipe_order, $cash_flow, $excel, $length = 10000000000, $start = 0){
-        $sql = "SELECT *
+        $sql = "SELECT *, DATE_FORMAT(a.tgl_order, '%Y-%m-%d') AS custom_tgl
                 FROM (
                     SELECT a.*, (@mutasi := @mutasi + IF(a.DEBET <> 0, a.DEBET, (-1 * a.KREDIT))) AS MUTASI, (@count := @count + 1) AS COUNT
                     FROM (
@@ -159,6 +254,13 @@ class Main_model extends CI_Model
                           AND (brand_order = '{$brand_order}' || 'all' = '{$brand_order}')
                           AND (tipe_order = '{$tipe_order}' || 'all' = '{$tipe_order}')
                           AND ('OUT' = '{$cash_flow}' || 'all' = '{$cash_flow}')
+                        UNION
+                        SELECT id_jurnal_umum as ID, tgl_jurnal_umum, keterangan_jurnal_umum, debet_jurnal_umum AS DEBET, kredit_jurnal_umum AS KREDIT, 'datajurnal' AS TIPE, brand_jurnal_umum AS brand_order, tipe_jurnal_umum AS tipe_order
+                        FROM jurnal_umum
+                        WHERE (tgl_jurnal_umum BETWEEN '{$start_date}' AND '{$end_date}') 
+                          AND (brand_jurnal_umum = '{$brand_order}' || 'all' = '{$brand_order}')
+                          AND (tipe_jurnal_umum = '{$tipe_order}' || 'all' = '{$tipe_order}')
+                          AND IF('IN' = '{$cash_flow}', debet_jurnal_umum <> 0, IF('all' = '{$cash_flow}', 1=1, kredit_jurnal_umum <> 0))
                     )a
                     CROSS JOIN (select @mutasi := 0) params
                     CROSS JOIN (select @count := 0) counter
@@ -398,6 +500,18 @@ class Main_model extends CI_Model
         return $query;
     }
 
+    function get_order_vendor_m_by_vendor($id_customer, $start_date, $end_date, $length = 10000000000, $start = 0){
+        $sql = "SELECT *
+                FROM order_vendor_m
+                WHERE id_vendor = '{$id_customer}'
+                    AND (tgl_order_vendor BETWEEN '{$start_date}' AND '{$end_date}')
+                    AND status_order_vendor = '1'
+                ORDER BY tgl_order_vendor DESC LIMIT {$start}, {$length}";
+
+        $query = $this->db->query($sql);
+        return $query;
+    }
+
     function get_order_vendor_s($id_order_vendor_m){
         $sql = "SELECT *, a.id_order_vendor_s
                 FROM order_vendor_s a
@@ -534,6 +648,18 @@ class Main_model extends CI_Model
                 FROM order_s a
                 INNER JOIN product b ON a.id_product = b.id_product
                 WHERE a.id_order_m = '".$id_order_m."'";
+
+        $query = $this->db->query($sql);
+        return $query;
+    }
+
+    function get_order_m_by_customer($id_customer, $start_date, $end_date, $length = 10000000000, $start = 0){
+        $sql = "SELECT *
+                FROM order_m
+                WHERE id_customer = '{$id_customer}'
+                    AND (tgl_order BETWEEN '{$start_date}' AND '{$end_date}')
+                    AND status_order = '1'
+                ORDER BY tgl_order DESC LIMIT {$start}, {$length}";
 
         $query = $this->db->query($sql);
         return $query;
@@ -689,7 +815,7 @@ class Main_model extends CI_Model
                     DATE_FORMAT(tgl_expired, '%Y-%m-%d') AS custom_tgl_expired
                 FROM stok_in_out
                 WHERE id_product = '".$id_product."'
-                ORDER BY id_stok_in_out DESC LIMIT {$start}, {$length}";
+                ORDER BY GREATEST(tgl_in, tgl_out) DESC LIMIT {$start}, {$length}";
 
         $query = $this->db->query($sql);
         return $query;
@@ -755,7 +881,7 @@ class Main_model extends CI_Model
         return $this->db->update('stok_in_out',$updated_data);
     }
 
-    function get_product($search = null, $length = 10000000000, $start = 0, $brand = "all"){
+    function get_product($search = null, $length = 10000000000, $start = 0, $brand = "all", $stock_status = "all"){
 
         $sql = "SELECT a.*, IFNULL(b.stok_in, 0) - IFNULL(c.stok_out, 0) as STOK
                 FROM product a
@@ -776,6 +902,12 @@ class Main_model extends CI_Model
 
         if($search != "" || $search != null){
             $sql .= " AND a.nama_product LIKE '%$search%'";
+        }
+
+        if($stock_status == "more"){
+            $sql .= " HAVING STOK <> 0";
+        } else if ($stock_status == "none") {
+            $sql .= " HAVING STOK = 0";
         }
 
         $sql .= " ORDER BY a.nama_product LIMIT {$start}, {$length}";

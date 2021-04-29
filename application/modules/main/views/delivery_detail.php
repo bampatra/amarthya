@@ -71,7 +71,7 @@
         <input type="hidden" value="<?php echo $delivery[0]->id_delivery ?>" id="id_delivery">
         <div id="order-data">
             <span style="font-size: 12px"><?php echo $delivery[0]->custom_tgl_order ?></span><br>
-            <strong><?php echo $delivery[0]->no_order ?></strong><br>
+            <strong><?php echo $delivery[0]->no_order ?></strong><a href="<?php echo base_url('main/order_detail?no='.$delivery[0]->no_order) ?>" target="_blank" style="font-size: 12px"> (Detail Order) </a><br>
             <span id="nama_customer"><?php echo $delivery[0]->nama_customer ?></span><br>
             <span>Total Order: <?php echo "Rp. " . number_format($delivery[0]->grand_total_order,2,',','.'); ?> || Ongkir: <?php echo "Rp. " . number_format($delivery[0]->ongkir_order,2,',','.'); ?></span>
             <br><span>Catatan Order: <?php echo $delivery[0]->catatan_order ?></span>

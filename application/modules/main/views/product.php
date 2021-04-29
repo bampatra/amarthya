@@ -16,13 +16,26 @@
         </div>
         <div class="card-body">
             <div class="table-responsive">
-                <select id="brand_product_filter" name="brand_product_filter" class="form-control form-control-sm" data-live-search="true" style="width: 40%; float: left">
-                    <option value="all">Semua Brand</option>
-                    <option value="KA"> Kedai Amarthya </option>
-                    <option value="AF"> Amarthya Fashion </option>
-                    <option value="AHF"> Amarthya Healthy Food </option>
-                    <option value="AH"> Amarthya Herbal </option>
-                </select>
+                <form class="form-inline" style="margin-bottom: 3px;">
+                    <div class="form-group" style="margin-right: 5px;">
+                        <select id="brand_product_filter" name="brand_product_filter" class="form-control form-control-sm" data-live-search="true">
+                            <option value="all">Semua Brand</option>
+                            <option value="KA"> Kedai Amarthya </option>
+                            <option value="AF"> Amarthya Fashion </option>
+                            <option value="AHF"> Amarthya Healthy Food </option>
+                            <option value="AH"> Amarthya Herbal </option>
+                        </select>
+                    </div>
+                    <div class="form-group" style="margin-right: 5px;">
+                        <select id="stock_status" name="stock_status" class="form-control form-control-sm form-active-control" data-live-search="true">
+                            <option value="all">Semua Stok</option>
+                            <option value="more">Stok Tidak Kosong</option>
+                            <option value="none">Stok Kosong</option>
+                        </select>
+                    </div>
+                    <button id="export_excel" class="btn btn-warning btn-sm">Export Excel</button>
+                </form>
+
                 <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
                     <thead>
                     <tr class="no-hover-style">
@@ -193,16 +206,29 @@
 
 <script>
 
+    var brand = "all", stock_status = "all";
+
     $('#brand_product_filter').change(function(){
-        get_product($(this).val());
+        brand = $(this).val();
+        get_product(brand, stock_status);
+    })
+
+    $('#stock_status').change(function(){
+        stock_status = $(this).val();
+        get_product(brand, stock_status);
     })
 
     get_product();
 
     document.title = "Product - Amarthya Group";
 
+    $('#export_excel').click(function(e){
+        e.preventDefault();
+        window.open(admin_url + 'excel_product?brand=' + brand + '&stock_status=' + stock_status)
+    });
+
     //get all products
-    function get_product(brand = "all"){
+    function get_product(brand = "all", stock_status = "all"){
         $('.loading').css("display", "block");
         $('.Veil-non-hover').fadeIn();
 
@@ -219,7 +245,7 @@
             },
             pagingType: "simple",
             ajax: {
-                url     : admin_url + 'get_product?brand=' + brand,
+                url     : admin_url + 'get_product?brand=' + brand + '&stock_status=' + stock_status,
                 type    : 'POST',
             },
             createdRow: function ( row, data, index ) {

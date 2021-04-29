@@ -21,6 +21,9 @@
                     <tr class="no-hover-style">
                         <th style="display: none;"> ID </th>
                         <th> Nama Vendor </th>
+                        <th> Alamat </th>
+                        <th> No Hp </th>
+                        <th></th>
                     </tr>
                     </thead>
                     <tbody id="main-content">
@@ -157,7 +160,19 @@
             },
             columns: [
                 {"data": "id_vendor"},
-                {"data": "nama_vendor"}
+                {"data": "nama_vendor"},
+                {"data": "alamat_vendor"},
+                {"data": "no_hp_vendor"},
+                {
+                    "data": {
+                        "id_vendor":"id_vendor"
+
+                    },
+                    mRender : function(data, type, full) {
+                        html = '<a href="<?php echo base_url('main/riwayat_belanja?vendor=') ?>'+ data.id_vendor +'" target="_blank"><button onclick="event.stopPropagation();" class="btn btn-info control-btn"> Riwayat Belanja </button></a>';
+                        return html;
+                    }
+                }
 
             ],
             initComplete: function (settings, json) {

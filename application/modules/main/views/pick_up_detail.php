@@ -61,7 +61,7 @@
         <input type="hidden" value="<?php echo $pick_up[0]->id_pick_up ?>" id="id_pick_up">
         <div id="order_vendor-data">
             <span style="font-size: 12px"><?php echo $pick_up[0]->custom_tgl_order_vendor ?></span><br>
-            <strong><?php echo $pick_up[0]->no_order_vendor ?></strong><br>
+            <strong><?php echo $pick_up[0]->no_order_vendor ?></strong><a href="<?php echo base_url('main/order_vendor_detail?no='.$pick_up[0]->no_order_vendor) ?>" target="_blank" style="font-size: 12px"> (Detail Order) </a><br>
             <span id="nama_vendor"><?php echo $pick_up[0]->nama_vendor ?></span><br>
             <span>Total Order: <?php echo "Rp. " . number_format($pick_up[0]->grand_total_order,2,',','.'); ?> </span>
             <br><span>Catatan Order: <?php echo $pick_up[0]->catatan_order_vendor ?></span>

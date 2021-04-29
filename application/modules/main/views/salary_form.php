@@ -212,12 +212,22 @@
 
     document.title = "Salary - Amarthya Group";
 
+    const urlParams = new URLSearchParams(location.search);
+    if(urlParams.has('staff')){
+        load_data(urlParams.get('staff'));
+        $('#id_staff').val(urlParams.get('staff'));
+    }
+
     $('#id_staff, #awal_akhir_salary, #bulan_salary, #tahun_salary').change(function(){
         if($('#id_staff').val() == "none"){
             return;
         }
 
-        $('#print-link').attr("href", admin_url + "pdf_slip_gaji?staff=" + $('#id_staff').val() + "&periode=" + $('#awal_akhir_salary').val() + "&bulan=" + $('#bulan_salary').val() + "&tahun=" + $('#tahun_salary').val())
+        load_data($('#id_staff').val());
+    })
+
+    function load_data(staff){
+        $('#print-link').attr("href", admin_url + "pdf_slip_gaji?staff=" + staff + "&periode=" + $('#awal_akhir_salary').val() + "&bulan=" + $('#bulan_salary').val() + "&tahun=" + $('#tahun_salary').val())
 
         $('.loading').css("display", "block");
         $('.Veil-non-hover').fadeIn();
@@ -226,7 +236,7 @@
             url: admin_url + 'get_staff_salary', // the url where we want to POST// our data object
             dataType: 'json',
             data: {
-                id_staff: $('#id_staff').val(),
+                id_staff: staff,
                 awal_akhir_salary: $('#awal_akhir_salary').val(),
                 bulan_salary: $('#bulan_salary').val(),
                 tahun_salary: $('#tahun_salary').val()
@@ -250,14 +260,14 @@
                 $('#catatan_lain_lain').val(data.catatan_lain_lain);
 
                 total_gaji = parseFloat(data.salary_staff) +
-                            (parseFloat(data.ongkir_salary) || 0) +
-                            (parseFloat(data.lembur_salary) || 0) +
-                            (parseFloat(data.fee_penjualan_salary) || 0) +
-                            (parseFloat(data.kuota_internet_salary) || 0) +
-                            (parseFloat(data.kas_bon_salary) || 0) +
-                            (parseFloat(data.THR_salary) || 0) +
-                            (parseFloat(data.lain_lain_salary) || 0) -
-                            (parseFloat(data.potongan_kas_bon_salary) || 0);
+                    (parseFloat(data.ongkir_salary) || 0) +
+                    (parseFloat(data.lembur_salary) || 0) +
+                    (parseFloat(data.fee_penjualan_salary) || 0) +
+                    (parseFloat(data.kuota_internet_salary) || 0) +
+                    (parseFloat(data.kas_bon_salary) || 0) +
+                    (parseFloat(data.THR_salary) || 0) +
+                    (parseFloat(data.lain_lain_salary) || 0) -
+                    (parseFloat(data.potongan_kas_bon_salary) || 0);
 
                 $('#total_gaji').html(convertToRupiah(total_gaji));
 
@@ -266,7 +276,7 @@
 
             }
         })
-    })
+    }
 
 
     $('.save').click(function(e){

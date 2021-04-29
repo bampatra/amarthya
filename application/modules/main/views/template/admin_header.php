@@ -207,6 +207,8 @@
                     <a class="collapse-item" href="<?php echo base_url('main/laporan_produk')?>">Penjualan Produk</a>
                     <a class="collapse-item" href="<?php echo base_url('main/laporan_sales')?>">Sales per Customer</a>
                     <a class="collapse-item" href="<?php echo base_url('main/laporan_purchase')?>">Purchase per Vendor</a>
+                    <a class="collapse-item" href="<?php echo base_url('main/laporan_delivery')?>">Delivery per staff</a>
+                    <a class="collapse-item" href="<?php echo base_url('main/laporan_pick_up')?>">Pick Up per staff</a>
                 </div>
             </div>
         </li>
@@ -528,6 +530,12 @@
         margin-left: auto;
         margin-right: auto;
         width: 50%;
+    }
+
+    .control-btn{
+        font-size: 10px !important;
+        border-radius: 0.1rem !important;
+        padding: 0.1rem 0.3rem !important;
     }
 
 </style>

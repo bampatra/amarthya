@@ -7,14 +7,9 @@
     <h1 class="h3 mb-2 text-gray-800">Laporan Transaksi Umum</h1>
     <br>
 
-<!--    <button class="btn btn-primary add" style="background: #a50000; color: white; width: 300px;"> Tambah Data</button>-->
-<!--    <br> <br>-->
+    <button class="btn btn-primary add" style="width: 300px; font-size: 13px;"> Tambah Data</button>
+    <br> <br>
     <!-- DataTales Example -->
-    <div class="alert alert-danger" role="alert">
-        Fitur ini belum berfungsi sempurna. Next update: <br>
-        1. Input data manual<br>
-        2. Pengeluaran untuk salary
-    </div>
     <div class="card shadow mb-4">
         <div class="card-header py-3">
             <h6 class="m-0 font-weight-bold text-primary">Pengaturan</h6>
@@ -86,35 +81,97 @@
 </div>
 <!-- End of Main Content -->
 
-<!--<div class="modal fade" tabindex="-1" role="dialog" id="jurnal-umum-modal" style="z-index: 5000">-->
-<!--    <div class="modal-dialog" role="document">-->
-<!--        <div class="modal-content">-->
-<!--            <div class="modal-header">-->
-<!--                <h5 class="modal-title">Data</h5>-->
-<!--                <button type="button" class="close" data-dismiss="modal" aria-label="Close">-->
-<!--                    <span aria-hidden="true">&times;</span>-->
-<!--                </button>-->
-<!--            </div>-->
-<!--            <div class="modal-body">-->
-<!--                <form id="jurnal-umum-form">-->
-<!---->
-<!--                </form>-->
-<!--            </div>-->
-<!--            <div class="modal-footer">-->
-<!--                <div class="modal-button-view-only">-->
-<!--                    <button type="button" class="btn btn-danger delete" data-dismiss="modal">Hapus</button>-->
-<!--                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>-->
-<!--                    <button type="button" class="btn btn-primary edit">Edit</button>-->
-<!--                </div>-->
-<!--                <div class="modal-button-save">-->
-<!--                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>-->
-<!--                    <button type="button" class="btn btn-primary save">Simpan</button>-->
-<!--                </div>-->
-<!---->
-<!--            </div>-->
-<!--        </div>-->
-<!--    </div>-->
-<!--</div>-->
+<div class="modal fade" tabindex="-1" role="dialog" id="jurnal-umum-modal" style="z-index: 5000">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Data</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <form id="jurnal-umum-form">
+
+                    <div class="form-group row">
+                        <label class="col-sm-3 col-form-label col-form-label-sm">Tanggal</label>
+                        <div class="col-sm-9">
+                            <input type="date" id="tgl_jurnal_umum" name="tgl_jurnal_umum" class="form-control form-control-sm form-active-control">
+                        </div>
+                    </div>
+
+                    <div class="form-group row">
+                        <label class="col-sm-3 col-form-label col-form-label-sm">Brand</label>
+                        <div class="col-sm-9">
+                            <select id="brand_jurnal_umum" name="brand_jurnal_umum" class="form-control form-active-control form-control-sm">
+                                <option value=""> -- Pilih Brand -- </option>
+                                <option value="NONE"> Tanpa Brand </option>
+                                <option value="KA"> Kedai Amarthya </option>
+                                <option value="AF"> Amarthya Fashion </option>
+                                <option value="AHF"> Amarthya Healthy Food </option>
+                                <option value="AH"> Amarthya Herbal </option>
+                            </select>
+                        </div>
+                        <div class="invalid-feedback invalid-brand">Data tidak valid</div>
+                    </div>
+
+                    <div class="form-group row">
+                        <label class="col-sm-3 col-form-label col-form-label-sm">Tipe</label>
+                        <div class="col-sm-9">
+                            <select id="tipe_jurnal_umum" name="tipe_jurnal_umum" class="form-control form-active-control form-control-sm">
+                                <option value=""> -- Pilih Tipe -- </option>
+                                <option value="REK"> Transaksi Rekening </option>
+                                <option value="TUNAI"> Transaksi Tunai </option>
+                            </select>
+                        </div>
+                        <div class="invalid-feedback invalid-tipe">Data tidak valid</div>
+                    </div>
+
+                    <div class="form-group row">
+                        <label class="col-sm-3 col-form-label col-form-label-sm"></label>
+                        <div class="col-sm-9">
+                            <div class="form-check form-check-inline">
+                                <input class="form-check-input" type="radio" name="cash_flow" id="debet_in" value="debet">
+                                <label class="form-check-label" for="inlineRadio1">Debet (In)</label>
+                            </div>
+                            <div class="form-check form-check-inline">
+                                <input class="form-check-input" type="radio" name="cash_flow" id="kredit_out" value="kredit">
+                                <label class="form-check-label" for="inlineRadio1">Kredit (Out)</label>
+                            </div>
+                        </div>
+                        <div class="invalid-feedback invalid-cashflow">Data tidak valid</div>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="col-form-label">Keterangan</label>
+                        <textarea id="keterangan_jurnal_umum" name="keterangan_jurnal_umum" class="form-control form-active-control"> </textarea>
+                        <div class="invalid-feedback invalid-keterangan">Data tidak valid</div>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="col-form-label">Nominal</label>
+                        <input type="number" id="nominal" name="nominal" class="form-control form-active-control">
+                        <div class="invalid-feedback invalid-nominal">Data tidak valid</div>
+                    </div>
+
+                    <input type="hidden" id="id_jurnal_umum" name="id_jurnal_umum" val="0">
+                </form>
+            </div>
+            <div class="modal-footer">
+                <div class="modal-button-view-only">
+                    <button type="button" class="btn btn-danger delete" data-dismiss="modal">Hapus</button>
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                    <button type="button" class="btn btn-primary edit">Edit</button>
+                </div>
+                <div class="modal-button-save">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                    <button type="button" class="btn btn-primary save">Simpan</button>
+                </div>
+
+            </div>
+        </div>
+    </div>
+</div>
 
 
 <style>
@@ -133,6 +190,58 @@
 <script>
 
     document.title = "Laporan Transaksi - Amarthya Group";
+
+    $('.add').click(function (e) {
+        e.preventDefault();
+        $('.invalid-feedback').css('display', 'none');
+        $('#id_jurnal_umum').val(0);
+        setTimeout(function() {$('.modal-dialog').scrollTop(0);}, 200);
+        $('.modal-button-view-only').css('display', 'none');
+        $('#vendor-form').trigger('reset');
+        $('.form-active-control').prop('disabled', false);
+        $('#jurnal-umum-modal').modal('toggle');
+        $('.modal-button-save').css('display', 'block');
+        document.getElementById("kredit_out").checked = false;
+        document.getElementById("debet_in").checked = false;
+    })
+
+    $('.edit').click(function(e){
+        $('.invalid-feedback').css('display', 'none');
+        setTimeout(function() {$('.modal-dialog').scrollTop(0);}, 200);
+        $('.modal-button-save').css('display', 'block');
+        $('.modal-button-view-only').css('display', 'none');
+        $('.form-active-control').prop('disabled', false);
+    })
+
+    $('.save').click(function(e){
+        $('.loading').css("display", "block");
+        $('.Veil-non-hover').fadeIn();
+        $.ajax({
+            type: 'POST', // define the type of HTTP verb we want to use (POST for our form)
+            url: admin_url + 'add_jurnal_umum', // the url where we want to POST// our data object
+            dataType: 'json',
+            data: $('#jurnal-umum-form').serialize(),
+            success: function (response) {
+                $('.invalid-feedback').css('display', 'none');
+                if(response.Status == "OK"){
+                    get_data();
+                    $('#jurnal-umum-modal').modal('hide');
+                } else if(response.Status == "FORMERROR") {
+                    response.Error.forEach(function(error){
+                        $('.'+ error +'').css('display', 'block');
+                    })
+                } else if(response.Status == "EXIST") {
+                    show_snackbar('Nama Vendor sudah terdaftar');
+                } else if(response.Status == "ERROR" ){
+                    show_snackbar(response.Message);
+                }
+
+                $('.loading').css("display", "none");
+                $('.Veil-non-hover').fadeOut();
+            }
+        })
+    })
+    
 
     $('.btn').click(function(e){
         e.preventDefault();
@@ -262,6 +371,31 @@
             window.open(admin_url + 'order_vendor_detail?no=' + data.no_order)
         } else if (data.TIPE == "ordercustomer") {
             window.open(admin_url + 'order_detail?no=' + data.no_order)
+        } else if (data.TIPE == 'datajurnal'){
+
+            setTimeout(function() {$('.modal-dialog').scrollTop(0);}, 200);
+
+            $('#id_jurnal_umum').val(htmlDecode(data.ID));
+            $('#tgl_jurnal_umum').val(htmlDecode(data.custom_tgl));
+            $('#keterangan_jurnal_umum').val(htmlDecode(data.no_order));
+            $('#tipe_jurnal_umum').val(htmlDecode(data.tipe_order));
+            $('#brand_jurnal_umum').val(htmlDecode(data.brand_order));
+
+            if(data.DEBET != 0){
+                document.getElementById("debet_in").checked = true;
+                document.getElementById("kredit_out").checked = false;
+                $('#nominal').val(data.DEBET);
+            } else if(data.KREDIT != 0){
+                document.getElementById("kredit_out").checked = true;
+                document.getElementById("debet_in").checked = false;
+                $('#nominal').val(data.KREDIT);
+            }
+
+            $('.form-active-control').prop('disabled', true);
+
+            $('.modal-button-save').css('display', 'none');
+            $('.modal-button-view-only').css('display', 'block');
+            $('#jurnal-umum-modal').modal('toggle');
         }
 
     })

@@ -2,6 +2,128 @@
 class Main_model extends CI_Model
 {
 
+
+    function get_izin($id_staff = 'all', $status = "all", $search = null, $length = 10000000000, $start = 0){
+        $sql = "SELECT a.*, b.nama_staff, b.id_staff,
+                    DATE_FORMAT(a.tgl_start_izin, '%Y-%m-%dT%H:%i:%s') AS custom_tgl_start,
+                    DATE_FORMAT(a.tgl_end_izin, '%Y-%m-%dT%H:%i:%s') AS custom_tgl_end
+                FROM izin a
+                INNER JOIN staff b ON a.id_staff = b.id_staff
+                WHERE (a.id_staff = '{$id_staff}' || 'all' = '{$id_staff}')
+                    AND (a.status_izin = '{$status}' || 'all' = '{$status}')
+                    AND a.status_izin <> '3'";
+
+        if($search != "" || $search != null){
+            $sql .= " AND CONCAT(b.nama_staff, ' ', a.alasan_izin, ' ', a.tgl_start_izin, ' ', a.tgl_end_izin) LIKE '%$search%'";
+        }
+
+        $sql .= " ORDER BY a.tgl_start_izin DESC LIMIT {$start}, {$length}";
+
+        $query = $this->db->query($sql);
+        return $query;
+    }
+
+    function add_izin($data){
+        $input_data = array(
+            'id_staff' => $data['id_staff'],
+            'tgl_start_izin' => $data['tgl_start_izin'],
+            'tgl_end_izin' => $data['tgl_end_izin'],
+            'alasan_izin' => $data['alasan_izin'],
+            'keterangan_manager' => $data['keterangan_manager'],
+            'id_staff_approval' => $data['id_staff_approval'],
+            'status_izin' => $data['status_izin']
+        );
+
+        $this->db->insert('izin',$input_data);
+        $insert_id = $this->db->insert_id();
+        return $insert_id;
+    }
+
+    function update_izin($updated_data, $id_izin){
+        $this->db->where('id_izin', $id_izin);
+        return $this->db->update('izin',$updated_data);
+    }
+
+    function get_izin_by_id($id_izin){
+        $sql ="SELECT *
+               FROM izin a
+               WHERE a.id_izin = '{$id_izin}'";
+
+        $query = $this->db->query($sql);
+        return $query;
+    }
+
+    function monthly_ongkir_per_staff($month){
+        $sql = "SELECT b.nama_staff, IFNULL(c.ongkir_salary, 0) as ongkir_salary
+                FROM staff b
+                LEFT JOIN (
+                    SELECT SUM(b.ongkir_order) as ongkir_salary, a.id_staff
+                    FROM delivery a
+                    INNER JOIN order_m b ON a.id_order_m = b.id_order_m
+                    WHERE MONTH(a.tgl_delivery) = '{$month}'
+                    GROUP BY a.id_staff
+                ) c ON b.id_staff = c.id_staff
+                WHERE b.nama_staff <> 'TEST USER'
+                ORDER BY ongkir_salary DESC";
+
+        $query = $this->db->query($sql);
+        return $query;
+    }
+
+	function dashboard_data($today, $month){
+		$sql = "SELECT 'daily_sales' AS title, t1.tgl_order AS detail, IFNULL(t2.data,0) as data
+				FROM (
+					SELECT '{$today}' AS tgl_order
+				)t1
+				LEFT JOIN (
+					SELECT id_order_m, tgl_order, SUM(subtotal_order - diskon_order) as data
+					FROM order_m
+					WHERE status_order = '1'
+						AND is_paid = '1'
+						AND tgl_order = '{$today}'
+					GROUP BY tgl_order
+				)t2 ON t1.tgl_order = t2.tgl_order
+				UNION
+				/* penjualan bulanan yang sudah dibayar, tidak termasuk ongkir */
+				SELECT 'monthly_sales' AS title, t2.month as detail, IFNULL(t2.data,0) as data
+				FROM (
+					SELECT '{$month}' AS month
+				)t1
+				LEFT JOIN (
+					SELECT id_order_m, MONTH(tgl_order) as month, SUM(subtotal_order - diskon_order) as data
+					FROM order_m
+					WHERE status_order = '1'
+						AND is_paid = '1'
+						AND MONTH(tgl_order) = '{$month}'
+					GROUP BY MONTH(tgl_order)
+				)t2 ON t1.month = t2.month
+				UNION
+				/*Delivery belum dikirim*/
+				SELECT 'delivery_to_do' AS title, '' AS detail, COUNT(*) as data
+				FROM delivery
+				WHERE status_delivery = '0'
+				UNION
+				/*Pick Up belum diambil*/
+				SELECT 'pick_up_to_do' AS title, '' AS detail, COUNT(*) as data
+				FROM pick_up
+				WHERE status_pick_up = '0'
+				UNION
+				/*Pesanan belum dibayar*/
+				SELECT 'unpaid_order' AS title, '' AS detail, COUNT(*) as data
+				FROM order_m
+				WHERE status_order = '1'
+					AND is_paid = '0'
+				UNION
+				/*Vendor belum dibayar*/
+				SELECT 'unpaid_order_vendor' AS title, '' AS detail, COUNT(*) as data
+				FROM order_vendor_m
+				WHERE status_order_vendor = '1'
+					AND is_paid_vendor = '0'";
+
+		$query = $this->db->query($sql);
+        return $query;
+	}
+
     function get_top_10_product_per_customer($id_customer){
         $sql = "SELECT d.id_customer, d.nama_customer, b.id_product, b.nama_product , SUM(a.qty_order) as total_qty_order
                 FROM order_s a
@@ -9,6 +131,7 @@ class Main_model extends CI_Model
                 INNER JOIN order_m c ON a.id_order_m = c.id_order_m
                 INNER JOIN customer d ON c.id_customer = d.id_customer
                 WHERE d.id_customer = '{$id_customer}'
+                    AND c.status_order = '1'
                 GROUP BY d.id_customer, b.id_product
                 ORDER BY SUM(a.qty_order) DESC
                 LIMIT 0, 10";
@@ -24,6 +147,7 @@ class Main_model extends CI_Model
                 INNER JOIN order_vendor_m c ON a.id_order_vendor_m = c.id_order_vendor_m
                 INNER JOIN vendor d ON c.id_vendor = d.id_vendor
                 WHERE d.id_vendor = '{$id_vendor}'
+                    AND status_order_vendor = '1'
                 GROUP BY d.id_vendor, b.id_product
                 ORDER BY SUM(a.qty_order_vendor) DESC
                 LIMIT 0, 10";
@@ -38,7 +162,7 @@ class Main_model extends CI_Model
                 INNER JOIN order_vendor_m c ON a.id_order_vendor_m = c.id_order_vendor_m
                 INNER JOIN vendor b ON a.id_vendor = b.id_vendor
                 WHERE a.id_staff = '{$id_staff}'
-                    AND (timestamp_pick_up BETWEEN '{$start_date}' AND '{$end_date}')";
+                    AND (tgl_pick_up BETWEEN '{$start_date}' AND '{$end_date}')";
 
         if($search != "" || $search != null){
             $sql .= " AND CONCAT(b.nama_vendor, ' ', c.no_order_vendor, ' ', a.alamat_pick_up) LIKE '%$search%'";
@@ -56,7 +180,7 @@ class Main_model extends CI_Model
                 INNER JOIN order_m c ON a.id_order_m = c.id_order_m
                 INNER JOIN customer b ON a.id_customer = b.id_customer
                 WHERE a.id_staff = '{$id_staff}'
-                    AND (timestamp_delivery BETWEEN '{$start_date}' AND '{$end_date}')";
+                    AND (tgl_delivery BETWEEN '{$start_date}' AND '{$end_date}')";
 
         if($search != "" || $search != null){
             $sql .= " AND CONCAT(b.nama_customer, ' ', c.no_order, ' ', a.alamat_delivery) LIKE '%$search%'";
@@ -86,6 +210,14 @@ class Main_model extends CI_Model
     function update_jurnal_umum($updated_data, $id_jurnal_umum){
         $this->db->where('id_jurnal_umum', $id_jurnal_umum);
         return $this->db->update('jurnal_umum',$updated_data);
+    }
+
+    function delete_jurnal_umum($id_jurnal_umum){
+        $sql = "DELETE FROM jurnal_umum
+                WHERE id_jurnal_umum = '{$id_jurnal_umum}'";
+
+        $query = $this->db->query($sql);
+        return $query;
     }
 
     function get_jurnal_umum_by_id($id_jurnal_umum){
@@ -239,23 +371,25 @@ class Main_model extends CI_Model
                 FROM (
                     SELECT a.*, (@mutasi := @mutasi + IF(a.DEBET <> 0, a.DEBET, (-1 * a.KREDIT))) AS MUTASI, (@count := @count + 1) AS COUNT
                     FROM (
-                        SELECT id_order_m AS ID, tgl_order, no_order, grand_total_order AS DEBET, 0 AS KREDIT, 'ordercustomer' AS TIPE, brand_order, tipe_order
-                        FROM order_m
-                        WHERE is_paid = '1' AND status_order = '1' 
-                          AND (tgl_order BETWEEN '{$start_date}' AND '{$end_date}') 
-                          AND (brand_order = '{$brand_order}' || 'all' = '{$brand_order}')
-                          AND (tipe_order = '{$tipe_order}' || 'all' = '{$tipe_order}') 
+                        SELECT a.id_order_m AS ID, a.tgl_order, a.no_order, a.grand_total_order AS DEBET, 0 AS KREDIT, 'ordercustomer' AS TIPE, a.brand_order, a.tipe_order, b.nama_customer AS NAMA
+                        FROM order_m a
+                        INNER JOIN customer b ON a.id_customer = b.id_customer
+                        WHERE a.is_paid = '1' AND a.status_order = '1' 
+                          AND (a.tgl_order BETWEEN '{$start_date}' AND '{$end_date}') 
+                          AND (a.brand_order = '{$brand_order}' || 'all' = '{$brand_order}')
+                          AND (a.tipe_order = '{$tipe_order}' || 'all' = '{$tipe_order}') 
                           AND ('IN' = '{$cash_flow}' || 'all' = '{$cash_flow}')
                         UNION 
-                        SELECT id_order_vendor_m as ID, tgl_order_vendor, no_order_vendor, 0 AS DEBET, grand_total_order AS KREDIT, 'ordervendor' AS TIPE, brand_order, tipe_order
-                        FROM order_vendor_m
-                        WHERE is_paid_vendor = '1' AND status_order_vendor = '1' 
-                          AND (tgl_order_vendor BETWEEN '{$start_date}' AND '{$end_date}') 
-                          AND (brand_order = '{$brand_order}' || 'all' = '{$brand_order}')
-                          AND (tipe_order = '{$tipe_order}' || 'all' = '{$tipe_order}')
+                        SELECT a.id_order_vendor_m as ID, a.tgl_order_vendor, a.no_order_vendor, 0 AS DEBET, a.grand_total_order AS KREDIT, 'ordervendor' AS TIPE, a.brand_order, a.tipe_order, b.nama_vendor AS NAMA
+                        FROM order_vendor_m a
+                        INNER JOIN vendor b ON a.id_vendor = b.id_vendor
+                        WHERE a.is_paid_vendor = '1' AND a.status_order_vendor = '1' 
+                          AND (a.tgl_order_vendor BETWEEN '{$start_date}' AND '{$end_date}') 
+                          AND (a.brand_order = '{$brand_order}' || 'all' = '{$brand_order}')
+                          AND (a.tipe_order = '{$tipe_order}' || 'all' = '{$tipe_order}')
                           AND ('OUT' = '{$cash_flow}' || 'all' = '{$cash_flow}')
                         UNION
-                        SELECT id_jurnal_umum as ID, tgl_jurnal_umum, keterangan_jurnal_umum, debet_jurnal_umum AS DEBET, kredit_jurnal_umum AS KREDIT, 'datajurnal' AS TIPE, brand_jurnal_umum AS brand_order, tipe_jurnal_umum AS tipe_order
+                        SELECT id_jurnal_umum as ID, tgl_jurnal_umum, keterangan_jurnal_umum, debet_jurnal_umum AS DEBET, kredit_jurnal_umum AS KREDIT, 'datajurnal' AS TIPE, brand_jurnal_umum AS brand_order, tipe_jurnal_umum AS tipe_order, 'empty' AS NAMA
                         FROM jurnal_umum
                         WHERE (tgl_jurnal_umum BETWEEN '{$start_date}' AND '{$end_date}') 
                           AND (brand_jurnal_umum = '{$brand_order}' || 'all' = '{$brand_order}')

@@ -50,7 +50,7 @@
                 <div id="info_catatan_delivery" style="font-size: 13px; margin-top: 5px"></div>
                 <br>
                 <div style="text-align: right" id="info_payment"></div>
-                <?php if($this->session->userdata('is_admin') == "1") { ?>
+                <?php if($this->session->userdata('is_admin') == "1" || $this->session->userdata('is_admin') == "3") { ?>
                     <a id="edit-info" target="_blank"><span class="link"> Edit </span></a>
                 <?php } ?>
 
@@ -114,12 +114,19 @@
 
     document.title = "Daftar Delivery - Amarthya Group";
 
-
     $('#status_delivery').change(function(){
         get_order_m($(this).val());
     })
 
-    get_order_m();
+    const urlParams = new URLSearchParams(location.search);
+    if(urlParams.has('status')){
+        get_order_m(urlParams.get('status'));
+        $('#status_delivery').val(urlParams.get('status'));
+    } else {
+        get_order_m();
+    }
+
+
 
     //get all products
     function get_order_m(status = "all"){
@@ -239,8 +246,14 @@
     }
 
     $('#dataTable').on( 'click', 'tbody tr', function () {
-        $('#info_items').html("Memuat...");
+
         rowData = $('#dataTable').DataTable().row( this ).data();
+
+        <?php if($this->session->userdata('is_admin') != "1" && $this->session->userdata('is_admin') != "3") { ?>
+            return;
+        <?php } ?>
+
+        $('#info_items').html("Memuat...");
 
         $("#edit-info").attr("href", admin_url + 'delivery_detail?id=' + rowData.id_delivery);
 
@@ -401,7 +414,7 @@
                 success: function (response) {
                     if(response.Status == "OK"){
                         $('#detail-modal').modal('hide');
-                        get_order_m();
+                        get_order_m($('#status_delivery').val());
                         show_snackbar(response.Message);
                     } else if(response.Status == "ERROR" ){
                         show_snackbar(response.Message);

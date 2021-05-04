@@ -194,7 +194,7 @@
                 {
                     "data": {"timestamp_pick_up":"timestamp_pick_up"},
                     mRender : function(data, type, full) {
-                        let dateTimeParts= data.timestamp_pick_up.split(/[- :]/);
+                        let dateTimeParts= data.tgl_pick_up.split(/[- :]/);
                         dateTimeParts[1]--;
                         const temp_date = new Date(...dateTimeParts);
 

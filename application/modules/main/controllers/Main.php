@@ -19,14 +19,202 @@ class Main extends MX_Controller
     function index()
     {
 
+        date_default_timezone_set('Asia/Singapore');
+
+        $today = date("Y-m-d");
+        $month = date("m");
+
+        $data['dashboard_data'] = $this->Main_model->dashboard_data($today, $month)->result_object();
+        $data['ongkir_data'] = $this->Main_model->monthly_ongkir_per_staff($month)->result_object();
+
         $this->load->view('template/admin_header');
-        $this->load->view('index');
+        $this->load->view('index', $data);
         $this->load->view('template/admin_footer');
     }
 
+    function izin(){
+
+        if($this->session->userdata('is_admin') == "1"){
+            $data['staffs'] = $this->Main_model->get_staff()->result_object();
+        } else {
+            $data['staffs'] = $this->Main_model->get_staff_by_id($this->session->userdata('id_staff'))->result_object();
+        }
+
+
+        $this->load->view('template/admin_header');
+        $this->load->view('izin', $data);
+        $this->load->view('template/admin_footer');
+    }
+
+    function get_izin(){
+        // server-side pagination
+        $draw = $_REQUEST['draw'];
+        $length = $_REQUEST['length'];
+        $start = $_REQUEST['start'];
+        $search = trim(htmlentities($_REQUEST['search']["value"], ENT_QUOTES));
+
+        // If admin, can see all. If not, show theirs only
+        if($this->session->userdata('is_admin') == "1"){
+            $id_staff = "all";
+        } else {
+            $id_staff = $this->session->userdata('id_staff');
+        }
+
+        if(isset($_GET['status'])){
+            $status = htmlentities($_GET['status'], ENT_QUOTES);
+        } else {
+            $status = "all";
+        }
+
+        $total = $this->Main_model->get_izin($id_staff, $status)->num_rows();
+
+        $output = array();
+        $output['draw'] = $draw;
+        $output['recordsTotal'] = $output['recordsFiltered'] = $total;
+        $output['data']=array();
+
+
+        $output['data'] = $this->Main_model->get_izin($id_staff, $status, $search, $length, $start)->result_object();
+        echo json_encode($output);
+        return;
+    }
+
+    function add_izin(){
+
+        $id_izin = strtoupper(trim(htmlentities($_REQUEST['id_izin'], ENT_QUOTES)));
+        $id_staff = strtoupper(trim(htmlentities($_REQUEST['id_staff'], ENT_QUOTES)));
+        $tgl_start_izin = strtoupper(trim(htmlentities($_REQUEST['tgl_start_izin'], ENT_QUOTES)));
+        $tgl_end_izin = strtoupper(trim(htmlentities($_REQUEST['tgl_end_izin'], ENT_QUOTES)));
+        $alasan_izin = trim(htmlentities($_REQUEST['alasan_izin'], ENT_QUOTES));
+
+        $keterangan_manager = "";
+        $id_staff_approval = "";
+        $status_izin = '0';
+
+
+        //validation
+        $error = array();
+
+        $this->db->trans_begin();
+
+        //check if staff exists
+        if ($this->Main_model->get_staff_by_id($id_staff)->num_rows() == 0){
+            array_push($error, "invalid-staff");
+        }
+
+        if(strtotime($tgl_start_izin) === false){
+            array_push($error, "invalid-startdate");
+        }
+
+        if(strtotime($tgl_end_izin) === false){
+            array_push($error, "invalid-enddate");
+        }
+
+        if(empty($alasan_izin)){
+            array_push($error, "invalid-alasan");
+        }
+
+        if(!empty($error)){
+            $return_arr = array("Status" => 'FORMERROR', "Error" => $error);
+            $this->db->trans_rollback();
+            echo json_encode($return_arr);
+            return;
+        }
+
+        // If not admin, must input for themselves.
+        if($this->session->userdata('is_admin') != "1"){
+            if($id_staff != $this->session->userdata('id_staff')){
+                $return_arr = array("Status" => 'ERROR', "Message" => 'Unauthorized');
+                echo json_encode($return_arr);
+                return;
+            }
+        }
+
+        $data = compact('id_staff', 'tgl_start_izin', 'tgl_end_izin', 'alasan_izin',
+                        'keterangan_manager', 'id_staff_approval', 'status_izin');
+
+        if($this->Main_model->get_izin_by_id($id_izin)->num_rows() == 0){
+
+            if($this->Main_model->add_izin($data)){
+                $this->db->trans_commit();
+                $return_arr = array("Status" => 'OK', "Message" => '');
+            } else {
+                $this->db->trans_rollback();
+                $return_arr = array("Status" => 'ERROR', "Message" => 'Gagal menambahkan data');
+            }
+        } else {
+            if($this->Main_model->update_izin($data, $id_izin)){
+                $this->db->trans_commit();
+                $return_arr = array("Status" => 'OK', "Message" => '');
+            } else {
+                $this->db->trans_rollback();
+                $return_arr = array("Status" => 'ERROR', "Message" => 'Gagal mengupdate data');
+            }
+        }
+
+        echo json_encode($return_arr);
+
+    }
+
+    function action_izin(){
+        if($this->session->userdata('is_admin') != "1"){
+            $return_arr = array("Status" => 'ERROR', "Message" => 'Unauthorized');
+            echo json_encode($return_arr);
+            return;
+        }
+
+        $id_izin = strtoupper(trim(htmlentities($_REQUEST['id_izin'], ENT_QUOTES)));
+        $action = strtoupper(trim(htmlentities($_REQUEST['action'], ENT_QUOTES)));
+        $keterangan_manager = trim(htmlentities($_REQUEST['keterangan_manager'], ENT_QUOTES));
+        $id_staff_approval = $this->session->userdata('username');
+
+        $check_data = $this->Main_model->get_izin_by_id($id_izin);
+
+        if($check_data->num_rows() > 0){
+
+            if($check_data->row()->status_izin != "0"){
+                $return_arr = array("Status" => 'ERROR', "Message" => 'Data sudah tidak bisa dirubah');
+                echo json_encode($return_arr);
+                return;
+            }
+
+            if($action == 'SETUJU'){
+                $status_izin = '1';
+            } else if($action == 'TOLAK') {
+                $status_izin = '2';
+            } else if($action == 'DELETE'){
+                $status_izin = '3';
+            } else {
+                $return_arr = array("Status" => 'ERROR', "Message" => 'Aksi tidak valid');
+                echo json_encode($return_arr);
+                return;
+            }
+
+            if($status_izin != '3'){
+               $updated_data = compact('keterangan_manager', 'id_staff_approval', 'status_izin');
+            } else {
+               $updated_data = compact('status_izin');
+            }
+
+            if($this->Main_model->update_izin($updated_data, $id_izin)){
+                $this->db->trans_commit();
+                $return_arr = array("Status" => 'OK', "Message" => '');
+            } else {
+                $this->db->trans_rollback();
+                $return_arr = array("Status" => 'ERROR', "Message" => 'Gagal mengupdate data');
+            }
+
+        } else {
+            $return_arr = array("Status" => 'ERROR', "Message" => 'Data tidak ditemukan');
+        }
+
+        echo json_encode($return_arr);
+    }
+
+
     function riwayat_belanja(){
 
-        if($this->session->userdata('is_admin') == "0"){
+        if($this->session->userdata('is_admin') != "1" && $this->session->userdata('is_admin') != "2" ){
             redirect(base_url('main'));
         }
 
@@ -67,7 +255,7 @@ class Main extends MX_Controller
     }
 
     function get_riwayat_belanja_vendor(){
-        if($this->session->userdata('is_admin') == "0"){
+        if($this->session->userdata('is_admin') != "1" && $this->session->userdata('is_admin') != "2" ){
             redirect(base_url('main'));
         }
 
@@ -97,7 +285,7 @@ class Main extends MX_Controller
     }
 
     function get_riwayat_belanja_customer(){
-        if($this->session->userdata('is_admin') == "0"){
+        if($this->session->userdata('is_admin') != "1" && $this->session->userdata('is_admin') != "2" ){
             redirect(base_url('main'));
         }
 
@@ -128,7 +316,7 @@ class Main extends MX_Controller
 
     function laporan_pick_up(){
 
-        if($this->session->userdata('is_admin') == "0"){
+        if($this->session->userdata('is_admin') != "1" && $this->session->userdata('is_admin') != "3"){
             redirect(base_url('main'));
         }
 
@@ -140,7 +328,7 @@ class Main extends MX_Controller
     }
 
     function get_laporan_pick_up(){
-        if($this->session->userdata('is_admin') == "0"){
+        if($this->session->userdata('is_admin') != "1" && $this->session->userdata('is_admin') != "3"){
             redirect(base_url('main'));
         }
 
@@ -183,7 +371,7 @@ class Main extends MX_Controller
 
     function laporan_delivery(){
 
-        if($this->session->userdata('is_admin') == "0"){
+        if($this->session->userdata('is_admin') != "1" && $this->session->userdata('is_admin') != "3"){
             redirect(base_url('main'));
         }
 
@@ -196,7 +384,7 @@ class Main extends MX_Controller
 
     function get_laporan_delivery(){
 
-        if($this->session->userdata('is_admin') == "0"){
+        if($this->session->userdata('is_admin') != "1" && $this->session->userdata('is_admin') != "3" ){
             redirect(base_url('main'));
         }
 
@@ -240,7 +428,7 @@ class Main extends MX_Controller
 
     function add_jurnal_umum(){
 
-        if($this->session->userdata('is_admin') == "0"){
+        if($this->session->userdata('is_admin') != "1" ){
             redirect(base_url('main'));
         }
 
@@ -323,9 +511,32 @@ class Main extends MX_Controller
 
     }
 
+    function delete_jurnal_umum(){
+        if($this->session->userdata('is_admin') != "1" ){
+            redirect(base_url('main'));
+        }
+
+        $id_jurnal_umum = trim(htmlentities($_REQUEST['id_jurnal_umum'], ENT_QUOTES));
+
+        if($this->Main_model->get_jurnal_umum_by_id($id_jurnal_umum)->num_rows() > 0){
+
+            if($this->Main_model->delete_jurnal_umum($id_jurnal_umum)){
+                $return_arr = array("Status" => 'OK', "Message" => 'Berhasil dihapus');
+            } else {
+                $return_arr = array("Status" => 'ERROR', "Message" => 'Gagal menghapus data');
+            }
+
+        } else {
+            $return_arr = array("Status" => 'ERROR', "Message" => 'Data sudah dihapus');
+        }
+
+        echo json_encode($return_arr);
+    }
+
+
     function problem_solving(){
 
-        if($this->session->userdata('is_admin') == "0"){
+        if($this->session->userdata('is_admin') != "1" ){
             redirect(base_url('main'));
         }
 
@@ -336,7 +547,7 @@ class Main extends MX_Controller
 
     function add_problem_solving(){
 
-        if($this->session->userdata('is_admin') == "0"){
+        if($this->session->userdata('is_admin') != "1" ){
             redirect(base_url('main'));
         }
 
@@ -430,7 +641,7 @@ class Main extends MX_Controller
 
     function delete_problem_solving(){
 
-        if($this->session->userdata('is_admin') == "0"){
+        if($this->session->userdata('is_admin') != "1" ){
             redirect(base_url('main'));
         }
 
@@ -466,7 +677,7 @@ class Main extends MX_Controller
 
     function get_problem_solving(){
 
-        if($this->session->userdata('is_admin') == "0"){
+        if($this->session->userdata('is_admin') != "1" ){
             redirect(base_url('main'));
         }
 
@@ -495,7 +706,7 @@ class Main extends MX_Controller
     }
 
     function laporan_transaksi(){
-        if($this->session->userdata('is_admin') == "0"){
+        if($this->session->userdata('is_admin') != "1" ){
             redirect(base_url('main'));
         }
 
@@ -506,7 +717,7 @@ class Main extends MX_Controller
 
     function get_data_laporan(){
 
-        if($this->session->userdata('is_admin') == "0"){
+        if($this->session->userdata('is_admin') != "1" ){
             redirect(base_url('main'));
         }
 
@@ -542,7 +753,7 @@ class Main extends MX_Controller
 
     function laporan_produk(){
 
-        if($this->session->userdata('is_admin') == "0"){
+        if($this->session->userdata('is_admin') != "1" ){
             redirect(base_url('main'));
         }
 
@@ -553,7 +764,7 @@ class Main extends MX_Controller
 
     function get_laporan_produk(){
 
-        if($this->session->userdata('is_admin') == "0"){
+        if($this->session->userdata('is_admin') != "1" ){
             redirect(base_url('main'));
         }
 
@@ -587,7 +798,7 @@ class Main extends MX_Controller
 
     function laporan_sales(){
 
-        if($this->session->userdata('is_admin') == "0"){
+        if($this->session->userdata('is_admin') != "1" ){
             redirect(base_url('main'));
         }
 
@@ -598,7 +809,7 @@ class Main extends MX_Controller
 
     function get_laporan_sales(){
 
-        if($this->session->userdata('is_admin') == "0"){
+        if($this->session->userdata('is_admin') != "1" ){
             redirect(base_url('main'));
         }
 
@@ -631,7 +842,7 @@ class Main extends MX_Controller
     }
 
     function laporan_purchase(){
-        if($this->session->userdata('is_admin') == "0"){
+        if($this->session->userdata('is_admin') != "1" ){
             redirect(base_url('main'));
         }
 
@@ -642,7 +853,7 @@ class Main extends MX_Controller
 
     function get_laporan_purchase(){
 
-        if($this->session->userdata('is_admin') == "0"){
+        if($this->session->userdata('is_admin') != "1" ){
             redirect(base_url('main'));
         }
 
@@ -686,7 +897,7 @@ class Main extends MX_Controller
     }
 
     function delete_product(){
-        if($this->session->userdata('is_admin') == "0"){
+        if($this->session->userdata('is_admin') != "1" ){
             redirect(base_url('main'));
         }
 
@@ -734,7 +945,7 @@ class Main extends MX_Controller
     }
 
     function delete_delivery(){
-        if($this->session->userdata('is_admin') == "0"){
+        if($this->session->userdata('is_admin') != "1" ){
             redirect(base_url('main'));
         }
 
@@ -767,7 +978,7 @@ class Main extends MX_Controller
     }
 
     function delete_pick_up(){
-        if($this->session->userdata('is_admin') == "0"){
+        if($this->session->userdata('is_admin') != "1" ){
             redirect(base_url('main'));
         }
 
@@ -802,7 +1013,7 @@ class Main extends MX_Controller
     }
 
     function delete_stok_in_out(){
-        if($this->session->userdata('is_admin') == "0"){
+        if($this->session->userdata('is_admin') != "1" ){
             redirect(base_url('main'));
         }
 
@@ -949,7 +1160,7 @@ class Main extends MX_Controller
 
     function salary_form(){
 
-        if($this->session->userdata('is_admin') == "0"){
+        if($this->session->userdata('is_admin') != "1" ){
             redirect(base_url('main'));
         }
 
@@ -962,7 +1173,7 @@ class Main extends MX_Controller
 
     function get_staff_salary(){
 
-        if($this->session->userdata('is_admin') == "0"){
+        if($this->session->userdata('is_admin') != "1" ){
             redirect(base_url('main'));
         }
 
@@ -991,7 +1202,7 @@ class Main extends MX_Controller
 
     function save_salary(){
 
-        if($this->session->userdata('is_admin') == "0"){
+        if($this->session->userdata('is_admin') != "1" ){
             redirect(base_url('main'));
         }
 
@@ -1055,7 +1266,7 @@ class Main extends MX_Controller
 
     function update_pick_up(){
 
-        if($this->session->userdata('is_admin') == "0"){
+        if($this->session->userdata('is_admin') != "1" && $this->session->userdata('is_admin') != "3"){
             redirect(base_url('main'));
         }
 
@@ -1105,7 +1316,7 @@ class Main extends MX_Controller
 
     function pick_up_detail(){
 
-        if($this->session->userdata('is_admin') == "0"){
+        if($this->session->userdata('is_admin') != "1" && $this->session->userdata('is_admin') != "3" ){
             redirect(base_url('main'));
         }
 
@@ -1204,7 +1415,7 @@ class Main extends MX_Controller
 
     function pick_up_form()
     {
-        if($this->session->userdata('is_admin') == "0"){
+        if($this->session->userdata('is_admin') != "1" && $this->session->userdata('is_admin') != "3"){
             redirect(base_url('main'));
         }
 
@@ -1215,7 +1426,7 @@ class Main extends MX_Controller
 
     function add_pick_up(){
 
-        if($this->session->userdata('is_admin') == "0"){
+        if($this->session->userdata('is_admin') != "1" && $this->session->userdata('is_admin') != "3"){
             redirect(base_url('main'));
         }
 
@@ -1310,7 +1521,7 @@ class Main extends MX_Controller
 
     function order_vendor_detail(){
 
-        if($this->session->userdata('is_admin') == "0"){
+        if($this->session->userdata('is_admin') != "1" && $this->session->userdata('is_admin') != "2" ){
             redirect(base_url('main'));
         }
 
@@ -1335,7 +1546,7 @@ class Main extends MX_Controller
     }
 
     function order_vendor_list(){
-        if($this->session->userdata('is_admin') == "0"){
+        if($this->session->userdata('is_admin') != "1" && $this->session->userdata('is_admin') != "2" ){
             redirect(base_url('main'));
         }
 
@@ -1353,6 +1564,11 @@ class Main extends MX_Controller
     }
 
     function get_order_vendor_m(){
+
+        if($this->session->userdata('is_admin') == "0" ){
+            redirect(base_url('main'));
+        }
+
         // server-side pagination
         $draw = $_REQUEST['draw'];
         $length = $_REQUEST['length'];
@@ -1377,10 +1593,10 @@ class Main extends MX_Controller
         }
 
         if(!isset($_GET['pick_up'])){
-            $total = $this->Main_model->get_order_vendor_m($search)->num_rows();
+            $total = $this->Main_model->get_order_vendor_m($search, 10000000000, 0, $status, $brand)->num_rows();
             $output['data'] = $this->Main_model->get_order_vendor_m($search, $length, $start, $status, $brand)->result_object();
         } else {
-            $total = $this->Main_model->get_order_vendor_m_pickup($search)->num_rows();
+            $total = $this->Main_model->get_order_vendor_m_pickup($search, 10000000000, 0, $status, $brand)->num_rows();
             $output['data'] = $this->Main_model->get_order_vendor_m_pickup($search, $length, $start, $status, $brand)->result_object();
         }
 
@@ -1391,7 +1607,7 @@ class Main extends MX_Controller
 
     function update_order_vendor(){
 
-        if($this->session->userdata('is_admin') == "0"){
+        if($this->session->userdata('is_admin') != "1" && $this->session->userdata('is_admin') != "2" ){
             redirect(base_url('main'));
         }
 
@@ -1468,7 +1684,7 @@ class Main extends MX_Controller
 
     function add_order_vendor(){
 
-        if($this->session->userdata('is_admin') == "0"){
+        if($this->session->userdata('is_admin') != "1" && $this->session->userdata('is_admin') != "2" ){
             redirect(base_url('main'));
         }
 
@@ -1629,7 +1845,7 @@ class Main extends MX_Controller
 
     function order_vendor_form()
     {
-        if($this->session->userdata('is_admin') == "0"){
+        if($this->session->userdata('is_admin') != "1" && $this->session->userdata('is_admin') != "2" ){
             redirect(base_url('main'));
         }
 
@@ -1640,7 +1856,7 @@ class Main extends MX_Controller
 
     function update_delivery(){
 
-        if($this->session->userdata('is_admin') == "0"){
+        if($this->session->userdata('is_admin') != "1" && $this->session->userdata('is_admin') != "3"){
             redirect(base_url('main'));
         }
 
@@ -1690,7 +1906,7 @@ class Main extends MX_Controller
 
     function delivery_detail(){
 
-        if($this->session->userdata('is_admin') == "0"){
+        if($this->session->userdata('is_admin') != "1" && $this->session->userdata('is_admin') != "3"){
             redirect(base_url('main'));
         }
 
@@ -1716,12 +1932,14 @@ class Main extends MX_Controller
     }
 
     function delivery_list(){
+
         $this->load->view('template/admin_header');
         $this->load->view('delivery_list');
         $this->load->view('template/admin_footer');
     }
 
     function get_delivery(){
+
         // server-side pagination
         $draw = $_REQUEST['draw'];
         $length = $_REQUEST['length'];
@@ -1741,7 +1959,7 @@ class Main extends MX_Controller
             $status = 'all';
         }
 
-        if($this->session->userdata('is_admin') == "0"){
+        if($this->session->userdata('is_admin') != "1" && $this->session->userdata('is_admin') != "3"){
             $output['data'] = $this->Main_model->get_delivery($search, false, $this->session->userdata('id_staff'), $length, $start, $status)->result_object();
         } else {
             $output['data'] = $this->Main_model->get_delivery($search, true, 0, $length, $start, $status)->result_object();
@@ -1752,6 +1970,11 @@ class Main extends MX_Controller
     }
 
     function update_delivery_status(){
+        if($this->session->userdata('is_admin') != "1" && $this->session->userdata('is_admin') != "3"){
+            redirect(base_url('main'));
+        }
+
+
         date_default_timezone_set('Asia/Singapore');
 
         $id_delivery = trim(htmlentities($_REQUEST['id_delivery'], ENT_QUOTES));
@@ -1827,7 +2050,7 @@ class Main extends MX_Controller
 
     function delivery_form()
     {
-        if($this->session->userdata('is_admin') == "0"){
+        if($this->session->userdata('is_admin') != "1" && $this->session->userdata('is_admin') != "3"){
             redirect(base_url('main'));
         }
 
@@ -1838,7 +2061,7 @@ class Main extends MX_Controller
 
     function order_list(){
 
-        if($this->session->userdata('is_admin') == "0"){
+        if($this->session->userdata('is_admin') != "1" && $this->session->userdata('is_admin') != "2" ){
             redirect(base_url('main'));
         }
 
@@ -1848,6 +2071,10 @@ class Main extends MX_Controller
     }
 
     function add_delivery(){
+
+        if($this->session->userdata('is_admin') != "1" && $this->session->userdata('is_admin') != "3"){
+            redirect(base_url('main'));
+        }
 
         if(!isset($_REQUEST['id_staff'])){
             $return_arr = array("Status" => 'ERROR', "Message" => 'Staff tidak boleh kosong');
@@ -1944,6 +2171,11 @@ class Main extends MX_Controller
     }
 
     function get_order_m(){
+
+        if($this->session->userdata('is_admin') == "0" ){
+            redirect(base_url('main'));
+        }
+
         // server-side pagination
         $draw = $_REQUEST['draw'];
         $length = $_REQUEST['length'];
@@ -1967,7 +2199,7 @@ class Main extends MX_Controller
         }
 
         if(!isset($_GET['delivery'])){
-            $total = $this->Main_model->get_order_m($search, $length, $start, $status, $brand)->num_rows();
+            $total = $this->Main_model->get_order_m($search, 10000000000, 0, $status, $brand)->num_rows();
             $output['data'] = $this->Main_model->get_order_m($search, $length, $start, $status, $brand)->result_object();
         } else {
             $total = $this->Main_model->get_order_m_deliv($search, $length, $start, $status, $brand)->num_rows();
@@ -1981,7 +2213,7 @@ class Main extends MX_Controller
 
     function update_order_m(){
 
-        if($this->session->userdata('is_admin') == "0"){
+        if($this->session->userdata('is_admin') != "1" && $this->session->userdata('is_admin') != "2" ){
             redirect(base_url('main'));
         }
 
@@ -2060,7 +2292,7 @@ class Main extends MX_Controller
 
     function order_detail(){
 
-        if($this->session->userdata('is_admin') == "0"){
+        if($this->session->userdata('is_admin') != "1" && $this->session->userdata('is_admin') != "2" ){
             redirect(base_url('main'));
         }
 
@@ -2086,7 +2318,7 @@ class Main extends MX_Controller
 
     function order_form()
     {
-        if($this->session->userdata('is_admin') == "0"){
+        if($this->session->userdata('is_admin') != "1" && $this->session->userdata('is_admin') != "2" ){
             redirect(base_url('main'));
         }
 
@@ -2097,7 +2329,7 @@ class Main extends MX_Controller
 
     function add_order(){
 
-        if($this->session->userdata('is_admin') == "0"){
+        if($this->session->userdata('is_admin') != "1" && $this->session->userdata('is_admin') != "2" ){
             redirect(base_url('main'));
         }
 
@@ -2282,8 +2514,8 @@ class Main extends MX_Controller
 
     function stok_in_out(){
 
-        if($this->session->userdata('is_admin') == "0"){
-            echo "Unauthorized";
+        if($this->session->userdata('is_admin') != "1" && $this->session->userdata('is_admin') != "2" ){
+            redirect(base_url('main'));
         }
 
         $this->load->view('template/admin_header');
@@ -2308,6 +2540,9 @@ class Main extends MX_Controller
     }
 
     function get_stok_in_out(){
+        if($this->session->userdata('is_admin') != "1" && $this->session->userdata('is_admin') != "2" ){
+            redirect(base_url('main'));
+        }
 
         $id_product = strtoupper(trim(htmlentities($_REQUEST['id_product'], ENT_QUOTES)));
 
@@ -2332,6 +2567,10 @@ class Main extends MX_Controller
     }
 
     function get_stok_in_out_by_id(){
+        if($this->session->userdata('is_admin') != "1" && $this->session->userdata('is_admin') != "2" ){
+            redirect(base_url('main'));
+        }
+
         $id = htmlentities($_REQUEST['id_stok_in_out'], ENT_QUOTES);
         $data = $this->Main_model->get_stok_in_out_by_id($id);
         echo json_encode($data->row());
@@ -2340,7 +2579,7 @@ class Main extends MX_Controller
 
     function add_stok_in_out(){
 
-        if($this->session->userdata('is_admin') == "0"){
+        if($this->session->userdata('is_admin') != "1" && $this->session->userdata('is_admin') != "2" ){
             redirect(base_url('main'));
         }
 
@@ -2429,7 +2668,7 @@ class Main extends MX_Controller
 
     function product(){
 
-        if($this->session->userdata('is_admin') == "0"){
+        if($this->session->userdata('is_admin') != "1" && $this->session->userdata('is_admin') != "2" && $this->session->userdata('is_admin') != "4"){
             redirect(base_url('main'));
         }
 
@@ -2439,6 +2678,10 @@ class Main extends MX_Controller
     }
 
     function get_product(){
+
+        if($this->session->userdata('is_admin') != "1" && $this->session->userdata('is_admin') != "2" && $this->session->userdata('is_admin') != "4"){
+            redirect(base_url('main'));
+        }
 
         // server-side pagination
         $draw = $_REQUEST['draw'];
@@ -2471,6 +2714,11 @@ class Main extends MX_Controller
     }
 
     function vendor(){
+
+        if($this->session->userdata('is_admin') != "1" && $this->session->userdata('is_admin') != "2" ){
+            redirect(base_url('main'));
+        }
+
         $this->load->view('template/admin_header');
         $this->load->view('vendor');
         $this->load->view('template/admin_footer');
@@ -2485,7 +2733,7 @@ class Main extends MX_Controller
 
     function add_product(){
 
-        if($this->session->userdata('is_admin') == "0"){
+        if($this->session->userdata('is_admin') != "1" && $this->session->userdata('is_admin') != "2" && $this->session->userdata('is_admin') != "4"){
             redirect(base_url('main'));
         }
 
@@ -2570,6 +2818,10 @@ class Main extends MX_Controller
 
     function get_vendor(){
 
+        if($this->session->userdata('is_admin') == "0" ){
+            redirect(base_url('main'));
+        }
+
         // server-side pagination
         $draw = $_REQUEST['draw'];
         $length = $_REQUEST['length'];
@@ -2598,6 +2850,10 @@ class Main extends MX_Controller
     }
 
     function add_vendor(){
+
+        if($this->session->userdata('is_admin') != "1" && $this->session->userdata('is_admin') != "2" ){
+            redirect(base_url('main'));
+        }
 
         $id_vendor = strtoupper(trim(htmlentities($_REQUEST['id_vendor'], ENT_QUOTES)));
         $nama_vendor = trim(htmlentities($_REQUEST['nama_vendor'], ENT_QUOTES));
@@ -2666,12 +2922,21 @@ class Main extends MX_Controller
     }
 
     function customer(){
+
+        if($this->session->userdata('is_admin') != "1" && $this->session->userdata('is_admin') != "2" ){
+            redirect(base_url('main'));
+        }
+
         $this->load->view('template/admin_header');
         $this->load->view('customer');
         $this->load->view('template/admin_footer');
     }
 
     function get_customer(){
+
+        if($this->session->userdata('is_admin') == "0" ){
+            redirect(base_url('main'));
+        }
 
         // server-side pagination
         $draw = $_REQUEST['draw'];
@@ -2701,6 +2966,10 @@ class Main extends MX_Controller
     }
 
     function add_customer(){
+
+        if($this->session->userdata('is_admin') != "1" && $this->session->userdata('is_admin') != "2" ){
+            redirect(base_url('main'));
+        }
 
         $id_customer = strtoupper(trim(htmlentities($_REQUEST['id_customer'], ENT_QUOTES)));
         $nama_customer = trim(htmlentities($_REQUEST['nama_customer'], ENT_QUOTES));
@@ -2768,7 +3037,7 @@ class Main extends MX_Controller
 
     function staff(){
 
-        if($this->session->userdata('is_admin') == "0"){
+        if($this->session->userdata('is_admin') != "1" ){
             redirect(base_url('main'));
         }
 
@@ -2781,7 +3050,7 @@ class Main extends MX_Controller
 
     function get_staff(){
 
-        if($this->session->userdata('is_admin') == "0"){
+        if($this->session->userdata('is_admin') == "0" ){
             redirect(base_url('main'));
         }
 
@@ -2816,7 +3085,7 @@ class Main extends MX_Controller
 
     function add_staff(){
 
-        if($this->session->userdata('is_admin') == "0"){
+        if($this->session->userdata('is_admin') != "1" ){
             redirect(base_url('main'));
         }
 
@@ -3677,7 +3946,7 @@ class Main extends MX_Controller
 
     function excel_jurnal_umum(){
 
-        if($this->session->userdata('is_admin') == "0"){
+        if($this->session->userdata('is_admin') != "1"){
             echo "Unauthorized";
             return;
         }
@@ -3715,7 +3984,7 @@ class Main extends MX_Controller
         $objPHPExcel->getActiveSheet()->getColumnDimension('A')->setWidth(6);
         $objPHPExcel->getActiveSheet()->getColumnDimension('B')->setWidth(18);
         $objPHPExcel->getActiveSheet()->getColumnDimension('C')->setWidth(18);
-        $objPHPExcel->getActiveSheet()->getColumnDimension('D')->setWidth(27);
+        $objPHPExcel->getActiveSheet()->getColumnDimension('D')->setWidth(37);
         $objPHPExcel->getActiveSheet()->getColumnDimension('E')->setWidth(16);
         $objPHPExcel->getActiveSheet()->getColumnDimension('F')->setWidth(16);
         $objPHPExcel->getActiveSheet()->getColumnDimension('G')->setWidth(16);
@@ -3784,7 +4053,15 @@ class Main extends MX_Controller
             $objPHPExcel->getActiveSheet()->SetCellValue("A".$startRow, $no);
             $objPHPExcel->getActiveSheet()->SetCellValue("B".$startRow, html_entity_decode($this->get_brand($row->brand_order), ENT_QUOTES,'UTF-8'));
             $objPHPExcel->getActiveSheet()->SetCellValue("C".$startRow, date("D, M j, Y",strtotime($row->tgl_order)));
-            $objPHPExcel->getActiveSheet()->SetCellValue("D".$startRow, html_entity_decode($row->no_order, ENT_QUOTES,'UTF-8'));
+
+            if($row->NAMA == "empty"){
+                $objPHPExcel->getActiveSheet()->SetCellValue("D".$startRow, html_entity_decode($row->no_order, ENT_QUOTES,'UTF-8'));
+            } else {
+                $objPHPExcel->getActiveSheet()->SetCellValue("D".$startRow, html_entity_decode($row->no_order, ENT_QUOTES,'UTF-8')."\n".$row->NAMA);
+            }
+
+
+
             $objPHPExcel->getActiveSheet()->SetCellValue("E".$startRow, (int)$row->DEBET);
             $objPHPExcel->getActiveSheet()->SetCellValue("F".$startRow, (int)$row->KREDIT);
             $objPHPExcel->getActiveSheet()->SetCellValue("G".$startRow, (int)$row->MUTASI);
@@ -3827,7 +4104,7 @@ class Main extends MX_Controller
 
     function excel_laporan_produk(){
 
-        if($this->session->userdata('is_admin') == "0"){
+        if($this->session->userdata('is_admin') != "1"){
             echo "Unauthorized";
             return;
         }
@@ -3943,7 +4220,7 @@ class Main extends MX_Controller
 
     function excel_laporan_sales(){
 
-        if($this->session->userdata('is_admin') == "0"){
+        if($this->session->userdata('is_admin') != "1"){
             echo "Unauthorized";
             return;
         }
@@ -4064,7 +4341,7 @@ class Main extends MX_Controller
 
     function excel_laporan_purchase(){
 
-        if($this->session->userdata('is_admin') == "0"){
+        if($this->session->userdata('is_admin') != "1"){
             echo "Unauthorized";
             return;
         }
@@ -4178,7 +4455,7 @@ class Main extends MX_Controller
     }
 
     function excel_product(){
-        if($this->session->userdata('is_admin') == "0"){
+        if($this->session->userdata('is_admin') != "1" && $this->session->userdata('is_admin') != "2"){
             echo "Unauthorized";
             return;
         }

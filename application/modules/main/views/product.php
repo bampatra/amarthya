@@ -474,7 +474,7 @@
             success: function (response) {
                 $('.invalid-feedback').css('display', 'none');
                 if(response.Status == "OK"){
-                    get_product();
+                    get_product(brand, stock_status);
                     $('#input-product-modal').modal('hide');
                 } else if(response.Status == "FORMERROR") {
                     response.Error.forEach(function(error){

@@ -131,7 +131,15 @@
         get_order_m(status, brand_order);
     })
 
-    get_order_m();
+    const urlParams = new URLSearchParams(location.search);
+    if(urlParams.has('status')){
+        get_order_m(urlParams.get('status'));
+        $('#is_paid_vendor').val(urlParams.get('status'));
+        status = urlParams.get('status');
+    } else {
+        get_order_m();
+    }
+
 
     function get_order_m(status = "all", brand_order = "all"){
         $('.loading').css("display", "block");

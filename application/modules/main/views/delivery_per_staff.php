@@ -92,7 +92,7 @@
                 <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
                     <thead>
                     <tr class="no-hover-style">
-                        <th> Tanggal </th>
+                        <th> Tanggal</th>
                         <th> Order </th>
                         <th> Alamat Delivery </th>
                     </tr>
@@ -194,7 +194,7 @@
                 {
                     "data": {"timestamp_delivery":"timestamp_delivery"},
                     mRender : function(data, type, full) {
-                        let dateTimeParts= data.timestamp_delivery.split(/[- :]/);
+                        let dateTimeParts= data.tgl_delivery.split(/[- :]/);
                         dateTimeParts[1]--;
                         const temp_date = new Date(...dateTimeParts);
 

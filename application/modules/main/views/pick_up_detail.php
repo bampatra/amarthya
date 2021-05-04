@@ -237,13 +237,13 @@
                 },
                 success: function (response) {
                     if(response.Status == "OK"){
-                        window.location.href = admin_url + 'pick_up_list';
+                        show_snackbar(response.Message);
                     } else if(response.Status == "ERROR" ){
                         show_snackbar(response.Message);
-
-                        $('.loading').css("display", "none");
-                        $('.Veil-non-hover').fadeOut();
                     }
+
+                    $('.loading').css("display", "none");
+                    $('.Veil-non-hover').fadeOut();
                 }
             })
         }

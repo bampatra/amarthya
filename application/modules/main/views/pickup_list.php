@@ -49,7 +49,7 @@
                 <div id="info_catatan_pick_up" style="font-size: 13px; margin-top: 5px"></div>
                 <br>
                 <div style="text-align: right" id="info_payment"></div>
-                <?php if($this->session->userdata('is_admin') == "1") { ?>
+                <?php if($this->session->userdata('is_admin') == "1" || $this->session->userdata('is_admin') == "3" ) { ?>
                     <a id="edit-info" target="_blank"><span class="link"> Edit </span></a>
                 <?php } ?>
 
@@ -117,7 +117,14 @@
         get_order_vendor_m($(this).val());
     })
 
-    get_order_vendor_m();
+    const urlParams = new URLSearchParams(location.search);
+    if(urlParams.has('status')){
+        get_order_vendor_m(urlParams.get('status'));
+        $('#status_pick_up').val(urlParams.get('status'));
+    } else {
+        get_order_vendor_m();
+    }
+
 
     //get all products
     function get_order_vendor_m(status = "all"){
@@ -197,7 +204,7 @@
 
                         html += '</div></div>';
 
-                        if(<?php echo $this->session->userdata('is_admin')?> == "1")
+                        if(<?php echo $this->session->userdata('is_admin')?> == "1" || <?php echo $this->session->userdata('is_admin')?> == "3")
                         {
                             html += '<div class="detail-row"><table style="width: 100%">' +
                                 '       <tr class="no-pointer"><td style="width: 15%">Driver: </td><td><span>' + data.nama_staff + '<br>(' + data.no_hp_staff + ')</span></td></tr>' +
@@ -227,6 +234,12 @@
     }
 
     $('#dataTable').on( 'click', 'tbody tr', function () {
+
+        <?php if($this->session->userdata('is_admin') != "1" && $this->session->userdata('is_admin') != "3") { ?>
+            return;
+        <?php } ?>
+
+
         $('#info_items').html("Memuat...");
         rowData = $('#dataTable').DataTable().row( this ).data();
 
@@ -378,7 +391,7 @@
                     success: function (response) {
                         if (response.Status == "OK") {
                             $('#detail-modal').modal('hide');
-                            get_order_vendor_m();
+                            get_order_vendor_m($('#status_pick_up').val());
                             show_snackbar(response.Message);
                         } else if (response.Status == "ERROR") {
                             show_snackbar(response.Message);

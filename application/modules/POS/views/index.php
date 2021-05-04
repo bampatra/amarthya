@@ -9,7 +9,7 @@
     <meta name="description" content="">
     <meta name="author" content="">
 
-    <title>Amarthya Group</title>
+    <title>POS Amarthya Eatery</title>
     <link rel="icon" href="<?php echo base_url('assets/images/logo_amarthya.png');?>" type = "image/x-icon">
 
     <!-- Custom fonts for this template-->
@@ -128,20 +128,20 @@
     <ul class="navbar-nav sidebar sidebar-dark accordion toggled" id="accordionSidebar">
 
         <!-- Sidebar - Brand -->
-<!--        <a class="sidebar-brand d-flex align-items-center justify-content-center" href="--><?php //echo base_url('main')?><!--">-->
-<!--            <div class="sidebar-brand-text mx-3">YAPN</sup></div>-->
-<!--        </a>-->
-<!---->
+        <!--        <a class="sidebar-brand d-flex align-items-center justify-content-center" href="--><?php //echo base_url('main')?><!--">-->
+        <!--            <div class="sidebar-brand-text mx-3">YAPN</sup></div>-->
+        <!--        </a>-->
+        <!---->
 
-<!--        <hr class="sidebar-divider my-0">-->
+        <!--        <hr class="sidebar-divider my-0">-->
 
         <!-- Nav Item - Dashboard -->
-<!--        <li class="nav-item active">-->
-<!--            <a class="nav-link" href="--><?php //echo base_url('main')?><!--">-->
-<!--                <i class="fas fa-fw fa-tachometer-alt"></i>-->
-<!--                <span style="font-size: 12px !important">Dashboard</span></a>-->
-<!--        </li>-->
-<!---->
+        <!--        <li class="nav-item active">-->
+        <!--            <a class="nav-link" href="--><?php //echo base_url('main')?><!--">-->
+        <!--                <i class="fas fa-fw fa-tachometer-alt"></i>-->
+        <!--                <span style="font-size: 12px !important">Dashboard</span></a>-->
+        <!--        </li>-->
+        <!---->
 
         <hr class="sidebar-divider">
 
@@ -161,184 +161,15 @@
 
 
 
-        <?php if($this->session->userdata('is_admin') == "1" || $this->session->userdata('is_admin') == "2") { ?>
-
-        <li class="nav-item">
-            <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseMaster" aria-expanded="true" aria-controls="collapseMaster">
-                <i class="fas fa-fw fa-id-card"></i>
-                <span style="font-size: 11px !important">Master Data</span>
-            </a>
-            <div id="collapseMaster" class="collapse" aria-labelledby="headingTwo" data-parent="#accordionSidebar">
-                <div class="bg-white py-2 collapse-inner rounded">
-                    <h6 class="collapse-header">Option:</h6>
-                    <?php if($this->session->userdata('is_admin') == "1") { ?>
-                        <a class="collapse-item" href="<?php echo base_url('main/staff')?>">Staff</a>
-                    <?php } ?>
-                    <a class="collapse-item" href="<?php echo base_url('main/customer')?>">Customer</a>
-                    <a class="collapse-item" href="<?php echo base_url('main/vendor')?>">Vendor</a>
-                </div>
-            </div>
-        </li>
-
-        <?php } ?>
-
-        <?php if($this->session->userdata('is_admin') == "1" || $this->session->userdata('is_admin') == "2" || $this->session->userdata('is_admin') == "4") { ?>
-
-            <li class="nav-item">
-                <a class="nav-link" href="<?php echo base_url('main/product')?>">
-                    <i class="fas fa-fw fa-shopping-bag"></i>
-                    <span style="font-size: 11px !important">Product</span>
-                </a>
-            </li>
-        <?php } ?>
-
-        <?php if($this->session->userdata('is_admin') == "3") { ?>
-
-            <li class="nav-item">
-                <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseLaporan" aria-expanded="true" aria-controls="collapseMaster">
-                    <i class="fas fa-fw fa-calculator"></i>
-                    <span style="font-size: 11px !important">Laporan</span>
-                </a>
-                <div id="collapseLaporan" class="collapse" aria-labelledby="headingTwo" data-parent="#accordionSidebar">
-                    <div class="bg-white py-2 collapse-inner rounded">
-                        <h6 class="collapse-header">Option:</h6>
-                        <a class="collapse-item" href="<?php echo base_url('main/laporan_delivery')?>">Delivery per staff</a>
-                        <a class="collapse-item" href="<?php echo base_url('main/laporan_pick_up')?>">Pick Up per staff</a>
-                    </div>
-                </div>
-            </li>
-
-        <?php } ?>
-
-        <?php if($this->session->userdata('is_admin') == "1") { ?>
-
-
-        <li class="nav-item">
-            <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseLaporan" aria-expanded="true" aria-controls="collapseMaster">
-                <i class="fas fa-fw fa-calculator"></i>
-                <span style="font-size: 11px !important">Laporan</span>
-            </a>
-            <div id="collapseLaporan" class="collapse" aria-labelledby="headingTwo" data-parent="#accordionSidebar">
-                <div class="bg-white py-2 collapse-inner rounded">
-                    <h6 class="collapse-header">Option:</h6>
-                    <a class="collapse-item" href="<?php echo base_url('main/laporan_transaksi')?>">Transaksi Umum</a>
-                    <a class="collapse-item" href="<?php echo base_url('main/laporan_produk')?>">Penjualan Produk</a>
-                    <a class="collapse-item" href="<?php echo base_url('main/laporan_sales')?>">Sales per Customer</a>
-                    <a class="collapse-item" href="<?php echo base_url('main/laporan_purchase')?>">Purchase per Vendor</a>
-                    <a class="collapse-item" href="<?php echo base_url('main/laporan_delivery')?>">Delivery per staff</a>
-                    <a class="collapse-item" href="<?php echo base_url('main/laporan_pick_up')?>">Pick Up per staff</a>
-                </div>
-            </div>
-        </li>
-
-            <li class="nav-item">
-                <a class="nav-link" href="<?php echo base_url('main/problem_solving')?>">
-                    <i class="fas fa-fw fa-exclamation"></i>
-                    <span style="font-size: 11px !important">Problem</span>
-                </a>
-            </li>
-
-        <li class="nav-item">
-            <a class="nav-link" href="<?php echo base_url('main/salary_form')?>">
-                <i class="fas fa-fw fa-money-bill-wave"></i>
-                <span style="font-size: 11px !important">Salary</span>
-            </a>
-        </li>
-
-        <?php } ?>
-
-        <li class="nav-item">
-            <a class="nav-link" href="<?php echo base_url('main/slip_gaji')?>">
-                <i class="fas fa-fw fa-money-bill-wave"></i>
-                <span style="font-size: 11px !important">Slip Gaji</span>
-            </a>
-        </li>
-
-        <li class="nav-item">
-            <a class="nav-link" href="<?php echo base_url('main/izin')?>">
-                <i class="fas fa-fw fa-bed"></i>
-                <span style="font-size: 11px !important">Izin</span>
-            </a>
-        </li>
-
-        <?php if($this->session->userdata('is_admin') == "1" || $this->session->userdata('is_admin') == "2") { ?>
-        <li class="nav-item">
-            <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseOrder" aria-expanded="true" aria-controls="collapseMaster">
-                <i class="fas fa-fw fa-shopping-cart"></i>
-                <span style="font-size: 11px !important">Order Cust.</span>
-            </a>
-            <div id="collapseOrder" class="collapse" aria-labelledby="headingTwo" data-parent="#accordionSidebar">
-                <div class="bg-white py-2 collapse-inner rounded">
-                    <h6 class="collapse-header">Option:</h6>
-                    <a class="collapse-item" href="<?php echo base_url('main/order_form')?>">Form</a>
-                    <a class="collapse-item" href="<?php echo base_url('main/order_list')?>">Semua Order</a>
-                </div>
-            </div>
-        </li>
-
-
-        <li class="nav-item">
-            <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseOrderVendor" aria-expanded="true" aria-controls="collapseMaster">
-                <i class="fas fa-fw fa-cart-plus"></i>
-                <span style="font-size: 11px !important">Order Vdr.</span>
-            </a>
-            <div id="collapseOrderVendor" class="collapse" aria-labelledby="headingTwo" data-parent="#accordionSidebar">
-                <div class="bg-white py-2 collapse-inner rounded">
-                    <h6 class="collapse-header">Option:</h6>
-                    <a class="collapse-item" href="<?php echo base_url('main/order_vendor_form')?>">Form</a>
-                    <a class="collapse-item" href="<?php echo base_url('main/order_vendor_list')?>">Semua Order</a>
-                </div>
-            </div>
-        </li>
-
-        <?php } ?>
-
-        <li class="nav-item">
-            <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseDelivery" aria-expanded="true" aria-controls="collapseMaster">
-                <i class="fas fa-fw fa-motorcycle"></i>
-                <span style="font-size: 11px !important">Delivery</span>
-            </a>
-            <div id="collapseDelivery" class="collapse" aria-labelledby="headingTwo" data-parent="#accordionSidebar">
-                <div class="bg-white py-2 collapse-inner rounded">
-                    <h6 class="collapse-header">Option:</h6>
-                    <?php if($this->session->userdata('is_admin') == "1" || $this->session->userdata('is_admin') == "3") { ?>
-                    <a class="collapse-item" href="<?php echo base_url('main/delivery_form')?>">Form</a>
-                    <?php } ?>
-                    <a class="collapse-item" href="<?php echo base_url('main/delivery_list')?>">Semua Delivery</a>
-                </div>
-            </div>
-        </li>
-
-        <li class="nav-item">
-            <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapsePickUp" aria-expanded="true" aria-controls="collapseMaster">
-                <i class="fas fa-fw fa-motorcycle"></i>
-                <span style="font-size: 11px !important">Pick Up</span>
-            </a>
-            <div id="collapsePickUp" class="collapse" aria-labelledby="headingTwo" data-parent="#accordionSidebar">
-                <div class="bg-white py-2 collapse-inner rounded">
-                    <h6 class="collapse-header">Option:</h6>
-                    <?php if($this->session->userdata('is_admin') == "1" || $this->session->userdata('is_admin') == "3") { ?>
-                    <a class="collapse-item" href="<?php echo base_url('main/pick_up_form')?>">Form</a>
-                    <?php } ?>
-                    <a class="collapse-item" href="<?php echo base_url('main/pick_up_list')?>">Semua Pick Up</a>
-                </div>
-            </div>
-        </li>
-
-
         <!-- Divider -->
         <hr class="sidebar-divider">
 
-        <!-- Heading -->
-        <div class="sidebar-heading">
-            Akun
-        </div>
 
         <!-- Nav Item - Charts -->
         <li class="nav-item">
             <a class="nav-link" href="<?php echo base_url('main/logout')?>">
                 <i class="fas fa-fw fa-sign-out-alt"></i>
-                <span style="font-size: 12px !important">Logout</span></a>
+                <span style="font-size: 12px !important">Lock</span></a>
         </li>
 
 
@@ -366,10 +197,34 @@
                 </button>
 
             </nav>
-            <br>
 
 
-<!-- Page level custom scripts -->
+            <?php $this->load->view($file_destination); ?>
+
+
+        </div>
+        <!-- End of Content Wrapper -->
+
+    </div>
+    <!-- End of Page Wrapper -->
+
+    <!-- Scroll to Top Button-->
+    <a class="scroll-to-top rounded" href="#page-top">
+        <i class="fas fa-angle-up"></i>
+    </a>
+
+
+    <!-- Custom scripts for all pages-->
+
+    <script src="<?php echo base_url('assets/js/startbootstrap/sb-admin-2.min.js');?>"></script>
+
+
+
+</body>
+
+</html>
+
+
 <script src="<?php echo base_url('assets/chart.js/Chart.js');?>"></script>
 <style>
     .one {
@@ -867,7 +722,7 @@
 
     .dataTables_wrapper .dataTables_paginate .paginate_button
     {
-       font-size: 12px;
+        font-size: 12px;
     }
 
 
@@ -881,6 +736,7 @@
     }
 
     admin_url = '<?php echo base_url('main/');?>';
+    pos_url = '<?php echo base_url('POS/');?>';
 
     $('.Veil-non-hover').click(function(){
         $(this).fadeOut();
@@ -895,44 +751,6 @@
         return 'Rp. '+rupiah.split('',rupiah.length-1).reverse().join('')+',00';
     }
 
-    function isNumber(evt) {
-        var theEvent = evt || window.event;
-        var key = theEvent.keyCode || theEvent.which;
-        var keyCode = key;
-        key = String.fromCharCode(key);
-        if (key.length == 0) return;
-        var regex = /^[0-9.,\b]+$/;
-        if(keyCode == 188 || keyCode == 190){
-            return;
-        }else{
-            if (!regex.test(key)) {
-                theEvent.returnValue = false;
-                if (theEvent.preventDefault) theEvent.preventDefault();
-            }
-        }
-    }
-
-
-    function formatDate(date){
-        var dd = date.getDate();
-        var mm = date.getMonth()+1;
-        var yyyy = date.getFullYear();
-        if(dd<10) {dd='0'+dd}
-        if(mm<10) {mm='0'+mm}
-        date = dd+'/'+mm;
-        return date
-    }
-
-    function LastDays (numDays) {
-        var result = [];
-        for (var i=numDays; i>0; i--) {
-            var d = new Date();
-            d.setDate(d.getDate() - i);
-            result.push( formatDate(d) )
-        }
-        return(result);
-    }
-
     function htmlDecode(input){
         var e = document.createElement('textarea');
         e.innerHTML = input;
@@ -941,123 +759,4 @@
     }
 
 </script>
-<script>
-    function statistic(data, with_currency = true, label = ''){
-        var ctx = document.getElementById("myAreaChart");
-        var myLineChart = new Chart(ctx, {
-            type: 'line',
-            data: {
-                labels: LastDays(10),
-                datasets: [{
-                    label: label,
-                    lineTension: 0.3,
-                    backgroundColor: "rgba(78, 115, 223, 0.05)",
-                    borderColor: "rgba(78, 115, 223, 1)",
-                    pointRadius: 3,
-                    pointBackgroundColor: "rgba(78, 115, 223, 1)",
-                    pointBorderColor: "rgba(78, 115, 223, 1)",
-                    pointHoverRadius: 3,
-                    pointHoverBackgroundColor: "rgba(78, 115, 223, 1)",
-                    pointHoverBorderColor: "rgba(78, 115, 223, 1)",
-                    pointHitRadius: 10,
-                    pointBorderWidth: 2,
-                    data: data,
-                }],
-            },
-            options: {
-                maintainAspectRatio: false,
-                layout: {
-                    padding: {
-                        left: 10,
-                        right: 25,
-                        top: 25,
-                        bottom:                 },
-                    scales: {
-                        xAxes: [{
-                            time: {
-                                unit: 'date'
-                            },
-                            gridLines: {
-                                display: false,
-                                drawBorder: false
-                            },
-                            ticks: {
-                                maxTicksLimit: 7
-                            }
-                        }],
-                        yAxes: [{
-                            ticks: {
-                                maxTicksLimit: 5,
-                                beginAtZero: true,
-                                padding: 10,
-                                callback: function(value, index, values) {
-                                    if(with_currency){
-                                        return 'Rp. ' + number_format(value);
-                                    } else {
-                                        return value;
-                                    }
 
-                                }
-                            },
-                            gridLines: {
-                                color: "rgb(234, 236, 244)",
-                                zeroLineColor: "rgb(234, 236, 244)",
-                                drawBorder: false,
-                                borderDash: [2],
-                                zeroLineBorderDash: [2]
-                            }
-                        }],
-                    },
-                    legend: {
-                        display: false
-                    },
-                    tooltips: {
-                        backgroundColor: "rgb(255,255,255)",
-                        bodyFontColor: "#858796",
-                        titleMarginBottom: 10,
-                        titleFontColor: '#6e707e',
-                        titleFontSize: 14,
-                        borderColor: '#dddfeb',
-                        borderWidth: 1,
-                        xPadding: 15,
-                        yPadding: 15,
-                        displayColors: false,
-                        intersect: false,
-                        mode: 'index',
-                        caretPadding: 10,
-                        callbacks: {
-                            label: function(tooltipItem, chart) {
-                                var datasetLabel = chart.datasets[tooltipItem.datasetIndex].label || '';
-                                if(with_currency){
-                                    return datasetLabel + ' Rp. ' + number_format(tooltipItem.yLabel);
-                                } else {
-                                    return datasetLabel + tooltipItem.yLabel;
-                                }
-
-                            }
-                        }
-                    }
-                }
-            });
-    }
-
-    0
-                    }
-
-
-    function datepicker_init(){
-        if ($('[type="date"]').prop('type') != 'date' ) {
-            $('[type="date"]').datepicker({
-                dateFormat: 'yy-mm-dd'
-            });
-        }
-    }
-
-    $(document).ready(function(){
-        datepicker_init();
-    })
-
-
-
-
-</script>

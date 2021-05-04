@@ -24,20 +24,20 @@
             </form>
             <form class="form-inline">
                 <div class="form-group">
-                    <select id="brand" name="brand" class="form-control form-control-sm form-active-control" data-live-search="true" style="margin-right: 5px">
+                    <select id="brand" name="brand" class="form-control form-control-sm" data-live-search="true" style="margin-right: 5px">
                         <option value="all">Semua Brand</option>
                         <option value="KA"> Kedai Amarthya </option>
                         <option value="AF"> Amarthya Fashion </option>
                         <option value="AHF"> Amarthya Healthy Food </option>
                         <option value="AH"> Amarthya Herbal </option>
                     </select>
-                    <select id="tipe_pembayaran" name="tipe_pembayaran" class="form-control form-control-sm form-active-control" data-live-search="true" style="margin-right: 5px">
+                    <select id="tipe_pembayaran" name="tipe_pembayaran" class="form-control form-control-sm" data-live-search="true" style="margin-right: 5px">
                         <option value="all">Semua Pembayaran</option>
                         <option value="REK"> Transaksi Rekening </option>
                         <option value="TUNAI"> Transaksi Tunai </option>
                         <option value="FREE"> Free </option>
                     </select>
-                    <select id="cash_flow" name="cash_flow" class="form-control form-control-sm form-active-control" data-live-search="true" style="margin-right: 5px">
+                    <select id="cash_flow" name="cash_flow" class="form-control form-control-sm" data-live-search="true" style="margin-right: 5px">
                         <option value="all">Semua Arus Kas</option>
                         <option value="IN"> Pemasukan </option>
                         <option value="OUT"> Pengeluaran </option>
@@ -191,6 +191,33 @@
 
     document.title = "Laporan Transaksi - Amarthya Group";
 
+    $('.delete').click(function(){
+        if(confirm("Data akan dihapus permanen. Lanjutkan?")){
+            $('.loading').css("display", "block");
+            $('.Veil-non-hover').fadeIn();
+
+            $.ajax({
+                type: 'POST', // define the type of HTTP verb we want to use (POST for our form)
+                url: admin_url + 'delete_jurnal_umum', // the url where we want to POST// our data object
+                dataType: 'json',
+                data: {id_jurnal_umum: $('#id_jurnal_umum').val()},
+                success: function (response) {
+                    if(response.Status == "OK"){
+                        show_snackbar(response.Message);
+                        $('#detail-product-modal').modal('hide');
+                        get_data();
+                    } else if(response.Status == "ERROR" ){
+                        show_snackbar(response.Message);
+                    }
+
+                    $('.loading').css("display", "none");
+                    $('.Veil-non-hover').fadeOut();
+
+                }
+            })
+        }
+    })
+
     $('.add').click(function (e) {
         e.preventDefault();
         $('.invalid-feedback').css('display', 'none');
@@ -324,7 +351,19 @@
 
                     }
                 },
-                {"data": "no_order"},
+                {
+                    "data": {
+                        "no_order":"no_order",
+                        "NAMA":"NAMA"
+                    },
+                    mRender : function(data, type, full) {
+                        if(data.NAMA == "empty"){
+                            return data.no_order;
+                        } else {
+                            return data.no_order + "<br><span style='font-size: 11px'>"+ data.NAMA +"</span>";
+                        }
+                    }
+                },
                 {
                     "data": {"DEBET":"DEBET"},
                     mRender : function(data, type, full) {

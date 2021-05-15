@@ -32,6 +32,374 @@ class Main extends MX_Controller
         $this->load->view('template/admin_footer');
     }
 
+    function fb_menu(){
+
+        if($this->session->userdata('is_admin') != "1" && $this->session->userdata('is_admin') != "2" && $this->session->userdata('is_admin') != "5"){
+            redirect(base_url('main'));
+        }
+
+        $data['kategori'] = $this->Main_model->get_kategori_eatery()->result_object();
+
+        $this->load->view('template/admin_header');
+        $this->load->view('fb_menu', $data);
+        $this->load->view('template/admin_footer');
+    }
+
+    function get_menu_eatery(){
+
+        if($this->session->userdata('is_admin') != "1" && $this->session->userdata('is_admin') != "2" && $this->session->userdata('is_admin') != "5"){
+            redirect(base_url('main'));
+        }
+
+        $draw = $_REQUEST['draw'];
+        $length = $_REQUEST['length'];
+        $start = $_REQUEST['start'];
+        $search = trim(htmlentities($_REQUEST['search']["value"], ENT_QUOTES));
+
+
+        if(isset($_GET['kategori'])){
+            $kategori = htmlentities($_GET['kategori'], ENT_QUOTES);
+        } else {
+            $kategori = "all";
+        }
+
+        $total = $this->Main_model->get_menu_eatery($kategori)->num_rows();
+
+        $output = array();
+        $output['draw'] = $draw;
+        $output['recordsTotal'] = $output['recordsFiltered'] = $total;
+        $output['data']=array();
+
+
+        $output['data'] = $this->Main_model->get_menu_eatery($kategori, $search, $length, $start)->result_object();
+        echo json_encode($output);
+        return;
+    }
+
+    function fb_costing(){
+
+        if($this->session->userdata('is_admin') != "1" && $this->session->userdata('is_admin') != "2" && $this->session->userdata('is_admin') != "5"){
+            redirect(base_url('main'));
+        }
+
+        $data['kategori'] = $this->Main_model->get_kategori_eatery()->result_object();
+
+        if(isset($_GET['menu'])){
+            $id_menu = htmlentities($_GET['menu'], ENT_QUOTES);
+            $get_data = $this->Main_model->get_menu_by_id($id_menu);
+
+            if($get_data->num_rows() == 0){
+                $this->load->view('template/admin_header');
+                return;
+            }
+
+            $data['master'] = $get_data->row();
+            $data['bahanbahan'] = $this->Main_model->get_bahan_by_menu($id_menu)->result_object();
+        }
+
+
+        $this->load->view('template/admin_header');
+        $this->load->view('menu_eatery', $data);
+        $this->load->view('template/admin_footer');
+    }
+
+    function save_menu(){
+
+        if($this->session->userdata('is_admin') != "1" && $this->session->userdata('is_admin') != "2" && $this->session->userdata('is_admin') != "5"){
+            redirect(base_url('main'));
+        }
+
+        $nama_menu = trim(htmlentities($_REQUEST['nama_menu'], ENT_QUOTES));
+        $kategori_menu = trim(htmlentities($_REQUEST['kategori_menu'], ENT_QUOTES));
+        $deskripsi_menu = trim(htmlentities($_REQUEST['deskripsi_menu'], ENT_QUOTES));
+        $HJ_menu = trim(htmlentities($_REQUEST['HJ_menu'], ENT_QUOTES));
+        $active_menu = '1';
+
+        // === validations ===
+
+        if(empty($nama_menu)){
+            $return_arr = array("Status" => 'ERROR', "Message" => 'Nama Menu tidak boleh kosong');
+            echo json_encode($return_arr);
+            return;
+        }
+
+        if($kategori_menu == "none"){
+            $return_arr = array("Status" => 'ERROR', "Message" => 'Kategori tidak boleh kosong');
+            echo json_encode($return_arr);
+            return;
+        }
+
+        if(empty($HJ_menu)){
+            $return_arr = array("Status" => 'ERROR', "Message" => 'Harga Jual tidak boleh kosong');
+            echo json_encode($return_arr);
+            return;
+        }
+
+        if(empty($_REQUEST['id_product'])){
+            $return_arr = array("Status" => 'ERROR', "Message" => 'Bahan tidak boleh kosong');
+            echo json_encode($return_arr);
+            return;
+        }
+
+
+        // ==== Add Menu Eatery ====
+
+        $this->db->trans_begin();
+
+        $data_menu = compact('nama_menu', 'kategori_menu', 'deskripsi_menu', 'HJ_menu', 'active_menu');
+
+        $id_menu = $this->Main_model->add_menu_eatery($data_menu);
+
+        if(!$id_menu){
+            $this->db->trans_rollback();
+            $return_arr = array("Status" => 'ERROR', "Message" => 'Gagal menyimpan data. Hubungi Admin (code: savemenu1)');
+            echo json_encode($return_arr);
+            return;
+        }
+
+        // =========================
+
+        foreach($_REQUEST['id_product'] as $key=>$value){
+
+            $id_product = trim(htmlentities($value, ENT_QUOTES));
+            $qty_bahan = trim(htmlentities($_REQUEST['qty_bahan'][$key], ENT_QUOTES));
+
+            // validations
+
+            $get_price = $this->Main_model->get_product_price($id_product);
+
+            if($get_price->num_rows() == 0){
+                $this->db->trans_rollback();
+                $return_arr = array("Status" => 'ERROR', "Message" => 'Salah satu bahan tidak ditemukan');
+                echo json_encode($return_arr);
+                return;
+            }
+
+            if($qty_bahan == 0 || !is_numeric($qty_bahan)){
+                $this->db->trans_rollback();
+                $return_arr = array("Status" => 'ERROR', "Message" => 'Kuantitas bahan tidak valid');
+                echo json_encode($return_arr);
+                return;
+            }
+
+//            $price = $get_price->row()->HP_product;
+
+
+            // ==== Add Menu Bahan Eatery ====
+
+            $data_bahan = compact('id_menu', 'id_product', 'qty_bahan');
+
+            if(!$this->Main_model->add_menu_bahan_eatery($data_bahan)){
+                $this->db->trans_rollback();
+                $return_arr = array("Status" => 'ERROR', "Message" => 'Gagal menyimpan data. Hubungi Admin (code: savemenu1)');
+                echo json_encode($return_arr);
+                return;
+            }
+
+            // ===============================
+
+        }
+
+        $this->db->trans_commit();
+        $return_arr = array("Status" => 'OK', "Message" => 'Berhasil tersimpan');
+        echo json_encode($return_arr);
+
+    }
+
+    function delete_menu(){
+
+        if($this->session->userdata('is_admin') != "1" && $this->session->userdata('is_admin') != "2" && $this->session->userdata('is_admin') != "5"){
+            redirect(base_url('main'));
+        }
+
+        $id_menu = trim(htmlentities($_REQUEST['id_menu'], ENT_QUOTES));
+
+        if($this->Main_model->get_menu_by_id($id_menu)->num_rows() == 0){
+            $return_arr = array("Status" => 'ERROR', "Message" => 'Menu tidak ditemukan');
+            echo json_encode($return_arr);
+            return;
+        }
+
+        $this->db->trans_begin();
+
+        if($this->Main_model->delete_menu_bahan_eatery($id_menu, '0')){
+
+            if($this->Main_model->delete_menu_eatery($id_menu)){
+                $this->db->trans_commit();
+                $return_arr = array("Status" => 'OK', "Message" => 'Menu berhasil dihapus');
+                echo json_encode($return_arr);
+                return;
+
+            } else {
+                $this->db->trans_rollback();
+                $return_arr = array("Status" => 'ERROR', "Message" => 'Menu tidak ditemukan');
+                echo json_encode($return_arr);
+                return;
+            }
+
+        } else {
+            $this->db->trans_rollback();
+            $return_arr = array("Status" => 'ERROR', "Message" => 'Menu tidak ditemukan');
+            echo json_encode($return_arr);
+            return;
+        }
+
+    }
+
+    function update_menu(){
+
+        if($this->session->userdata('is_admin') != "1" && $this->session->userdata('is_admin') != "2" && $this->session->userdata('is_admin') != "5"){
+            redirect(base_url('main'));
+        }
+
+        $nama_menu = trim(htmlentities($_REQUEST['nama_menu'], ENT_QUOTES));
+        $kategori_menu = trim(htmlentities($_REQUEST['kategori_menu'], ENT_QUOTES));
+        $deskripsi_menu = trim(htmlentities($_REQUEST['deskripsi_menu'], ENT_QUOTES));
+        $HJ_menu = trim(htmlentities($_REQUEST['HJ_menu'], ENT_QUOTES));
+        $id_menu = trim(htmlentities($_REQUEST['id_menu'], ENT_QUOTES));
+
+
+        $this->db->trans_begin();
+
+        // === validations ===
+
+        if($this->Main_model->get_menu_by_id($id_menu)->num_rows() == 0){
+            $this->db->trans_rollback();
+            $return_arr = array("Status" => 'ERROR', "Message" => 'Menu tidak ditemukan');
+            echo json_encode($return_arr);
+            return;
+        }
+
+        if(empty($nama_menu)){
+            $return_arr = array("Status" => 'ERROR', "Message" => 'Nama Menu tidak boleh kosong');
+            echo json_encode($return_arr);
+            return;
+        }
+
+        if($kategori_menu == "none"){
+            $return_arr = array("Status" => 'ERROR', "Message" => 'Kategori tidak boleh kosong');
+            echo json_encode($return_arr);
+            return;
+        }
+
+        if(empty($HJ_menu)){
+            $return_arr = array("Status" => 'ERROR', "Message" => 'Harga Jual tidak boleh kosong');
+            echo json_encode($return_arr);
+            return;
+        }
+
+        if(empty($_REQUEST['id_product'])){
+            $return_arr = array("Status" => 'ERROR', "Message" => 'Bahan tidak boleh kosong');
+            echo json_encode($return_arr);
+            return;
+        }
+
+        $updated_data = compact('nama_menu', 'kategori_menu', 'deskripsi_menu', 'HJ_menu');
+
+        if($this->Main_model->update_menu_eatery($updated_data, $id_menu)){
+
+
+            $current_bahan = $this->Main_model->get_bahan_by_menu($id_menu)->result_array();
+            $arr_product = array_map (function($value){
+                return $value['id_product'];
+            } , $current_bahan);
+
+            $arr_qty = array_map (function($value){
+                return $value['qty_bahan'];
+            } , $current_bahan);
+
+            $new_bahan = implode("','", $_REQUEST['id_product']);
+
+            // remove gone bahan
+            if(!$this->Main_model->delete_menu_bahan_eatery($id_menu, $new_bahan)){
+                $this->db->trans_rollback();
+                $return_arr = array("Status" => 'ERROR', "Message" => 'Gagal mengubah data. Hubungi admin (code: deletebahan)');
+                echo json_encode($return_arr);
+                return;
+            }
+
+            // add new bahan
+
+            // compare current and new, add the ones not in current
+            foreach ($_REQUEST['id_product'] as $key=>$value){
+
+                $id_product = trim(htmlentities($value, ENT_QUOTES));
+                $qty_bahan = trim(htmlentities($_REQUEST['qty_bahan'][$key], ENT_QUOTES));
+
+                if (!in_array($value, $arr_product)) {
+
+                    $get_price = $this->Main_model->get_product_price($id_product);
+
+                    if($get_price->num_rows() == 0){
+                        $this->db->trans_rollback();
+                        $return_arr = array("Status" => 'ERROR', "Message" => 'Salah satu bahan tidak ditemukan');
+                        echo json_encode($return_arr);
+                        return;
+                    }
+
+                    if($qty_bahan == 0 || !is_numeric($qty_bahan)){
+                        $this->db->trans_rollback();
+                        $return_arr = array("Status" => 'ERROR', "Message" => 'Kuantitas bahan tidak valid');
+                        echo json_encode($return_arr);
+                        return;
+                    }
+
+                    $data_bahan = compact('id_menu', 'id_product', 'qty_bahan');
+
+                    if(!$this->Main_model->add_menu_bahan_eatery($data_bahan)){
+                        $this->db->trans_rollback();
+                        $return_arr = array("Status" => 'ERROR', "Message" => 'Gagal menyimpan data. Hubungi Admin (code: savemenu1)');
+                        echo json_encode($return_arr);
+                        return;
+                    }
+
+                } else {
+                    //check if qty is different
+
+                    if($qty_bahan != $arr_qty[$key]){
+
+                        $updated_data = compact('qty_bahan');
+                        $where_array = array('id_menu' => $id_menu, 'id_product' => $id_product);
+
+                        if(!$this->Main_model->update_menu_bahan_eatery($updated_data, $where_array)){
+                            $this->db->trans_rollback();
+                            $return_arr = array("Status" => 'ERROR', "Message" => 'Gagal menyimpan data. Hubungi Admin (code: updateqty)');
+                            echo json_encode($return_arr);
+                            return;
+                        }
+
+                    }
+                }
+
+            }
+
+            $this->db->trans_commit();
+            $return_arr = array("Status" => 'OK', "Message" => 'Data berhasil dirubah');
+            echo json_encode($return_arr);
+
+        } else {
+            $this->db->trans_rollback();
+            $return_arr = array("Status" => 'ERROR', "Message" => 'Gagal mengupdate data. Hubungi admin (code: header)');
+            echo json_encode($return_arr);
+            return;
+        }
+
+
+    }
+
+    function get_suggest_bahan(){
+        $search = htmlentities($_REQUEST['search'], ENT_QUOTES);
+        $suggest_data = $this->Main_model->get_suggest_bahan($search);
+        $row = array();
+
+        foreach($suggest_data->result_array() as $suggest) {
+            $data = array("value" => $suggest['nama_product'], "id" => $suggest['id_product'], "price" => $suggest['HP_product'], "satuan" => $suggest['satuan_product']);
+            array_push($row, $data);
+        }
+
+        echo json_encode($row);
+    }
+
     function izin(){
 
         if($this->session->userdata('is_admin') == "1"){
@@ -1330,6 +1698,7 @@ class Main extends MX_Controller
 
             } else {
                 $data['pick_up'] = $data_pick_up->result_object();
+                $data['orders'] = $this->Main_model->get_order_vendor_s($data_pick_up->row()->id_order_vendor_m)->result_object();
                 $this->load->view('pick_up_detail', $data);
             }
 
@@ -1920,6 +2289,7 @@ class Main extends MX_Controller
 
             } else {
                 $data['delivery'] = $data_delivery->result_object();
+                $data['orders'] = $this->Main_model->get_order_s($data_delivery->row()->id_order_m)->result_object();
                 $this->load->view('delivery_detail', $data);
             }
 
@@ -2666,6 +3036,16 @@ class Main extends MX_Controller
 
     }
 
+    function bahan_dasar(){
+        if($this->session->userdata('is_admin') != "1" && $this->session->userdata('is_admin') != "2" && $this->session->userdata('is_admin') != "5"){
+            redirect(base_url('main'));
+        }
+
+        $this->load->view('template/admin_header');
+        $this->load->view('bahan_dasar');
+        $this->load->view('template/admin_footer');
+    }
+
     function product(){
 
         if($this->session->userdata('is_admin') != "1" && $this->session->userdata('is_admin') != "2" && $this->session->userdata('is_admin') != "4"){
@@ -2737,17 +3117,36 @@ class Main extends MX_Controller
             redirect(base_url('main'));
         }
 
+        $is_bahan = false;
+
+        if(isset($_GET['bahan'])){
+            if($_GET['bahan'] == "true"){
+                $is_bahan = true;
+            }
+        }
+
         $id_product = strtoupper(trim(htmlentities($_REQUEST['id_product'], ENT_QUOTES)));
         $nama_product = trim(htmlentities($_REQUEST['nama_product'], ENT_QUOTES));
-        $SKU_product = strtoupper(trim(htmlentities($_REQUEST['SKU_product'], ENT_QUOTES)));
         $satuan_product = trim(htmlentities($_REQUEST['satuan_product'], ENT_QUOTES));
         $HP_product = strtoupper(trim(htmlentities($_REQUEST['HP_product'], ENT_QUOTES)));
-        $HJ_product = strtoupper(trim(htmlentities($_REQUEST['HJ_product'], ENT_QUOTES)));
-        $HR_product = strtoupper(trim(htmlentities($_REQUEST['HR_product'], ENT_QUOTES)));
-        $brand_product = strtoupper(trim(htmlentities($_REQUEST['brand_product'], ENT_QUOTES)));
+
+        if($is_bahan){
+
+            $SKU_product = "";
+            $HJ_product = 0;
+            $HR_product = 0;
+            $brand_product = 'BAHAN';
+
+        } else {
+            $SKU_product = strtoupper(trim(htmlentities($_REQUEST['SKU_product'], ENT_QUOTES)));
+            $HJ_product = strtoupper(trim(htmlentities($_REQUEST['HJ_product'], ENT_QUOTES)));
+            $HR_product = strtoupper(trim(htmlentities($_REQUEST['HR_product'], ENT_QUOTES)));
+            $brand_product = strtoupper(trim(htmlentities($_REQUEST['brand_product'], ENT_QUOTES)));
+        }
 
         //validation
         $error = array();
+
 
         $this->db->trans_begin();
 
@@ -2763,17 +3162,21 @@ class Main extends MX_Controller
             array_push($error, "invalid-HP");
         }
 
-        if(empty($HJ_product) || !is_numeric($HJ_product)){
-            array_push($error, "invalid-HJ");
+        if(!$is_bahan){
+            if(empty($HJ_product) || !is_numeric($HJ_product)){
+                array_push($error, "invalid-HJ");
+            }
+
+            if(empty($HR_product) || !is_numeric($HR_product)){
+                array_push($error, "invalid-HR");
+            }
+
+            if(empty($brand_product) || ($brand_product != "AHF" && $brand_product != "AF" && $brand_product != "AH" && $brand_product != "KA" && $brand_product != "BAHAN")){
+                array_push($error, "invalid-brand");
+            }
         }
 
-        if(empty($HR_product) || !is_numeric($HR_product)){
-            array_push($error, "invalid-HR");
-        }
 
-        if(empty($brand_product) || ($brand_product != "AHF" && $brand_product != "AF" && $brand_product != "AH" && $brand_product != "KA")){
-            array_push($error, "invalid-brand");
-        }
 
         if(!empty($error)){
             $return_arr = array("Status" => 'FORMERROR', "Error" => $error);

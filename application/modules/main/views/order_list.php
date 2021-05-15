@@ -196,9 +196,9 @@
                         } else if(data.brand_order == "AH"){
                             html += '<img src="<?php echo base_url('assets/images/amarthya_herbal.png');?>" style="float: left; margin-top: 3px" width="40px" height="40px">';
                         } else if(data.brand_order == "AF"){
-                            html += '<img src="<?php echo base_url('assets/images/fashion.png');?>" style="float: right; margin-top: 3px" left="48px" height="48px">';
+                            html += '<img src="<?php echo base_url('assets/images/fashion.png');?>" style="float: left; margin-top: 3px" left="48px" height="48px">';
                         } else if(data.brand_order == "AHF"){
-                            html += '<img src="<?php echo base_url('assets/images/phonto.PNG');?>" style="float: right; margin-top: 3px" left="40px" height="40px">';
+                            html += '<img src="<?php echo base_url('assets/images/phonto.PNG');?>" style="float: left; margin-top: 3px" left="40px" height="40px">';
                         }
 
 

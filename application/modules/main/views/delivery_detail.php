@@ -77,7 +77,27 @@
             <br><span>Catatan Order: <?php echo $delivery[0]->catatan_order ?></span>
 
         </div><br>
-        <div id="item-lists">Memuat...</div>
+        <div>
+
+            <?php foreach($orders as $order) { ?>
+                <div class="product-item">
+                    <table width="100%">
+                        <tr class="no-hover-style">
+                            <td>
+                                <?php echo $order->nama_product; ?>
+                                <?php if($order->is_free == '1'){ echo "(FREE)"; } ?>
+
+                            </td>
+                            <td style="text-align: right">
+                                <span style="font-size: 9px;"><?php echo $order->qty_order; ?> x <?php echo "Rp. " . number_format($order->harga_order,2,',','.'); ?></span> <br>
+                                <strong style="font-size: 13px;"><?php echo "Rp. " . number_format($order->total_order,2,',','.'); ?></strong>
+                            </td>
+                        </tr>
+                    </table>
+                </div>
+            <?php }?>
+
+        </div>
 
     </div>
 
@@ -196,7 +216,6 @@
 
     document.title = "Delivery "+ $('#nama_customer').html() +" - Amarthya Group";
 
-    load_items($('#id_order_m').val());
 
     $('.delete').click(function(e){
         if(confirm("Data akan dihapus permanen. Yakin ingin menghapus data?")) {
@@ -263,47 +282,6 @@
     $('.pilih-staff').click(function(){
         get_staff();
     })
-
-    function load_items(id_order_m){
-        $.ajax({
-            type        : 'POST', // define the type of HTTP verb we want to use (POST for our form)
-            url         : admin_url + 'get_order_s', // the url where we want to POST// our data object
-            dataType    : 'json',
-            data        : {id_order_m: id_order_m},
-            success     : function(data){
-                html_info_items = "";
-
-                data.forEach(function(data){
-
-                    html_info_items += '<div class="product-item">\n' +
-                        '                    <table width="100%">\n' +
-                        '                        <tr class="no-hover-style">\n' +
-                        '                            <td>\n';
-
-                    if(data.is_free == "1"){
-                        html_info_items += data.nama_product + ' (FREE)';
-                    } else {
-                        html_info_items += data.nama_product;
-                    }
-
-
-
-                    html_info_items +=  '            </td>\n' +
-                        '                            <td style="text-align: right">\n' +
-                        '                                <span style="font-size: 9px;">'+ data.qty_order +' x '+ convertToRupiah(data.harga_order) +' </span> <br>\n' +
-                        '                                <strong style="font-size: 13px;">'+ convertToRupiah(data.total_order) +'</strong>\n' +
-                        '                            </td>\n' +
-                        '                        </tr>\n' +
-                        '                    </table>\n' +
-                        '                </div>';
-
-                })
-
-                $('#item-lists').html(html_info_items);
-
-            }
-        })
-    }
 
     function get_staff(){
         $('.loading').css("display", "block");

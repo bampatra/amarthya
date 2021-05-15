@@ -3,6 +3,105 @@ class Main_model extends CI_Model
 {
 
 
+    function get_bahan_by_menu($id_menu){
+        $sql = "SELECT a.id_menu_bahan_eatery, a.id_menu, a.qty_bahan, a.id_product, b.nama_product, b.satuan_product, b.HP_product	
+                FROM menu_bahan_eatery a
+                INNER JOIN product b ON a.id_product = b.id_product
+                WHERE a.id_menu = '{$id_menu}'";
+
+        $query = $this->db->query($sql);
+        return $query;
+
+    }
+
+    function get_menu_eatery($kategori = "all", $search = null, $length = 10000000000, $start = 0){
+        $sql = "SELECT a.*, b.nama_kategori
+                FROM menu_eatery a
+                INNER JOIN kategori_eatery b ON a.kategori_menu = b.id_kategori_eatery
+                WHERE (a.kategori_menu = '{$kategori}' || 'all' = '{$kategori}')
+                    AND a.active_menu = '1'";
+
+        if($search != "" || $search != null){
+            $sql .= " AND CONCAT(a.nama_menu, ' ', a.deskripsi_menu) LIKE '%$search%'";
+        }
+
+        $sql .= " ORDER BY a.nama_menu LIMIT {$start}, {$length}";
+
+        $query = $this->db->query($sql);
+        return $query;
+    }
+
+
+    function get_menu_by_id($id_menu){
+        $sql = "SELECT * FROM menu_eatery
+                WHERE id_menu = '{$id_menu}'";
+
+        $query = $this->db->query($sql);
+        return $query;
+
+    }
+
+    function add_menu_eatery($data){
+        $input_data = array(
+            'nama_menu' => $data['nama_menu'],
+            'kategori_menu' => $data['kategori_menu'],
+            'deskripsi_menu' => $data['deskripsi_menu'],
+            'HJ_menu' => $data['HJ_menu'],
+            'active_menu' => $data['active_menu']
+        );
+
+        $this->db->insert('menu_eatery',$input_data);
+        $insert_id = $this->db->insert_id();
+        return $insert_id;
+    }
+
+    function update_menu_eatery($updated_data, $id_menu){
+        $this->db->where('id_menu', $id_menu);
+        return $this->db->update('menu_eatery',$updated_data);
+    }
+
+    function delete_menu_eatery($id_menu){
+        $sql = "DELETE FROM menu_eatery
+                WHERE id_menu = '{$id_menu}'";
+
+        $query = $this->db->query($sql);
+        return $query;
+    }
+
+    function add_menu_bahan_eatery($data){
+        $input_data = array(
+            'id_menu' => $data['id_menu'],
+            'id_product' => $data['id_product'],
+            'qty_bahan' => $data['qty_bahan']
+        );
+
+        $this->db->insert('menu_bahan_eatery',$input_data);
+        $insert_id = $this->db->insert_id();
+        return $insert_id;
+    }
+
+    function update_menu_bahan_eatery($updated_data, $where_array){
+        $this->db->where($where_array);
+        return $this->db->update('menu_bahan_eatery',$updated_data);
+    }
+
+    function delete_menu_bahan_eatery($id_menu, $ids_product){
+        $sql = "DELETE FROM menu_bahan_eatery
+                WHERE id_menu = '{$id_menu}'
+                    AND id_product NOT IN ('".$ids_product."')";
+
+        $query = $this->db->query($sql);
+        return $query;
+    }
+
+    function get_kategori_eatery(){
+        $sql ="SELECT *
+               FROM kategori_eatery a";
+
+        $query = $this->db->query($sql);
+        return $query;
+    }
+
     function get_izin($id_staff = 'all', $status = "all", $search = null, $length = 10000000000, $start = 0){
         $sql = "SELECT a.*, b.nama_staff, b.id_staff,
                     DATE_FORMAT(a.tgl_start_izin, '%Y-%m-%dT%H:%i:%s') AS custom_tgl_start,
@@ -1015,6 +1114,15 @@ class Main_model extends CI_Model
         return $this->db->update('stok_in_out',$updated_data);
     }
 
+    function get_suggest_bahan($search){
+        $sql = "SELECT * FROM product 
+                WHERE active_product = '1' 
+                  AND brand_product = 'BAHAN'
+                  AND nama_product LIKE '%".$search."%'";
+        $query = $this->db->query($sql);
+        return $query;
+    }
+
     function get_product($search = null, $length = 10000000000, $start = 0, $brand = "all", $stock_status = "all"){
 
         $sql = "SELECT a.*, IFNULL(b.stok_in, 0) - IFNULL(c.stok_out, 0) as STOK
@@ -1033,6 +1141,11 @@ class Main_model extends CI_Model
                 )c ON a.id_product = c.id_product
                 WHERE a.active_product = '1'
                     AND (a.brand_product = '{$brand}' OR 'all' = '{$brand}')";
+
+        if($brand != 'BAHAN'){
+            $sql .= " AND a.brand_product <> 'BAHAN'";
+        }
+
 
         if($search != "" || $search != null){
             $sql .= " AND a.nama_product LIKE '%$search%'";

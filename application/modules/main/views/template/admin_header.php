@@ -5,7 +5,7 @@
 
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta name='viewport' content='width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0, shrink-to-fit=no' >
     <meta name="description" content="">
     <meta name="author" content="">
 
@@ -25,6 +25,7 @@
     <!-- Bootstrap core JavaScript-->
     <script src="<?php echo base_url('assets/jquery/jquery.min.js');?>"></script>
     <script src="http://code.jquery.com/ui/1.11.0/jquery-ui.js"></script>
+    <script src="https://code.jquery.com/jquery-migrate-3.0.0.min.js"></script>
     <script src="<?php echo base_url('assets/bootstrap/js/bootstrap.bundle.js');?>"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap-select@1.13.14/dist/js/bootstrap-select.min.js"></script>
     <script src="<?php echo base_url('assets/jquery-easing/jquery.easing.min.js');?>"></script>
@@ -185,11 +186,23 @@
         <?php if($this->session->userdata('is_admin') == "1" || $this->session->userdata('is_admin') == "2" || $this->session->userdata('is_admin') == "4") { ?>
 
             <li class="nav-item">
-                <a class="nav-link" href="<?php echo base_url('main/product')?>">
+                <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseProduct" aria-expanded="true" aria-controls="collapseMaster">
                     <i class="fas fa-fw fa-shopping-bag"></i>
                     <span style="font-size: 11px !important">Product</span>
                 </a>
+                <div id="collapseProduct" class="collapse" aria-labelledby="headingTwo" data-parent="#accordionSidebar">
+                    <div class="bg-white py-2 collapse-inner rounded">
+                        <h6 class="collapse-header">Option:</h6>
+                        <a class="collapse-item" href="<?php echo base_url('main/product')?>">Master Data</a>
+                        <?php if($this->session->userdata('is_admin') == "1" || $this->session->userdata('is_admin') == "2") { ?>
+                            <a class="collapse-item" href="<?php echo base_url('main/bahan_dasar')?>">Bahan Dasar</a>
+                            <a class="collapse-item" href="<?php echo base_url('main/fb_costing')?>">F&B Costing</a>
+                            <a class="collapse-item" href="<?php echo base_url('main/fb_menu')?>">F&B Menu</a>
+                        <?php } ?>
+                    </div>
+                </div>
             </li>
+
         <?php } ?>
 
         <?php if($this->session->userdata('is_admin') == "3") { ?>
@@ -402,6 +415,10 @@
         border-bottom: 2px solid rgba(20,143,143,0.3);
         margin: 10px 0;
         width: 100%
+    }
+
+    .add{
+        font-size: 13px !important;
     }
 
     @media screen and (max-width: 500px) {
@@ -870,6 +887,57 @@
        font-size: 12px;
     }
 
+    .ui-autocomplete {
+        position: absolute;
+        top: 100%;
+        left: 0;
+        z-index: 1000;
+        display: none;
+        float: left;
+        min-width: 160px;
+        padding: 5px 0;
+        margin: 2px 0 0;
+        list-style: none;
+        font-size: 14px;
+        text-align: left;
+        background-color: #ffffff;
+        border: 1px solid #cccccc;
+        border: 1px solid rgba(0, 0, 0, 0.15);
+        border-radius: 4px;
+        -webkit-box-shadow: 0 6px 12px rgba(0, 0, 0, 0.175);
+        box-shadow: 0 6px 12px rgba(0, 0, 0, 0.175);
+        background-clip: padding-box;
+    }
+
+    .ui-autocomplete > li > div {
+        display: block;
+        padding: 3px 20px;
+        clear: both;
+        font-weight: normal;
+        line-height: 1.42857143;
+        color: #333333;
+        white-space: nowrap;
+    }
+
+    .ui-state-hover,
+    .ui-state-active,
+    .ui-state-focus {
+        text-decoration: none;
+        color: #262626;
+        background-color: #f5f5f5;
+        cursor: pointer;
+    }
+
+    .ui-helper-hidden-accessible {
+        border: 0;
+        clip: rect(0 0 0 0);
+        height: 1px;
+        margin: -1px;
+        overflow: hidden;
+        padding: 0;
+        position: absolute;
+        width: 1px;
+    }
 
 </style>
 <script>
@@ -942,107 +1010,6 @@
 
 </script>
 <script>
-    function statistic(data, with_currency = true, label = ''){
-        var ctx = document.getElementById("myAreaChart");
-        var myLineChart = new Chart(ctx, {
-            type: 'line',
-            data: {
-                labels: LastDays(10),
-                datasets: [{
-                    label: label,
-                    lineTension: 0.3,
-                    backgroundColor: "rgba(78, 115, 223, 0.05)",
-                    borderColor: "rgba(78, 115, 223, 1)",
-                    pointRadius: 3,
-                    pointBackgroundColor: "rgba(78, 115, 223, 1)",
-                    pointBorderColor: "rgba(78, 115, 223, 1)",
-                    pointHoverRadius: 3,
-                    pointHoverBackgroundColor: "rgba(78, 115, 223, 1)",
-                    pointHoverBorderColor: "rgba(78, 115, 223, 1)",
-                    pointHitRadius: 10,
-                    pointBorderWidth: 2,
-                    data: data,
-                }],
-            },
-            options: {
-                maintainAspectRatio: false,
-                layout: {
-                    padding: {
-                        left: 10,
-                        right: 25,
-                        top: 25,
-                        bottom:                 },
-                    scales: {
-                        xAxes: [{
-                            time: {
-                                unit: 'date'
-                            },
-                            gridLines: {
-                                display: false,
-                                drawBorder: false
-                            },
-                            ticks: {
-                                maxTicksLimit: 7
-                            }
-                        }],
-                        yAxes: [{
-                            ticks: {
-                                maxTicksLimit: 5,
-                                beginAtZero: true,
-                                padding: 10,
-                                callback: function(value, index, values) {
-                                    if(with_currency){
-                                        return 'Rp. ' + number_format(value);
-                                    } else {
-                                        return value;
-                                    }
-
-                                }
-                            },
-                            gridLines: {
-                                color: "rgb(234, 236, 244)",
-                                zeroLineColor: "rgb(234, 236, 244)",
-                                drawBorder: false,
-                                borderDash: [2],
-                                zeroLineBorderDash: [2]
-                            }
-                        }],
-                    },
-                    legend: {
-                        display: false
-                    },
-                    tooltips: {
-                        backgroundColor: "rgb(255,255,255)",
-                        bodyFontColor: "#858796",
-                        titleMarginBottom: 10,
-                        titleFontColor: '#6e707e',
-                        titleFontSize: 14,
-                        borderColor: '#dddfeb',
-                        borderWidth: 1,
-                        xPadding: 15,
-                        yPadding: 15,
-                        displayColors: false,
-                        intersect: false,
-                        mode: 'index',
-                        caretPadding: 10,
-                        callbacks: {
-                            label: function(tooltipItem, chart) {
-                                var datasetLabel = chart.datasets[tooltipItem.datasetIndex].label || '';
-                                if(with_currency){
-                                    return datasetLabel + ' Rp. ' + number_format(tooltipItem.yLabel);
-                                } else {
-                                    return datasetLabel + tooltipItem.yLabel;
-                                }
-
-                            }
-                        }
-                    }
-                }
-            });
-    }
-
-    0
-                    }
 
 
     function datepicker_init(){

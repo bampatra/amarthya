@@ -22,10 +22,24 @@ class Main extends MX_Controller
         date_default_timezone_set('Asia/Singapore');
 
         $today = date("Y-m-d");
+        $year = date("Y");
         $month = date("m");
+        $day = date("d");
 
         $data['dashboard_data'] = $this->Main_model->dashboard_data($today, $month)->result_object();
-        $data['ongkir_data'] = $this->Main_model->monthly_ongkir_per_staff($month)->result_object();
+
+        if($day <= 15 ){
+
+            $tgl_awal = $year."-".sprintf('%02d', $month)."-01";
+            $tgl_akhir = $year."-".sprintf('%02d', $month)."-15";
+
+        } else{
+            $tgl_awal = $year."-".sprintf('%02d', $month)."-16";
+            $tgl_akhir = $year."-".sprintf('%02d', $month)."-".date('t');
+        }
+
+
+        $data['ongkir_data'] = $this->Main_model->periode_ongkir_per_staff($tgl_awal, $tgl_akhir)->result_object();
 
         $this->load->view('template/admin_header');
         $this->load->view('index', $data);
@@ -3653,7 +3667,7 @@ class Main extends MX_Controller
                     $pdf->Image(base_url('assets/images/amarthya_herbal.png'), 10, 10, 30, 30 ,'');
                     $brand = "Amarthya Herbal";
                 } else if ($data_order->row()->brand_order == "AHF") {
-                    $pdf->Image(base_url('assets/images/phonto.png'), 10, 10, 30, 30 ,'');
+                    $pdf->Image(base_url('assets/images/phonto.PNG'), 10, 10, 30, 30 ,'');
                     $brand = "Amarthya Healthy Food";
                 } else if ($data_order->row()->brand_order == "AF") {
                     $pdf->Image(base_url('assets/images/fashion.png'), 10, 0, 48, 48 ,'');
@@ -3854,7 +3868,7 @@ class Main extends MX_Controller
                     $pdf->Image(base_url('assets/images/amarthya_herbal.png'), 10, 10, 30, 30 ,'');
                     $brand = "Amarthya Herbal";
                 } else if ($data_order->row()->brand_order == "AHF") {
-                    $pdf->Image(base_url('assets/images/phonto.png'), 10, 10, 30, 30 ,'');
+                    $pdf->Image(base_url('assets/images/phonto.PNG'), 10, 10, 30, 30 ,'');
                     $brand = "Amarthya Healthy Food";
                 } else if ($data_order->row()->brand_order == "AF") {
                     $pdf->Image(base_url('assets/images/fashion.png'), 10, 0, 48, 48 ,'');

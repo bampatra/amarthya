@@ -263,8 +263,8 @@
 
         html_info_customer = '<span> Tgl Order: '+ temp_date.getDate() + '/' + (temp_date.getMonth() + 1) + '/' + temp_date.getFullYear() +'</span><br>\n' +
             '                <strong>'+ rowData.no_order +'</strong><br>\n' +
-            '                <span>'+ rowData.nama_customer +' ('+ rowData.no_hp_customer +')</span><br>\n' +
-                            '<span>'+ rowData.alamat_customer +'</span><br>';
+            '                <span>'+ rowData.nama_customer +' ('+ rowData.no_hp_delivery +')</span><br>\n' +
+                            '<span>'+ rowData.alamat_delivery +'</span><br>';
 
         if(rowData.status_delivery == "0"){
             html_info_customer += '<div class="alert alert-danger alert-payment" role="alert">\n' +

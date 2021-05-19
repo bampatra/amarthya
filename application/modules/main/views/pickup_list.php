@@ -251,8 +251,8 @@
 
         html_info_customer = '<span> Tgl. Order Vendor: '+ temp_date.getDate() + '/' + (temp_date.getMonth() + 1) + '/' + temp_date.getFullYear() +'</span><br>\n' +
             '                <strong>'+ rowData.no_order_vendor +'</strong><br>\n' +
-            '                <span>'+ rowData.nama_vendor +' ('+ rowData.no_hp_vendor +')</span><br>\n' +
-                            '<span>'+ rowData.alamat_vendor +'</span><br>';
+            '                <span>'+ rowData.nama_vendor +' ('+ rowData.no_hp_pick_up +')</span><br>\n' +
+                            '<span>'+ rowData.alamat_pick_up +'</span><br>';
 
         if(rowData.status_pick_up == "0"){
             html_info_customer += '<div class="alert alert-danger alert-payment" role="alert">\n' +

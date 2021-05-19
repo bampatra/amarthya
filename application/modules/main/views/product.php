@@ -260,7 +260,7 @@
                         "brand_product": "brand_product"
                     },
                     mRender : function(data, type, full) {
-                        html = data.nama_product +'<br> <span style="font-size: 11px">Stok: '+ data.STOK +'</span>';
+                        html = data.nama_product +'<br> <span style="font-size: 11px">Stok: '+ (Math.round(data.STOK * 1000) / 1000) +'</span>';
 
                         if(data.brand_product == "KA"){
                             html += '<img src="<?php echo base_url('assets/images/logopdf.jpg');?>" style="float: right" width="48px" height="22px">';
@@ -414,7 +414,7 @@
         $('#HR_product').val(htmlDecode(data.HR_product));
         $('#brand_product').val(htmlDecode(data.brand_product));
 
-        $('.stok_product').html(data.STOK);
+        $('.stok_product').html((Math.round(data.STOK * 1000) / 1000));
 
         $("#detail_stok_in_out").attr("href", admin_url + 'stok_in_out?product=' + data.id_product)
 

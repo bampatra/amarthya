@@ -152,14 +152,14 @@ class Main_model extends CI_Model
         return $query;
     }
 
-    function monthly_ongkir_per_staff($month){
+    function periode_ongkir_per_staff($tgl_awal, $tgl_akhir){
         $sql = "SELECT b.nama_staff, IFNULL(c.ongkir_salary, 0) as ongkir_salary
                 FROM staff b
                 LEFT JOIN (
                     SELECT SUM(b.ongkir_order) as ongkir_salary, a.id_staff
                     FROM delivery a
                     INNER JOIN order_m b ON a.id_order_m = b.id_order_m
-                    WHERE MONTH(a.tgl_delivery) = '{$month}'
+                    WHERE (a.tgl_delivery BETWEEN '".$tgl_awal."' AND '".$tgl_akhir."')
                     GROUP BY a.id_staff
                 ) c ON b.id_staff = c.id_staff
                 WHERE b.nama_staff <> 'TEST USER'
@@ -453,7 +453,7 @@ class Main_model extends CI_Model
                         AND (tgl_out BETWEEN '{$start_date}' AND '{$end_date}') 
                     GROUP BY id_product
                 )b ON a.id_product = b.id_product
-                WHERE a.nama_product NOT LIKE '%TEST%'";
+                WHERE a.nama_product NOT LIKE '%TEST%' AND a.brand_product <> 'BAHAN'";
 
         if($search != "" || $search != null){
             $sql .= " AND a.nama_product LIKE '%{$search}%'";
@@ -1152,9 +1152,9 @@ class Main_model extends CI_Model
         }
 
         if($stock_status == "more"){
-            $sql .= " HAVING STOK <> 0";
+            $sql .= " HAVING (STOK < -0.01 OR STOK > 0.01)";
         } else if ($stock_status == "none") {
-            $sql .= " HAVING STOK = 0";
+            $sql .= " HAVING (STOK BETWEEN -0.01 AND 0.01)";
         }
 
         $sql .= " ORDER BY a.nama_product LIMIT {$start}, {$length}";

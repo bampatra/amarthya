@@ -398,7 +398,7 @@
                         "STOK":"STOK"
                     },
                     mRender : function(data, type, full) {
-                        html = data.nama_product +'<br> <span style="font-size: 11px">Stok: '+ data.STOK +'</span>';
+                        html = data.nama_product +'<br> <span style="font-size: 11px">Stok: '+ (Math.round(data.STOK * 1000) / 1000) +'</span>';
                         return html;
                     }
                 }

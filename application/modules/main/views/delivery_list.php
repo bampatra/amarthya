@@ -218,7 +218,7 @@
 
                         html += '</div></div>';
 
-                        if(<?php echo $this->session->userdata('is_admin')?> == "1"){
+                        if(<?php echo $this->session->userdata('is_admin')?> == "1" || <?php echo $this->session->userdata('is_admin')?> == "3"){
                             html += '<div class="detail-row"><table style="width: 100%">' +
                                 '       <tr class="no-pointer"><td style="width: 15%">Driver: </td><td><span>'+ data.nama_staff +'<br>('+ data.no_hp_staff +')</span></td></tr>' +
                                 '       <tr class="no-pointer"><td>Alamat: </td><td><span>'+ data.alamat_delivery +'</span></td></tr>' +

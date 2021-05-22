@@ -27,6 +27,7 @@
                             <option value="AF"> Amarthya Fashion </option>
                             <option value="AHF"> Amarthya Healthy Food </option>
                             <option value="AH"> Amarthya Herbal </option>
+                            <option value="BAHAN"> Bahan Eatery </option>
                         </select>
                     </div>
                 </form>

@@ -41,9 +41,10 @@
                     <tr class="no-hover-style">
                         <th style="display: none;"> ID </th>
                         <th style="min-width: 400px"> Nama Produk </th>
-                        <th style="min-width: 170px"> HP </th>
-                        <th style="min-width: 170px"> HR </th>
-                        <th style="min-width: 170px"> HJ </th>
+                        <th style="max-width: 50px"> Brand </th>
+                        <th> HP </th>
+                        <th> HR </th>
+                        <th> HJ </th>
                     </tr>
                     </thead>
                     <tbody id="main-content">
@@ -256,20 +257,27 @@
                 {
                     "data": {
                         "nama_product":"nama_product",
-                        "STOK":"STOK",
-                        "brand_product": "brand_product"
+                        "STOK":"STOK"
                     },
                     mRender : function(data, type, full) {
                         html = data.nama_product +'<br> <span style="font-size: 11px">Stok: '+ (Math.round(data.STOK * 1000) / 1000) +'</span>';
 
+                        return html;
+                    }
+                },
+                {
+                    "data": {"brand_product":"brand_product"},
+                    mRender : function(data, type, full) {
+                        html = '';
+
                         if(data.brand_product == "KA"){
-                            html += '<img src="<?php echo base_url('assets/images/logopdf.jpg');?>" style="float: right" width="48px" height="22px">';
+                            html += '<img src="<?php echo base_url('assets/images/logopdf.jpg');?>" width="48px" height="22px">';
                         } else if(data.brand_product == "AH"){
-                            html += '<img src="<?php echo base_url('assets/images/amarthya_herbal.png');?>" style="float: right" width="40px" height="40px">';
+                            html += '<img src="<?php echo base_url('assets/images/amarthya_herbal.png');?>" width="40px" height="40px">';
                         } else if(data.brand_product == "AF"){
-                            html += '<img src="<?php echo base_url('assets/images/fashion.png');?>" style="float: right" width="48px" height="48px">';
+                            html += '<img src="<?php echo base_url('assets/images/fashion.png');?>"  width="48px" height="48px">';
                         } else if(data.brand_product == "AHF"){
-                            html += '<img src="<?php echo base_url('assets/images/phonto.PNG');?>" style="float: right" width="40px" height="40px">';
+                            html += '<img src="<?php echo base_url('assets/images/phonto.PNG');?>"  width="40px" height="40px">';
                         }
 
                         return html;

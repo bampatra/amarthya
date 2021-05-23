@@ -26,8 +26,8 @@
                     <thead>
                     <tr class="no-hover-style">
                         <th style="display: none;"> ID </th>
-                        <th style="min-width: 300px"> Nama Produk </th>
-                        <th> Brand </th>
+                        <th style="min-width: 400px"> Nama Produk </th>
+                        <th style="min-width: 150px"> Purchase </th>
                         <th style="min-width: 150px"> Sales </th>
                         <th> Stok Out </th>
                         <th> Satuan </th>
@@ -112,20 +112,35 @@
             },
             columns: [
                 {"data": "id_product"},
-                {"data": "nama_product"},
                 {
-                    "data": {"brand_product":"brand_product"},
+                    "data": {
+                        "brand_product":"brand_product",
+                        "nama_product":"nama_product"
+                    },
                     mRender : function(data, type, full) {
+
+                        html = data.nama_product + '<br><span style="font-size: 10px;">';
+
                         if(data.brand_product == "KA"){
-                            return "Kedai Amarthya"
+                            html += "Kedai Amarthya"
                         } else if (data.brand_product == "AF") {
-                            return "Amarthya Fashion"
+                            html += "Amarthya Fashion"
                         } else if (data.brand_product == "AHF") {
-                            return "Amarthya Healthy Food"
+                            html += "Amarthya Healthy Food"
                         } else if (data.brand_product == "AH") {
-                            return "Amarthya Herbal"
+                            html += "Amarthya Herbal"
                         }
 
+                        html += '</span>';
+
+                        return html;
+
+                    }
+                },
+                {
+                    "data": {"total_purchase":"total_purchase"},
+                    mRender : function(data, type, full) {
+                        return convertToRupiah(data.total_purchase)
                     }
                 },
                 {

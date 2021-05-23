@@ -445,6 +445,7 @@ class Main_model extends CI_Model
                         ELSE IFNULL(b.stok_out, 0)
                     END AS stok_out, 
                     IFNULL(c.total_sales, 0) AS total_sales,
+                    IFNULL(d.total_purchase, 0) AS total_purchase,
                     a.satuan_product
                 FROM product a
                 LEFT JOIN (
@@ -458,9 +459,18 @@ class Main_model extends CI_Model
                     SELECT a.id_product, SUM(a.total_order) AS total_sales
                     FROM order_s a
                     INNER JOIN order_m b ON a.id_order_m = b.id_order_m
-                    WHERE (b.tgl_order BETWEEN '{$start_date}' AND '{$end_date}') 
+                    WHERE b.status_order = '1'
+                         AND (b.tgl_order BETWEEN '{$start_date}' AND '{$end_date}') 
                     GROUP BY a.id_product
                 )c ON c.id_product = a.id_product
+                LEFT JOIN (
+                    SELECT a.id_product, SUM(a.total_order_vendor) AS total_purchase
+                    FROM order_vendor_s a
+                    INNER JOIN order_vendor_m b ON a.id_order_vendor_m = b.id_order_vendor_m
+                    WHERE b.status_order_vendor = '1'
+                        AND (b.tgl_order_vendor BETWEEN '{$start_date}' AND '{$end_date}') 
+                    GROUP BY a.id_product
+                )d ON d.id_product = a.id_product
                 WHERE a.nama_product NOT LIKE '%TEST%' AND a.brand_product <> 'BAHAN'";
 
         if($search != "" || $search != null){
@@ -1056,7 +1066,7 @@ class Main_model extends CI_Model
                     DATE_FORMAT(tgl_expired, '%Y-%m-%d') AS custom_tgl_expired
                 FROM stok_in_out
                 WHERE id_product = '".$id_product."'
-                ORDER BY GREATEST(tgl_in, tgl_out) DESC LIMIT {$start}, {$length}";
+                ORDER BY GREATEST(tgl_in, tgl_out) DESC, id_stok_in_out DESC LIMIT {$start}, {$length}";
 
         $query = $this->db->query($sql);
         return $query;

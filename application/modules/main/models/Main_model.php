@@ -444,15 +444,23 @@ class Main_model extends CI_Model
                         WHEN TRUE THEN ROUND(b.stok_out, 2)
                         ELSE IFNULL(b.stok_out, 0)
                     END AS stok_out, 
+                    IFNULL(c.total_sales, 0) AS total_sales,
                     a.satuan_product
                 FROM product a
                 LEFT JOIN (
-                            SELECT id_product, SUM(stok_in_out) AS stok_out
+                    SELECT id_product, SUM(stok_in_out) AS stok_out
                     FROM stok_in_out 
                     WHERE tipe_in_out = 'OUT'
                         AND (tgl_out BETWEEN '{$start_date}' AND '{$end_date}') 
                     GROUP BY id_product
                 )b ON a.id_product = b.id_product
+                LEFT JOIN (
+                    SELECT a.id_product, SUM(a.total_order) AS total_sales
+                    FROM order_s a
+                    INNER JOIN order_m b ON a.id_order_m = b.id_order_m
+                    WHERE (b.tgl_order BETWEEN '{$start_date}' AND '{$end_date}') 
+                    GROUP BY a.id_product
+                )c ON c.id_product = a.id_product
                 WHERE a.nama_product NOT LIKE '%TEST%' AND a.brand_product <> 'BAHAN'";
 
         if($search != "" || $search != null){

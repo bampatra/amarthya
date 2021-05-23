@@ -26,8 +26,9 @@
                     <thead>
                     <tr class="no-hover-style">
                         <th style="display: none;"> ID </th>
-                        <th style="min-width: 400px"> Nama Produk </th>
+                        <th style="min-width: 300px"> Nama Produk </th>
                         <th> Brand </th>
+                        <th style="min-width: 150px"> Sales </th>
                         <th> Stok Out </th>
                         <th> Satuan </th>
                     </tr>
@@ -125,6 +126,12 @@
                             return "Amarthya Herbal"
                         }
 
+                    }
+                },
+                {
+                    "data": {"total_sales":"total_sales"},
+                    mRender : function(data, type, full) {
+                        return convertToRupiah(data.total_sales)
                     }
                 },
                 {"data": "stok_out"},

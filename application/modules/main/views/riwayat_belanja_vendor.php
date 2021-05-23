@@ -181,7 +181,7 @@
 
     $('#dataTable').on( 'click', 'tbody tr', function () {
         var data = $('#dataTable').DataTable().row( this ).data();
-        window.open(admin_url + 'order_detail?no=' + data.no_order)
+        window.open(admin_url + 'order_vendor_detail?no=' + data.no_order_vendor)
     })
 
 

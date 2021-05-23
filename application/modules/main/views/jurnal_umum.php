@@ -30,6 +30,7 @@
                         <option value="AF"> Amarthya Fashion </option>
                         <option value="AHF"> Amarthya Healthy Food </option>
                         <option value="AH"> Amarthya Herbal </option>
+                        <option value="BAHAN"> Bahan Eatery </option>
                     </select>
                     <select id="tipe_pembayaran" name="tipe_pembayaran" class="form-control form-control-sm" data-live-search="true" style="margin-right: 5px">
                         <option value="all">Semua Pembayaran</option>

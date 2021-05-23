@@ -3,11 +3,10 @@
   <component name="ChangeListManager">
     <list default="true" id="822c5f09-bd0b-4858-81e7-523fc1d476f6" name="Default Changelist" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/application/modules/main/controllers/Main.php" beforeDir="false" afterPath="$PROJECT_DIR$/application/modules/main/controllers/Main.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/application/modules/main/views/delivery_list.php" beforeDir="false" afterPath="$PROJECT_DIR$/application/modules/main/views/delivery_list.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/application/modules/main/views/order_vendor_list.php" beforeDir="false" afterPath="$PROJECT_DIR$/application/modules/main/views/order_vendor_list.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/application/modules/main/views/product.php" beforeDir="false" afterPath="$PROJECT_DIR$/application/modules/main/views/product.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/application/modules/main/views/template/admin_header.php" beforeDir="false" afterPath="$PROJECT_DIR$/application/modules/main/views/template/admin_header.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/application/modules/main/models/Main_model.php" beforeDir="false" afterPath="$PROJECT_DIR$/application/modules/main/models/Main_model.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/application/modules/main/views/jurnal_umum.php" beforeDir="false" afterPath="$PROJECT_DIR$/application/modules/main/views/jurnal_umum.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/application/modules/main/views/laporan_produk.php" beforeDir="false" afterPath="$PROJECT_DIR$/application/modules/main/views/laporan_produk.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/application/modules/main/views/riwayat_belanja_vendor.php" beforeDir="false" afterPath="$PROJECT_DIR$/application/modules/main/views/riwayat_belanja_vendor.php" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
@@ -40,8 +39,8 @@
       <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/application/modules/main/controllers/Main.php">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="16868">
-              <caret line="4318" column="31" selection-start-line="4318" selection-start-column="31" selection-end-line="4318" selection-end-column="31" />
+            <state relative-caret-position="8910">
+              <caret line="596" column="28" selection-start-line="596" selection-start-column="13" selection-end-line="596" selection-end-column="28" />
               <folding>
                 <element signature="e#70#88#0#PHP" expanded="true" />
               </folding>
@@ -52,8 +51,20 @@
       <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/application/modules/main/models/Main_model.php">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="203">
-              <caret line="1197" column="24" selection-start-line="1197" selection-start-column="13" selection-end-line="1197" selection-end-column="24" />
+            <state relative-caret-position="6690">
+              <caret line="446" column="60" selection-start-line="446" selection-start-column="60" selection-end-line="446" selection-end-column="60" />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/application/modules/main/views/riwayat_belanja_vendor.php">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="308">
+              <caret line="172" column="17" lean-forward="true" selection-start-line="172" selection-start-column="17" selection-end-line="172" selection-end-column="17" />
+              <folding>
+                <element signature="n#style#0;n#span#0;n#!!top" expanded="true" />
+              </folding>
             </state>
           </provider>
         </entry>
@@ -61,8 +72,8 @@
       <file pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/application/config/config.php">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="272">
-              <caret line="383" column="35" lean-forward="true" selection-start-line="383" selection-start-column="35" selection-end-line="383" selection-end-column="35" />
+            <state relative-caret-position="282">
+              <caret line="385" column="33" lean-forward="true" selection-start-line="385" selection-start-column="33" selection-end-line="385" selection-end-column="33" />
             </state>
           </provider>
         </entry>
@@ -80,10 +91,6 @@
   </component>
   <component name="FindInProjectRecents">
     <findStrings>
-      <find>console</find>
-      <find>$_get</find>
-      <find>bahan</find>
-      <find>kategory</find>
       <find>delete_menu</find>
       <find>delete</find>
       <find>st</find>
@@ -107,9 +114,13 @@
       <find>phonto.png</find>
       <find>delivery</find>
       <find>get_delivery</find>
-      <find>add_product</find>
       <find>http:</find>
+      <find>add_product</find>
       <find>excel</find>
+      <find>laporan</find>
+      <find>IFNULL</find>
+      <find>IFNULL(0</find>
+      <find>riwayat_belanja</find>
     </findStrings>
     <replaceStrings>
       <replace>id_stok_in_out</replace>
@@ -172,7 +183,6 @@
         <option value="$PROJECT_DIR$/application/modules/main/views/staff.php" />
         <option value="$PROJECT_DIR$/application/modules/main/views/vendor.php" />
         <option value="$PROJECT_DIR$/application/modules/main/views/riwayat_belanja.php" />
-        <option value="$PROJECT_DIR$/application/modules/main/views/riwayat_belanja_vendor.php" />
         <option value="$PROJECT_DIR$/application/modules/main/views/pick_up_per_staff.php" />
         <option value="$PROJECT_DIR$/application/modules/main/views/delivery_per_staff.php" />
         <option value="$PROJECT_DIR$/application/modules/main/views/izin.php" />
@@ -182,7 +192,6 @@
         <option value="$PROJECT_DIR$/application/modules/main/views/index.php" />
         <option value="$PROJECT_DIR$/application/modules/POS/controllers/POS.php" />
         <option value="$PROJECT_DIR$/application/modules/POS/views/index.php" />
-        <option value="$PROJECT_DIR$/application/modules/main/views/jurnal_umum.php" />
         <option value="$PROJECT_DIR$/application/modules/POS/views/POS.php" />
         <option value="$PROJECT_DIR$/application/modules/main/views/order_list.php" />
         <option value="$PROJECT_DIR$/application/modules/main/views/bahan_dasar.php" />
@@ -193,13 +202,15 @@
         <option value="$PROJECT_DIR$/application/modules/main/views/pick_up_detail.php" />
         <option value="$PROJECT_DIR$/application/modules/main/views/pickup_list.php" />
         <option value="$PROJECT_DIR$/application/modules/main/views/order_form.php" />
-        <option value="$PROJECT_DIR$/application/modules/main/views/laporan_produk.php" />
-        <option value="$PROJECT_DIR$/application/modules/main/models/Main_model.php" />
         <option value="$PROJECT_DIR$/application/modules/main/views/delivery_list.php" />
         <option value="$PROJECT_DIR$/application/modules/main/views/product.php" />
         <option value="$PROJECT_DIR$/application/modules/main/controllers/Main.php" />
         <option value="$PROJECT_DIR$/application/modules/main/views/template/admin_header.php" />
         <option value="$PROJECT_DIR$/application/modules/main/views/order_vendor_list.php" />
+        <option value="$PROJECT_DIR$/application/modules/main/views/jurnal_umum.php" />
+        <option value="$PROJECT_DIR$/application/modules/main/models/Main_model.php" />
+        <option value="$PROJECT_DIR$/application/modules/main/views/laporan_produk.php" />
+        <option value="$PROJECT_DIR$/application/modules/main/views/riwayat_belanja_vendor.php" />
         <option value="$PROJECT_DIR$/application/config/config.php" />
       </list>
     </option>
@@ -258,7 +269,6 @@
       <foldersAlwaysOnTop value="true" />
     </navigator>
     <panes>
-      <pane id="Scope" />
       <pane id="ProjectPane">
         <subPane>
           <expand>
@@ -360,6 +370,7 @@
           <select />
         </subPane>
       </pane>
+      <pane id="Scope" />
     </panes>
   </component>
   <component name="PropertiesComponent">
@@ -575,18 +586,20 @@
       <workItem from="1621393944703" duration="1246000" />
       <workItem from="1621406418582" duration="936000" />
       <workItem from="1621592137549" duration="980000" />
-      <workItem from="1621647718513" duration="2003000" />
+      <workItem from="1621647718513" duration="2494000" />
+      <workItem from="1621700001785" duration="937000" />
+      <workItem from="1621761923958" duration="33000" />
     </task>
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="1694517000" />
+    <option name="totallyTimeSpent" value="1695978000" />
   </component>
   <component name="ToolWindowManager">
     <frame x="0" y="23" width="1280" height="777" extended-state="0" />
     <editor active="true" />
     <layout>
-      <window_info active="true" content_ui="combo" id="Project" order="0" sideWeight="0.49927008" visible="true" weight="0.2180937" />
+      <window_info active="true" content_ui="combo" id="Project" order="0" sideWeight="0.49927008" visible="true" weight="0.22455573" />
       <window_info id="Structure" order="1" sideWeight="0.5007299" side_tool="true" weight="0.26332796" />
       <window_info id="Favorites" order="2" side_tool="true" />
       <window_info anchor="bottom" id="Message" order="0" />
@@ -648,13 +661,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/application/modules/main/views/laporan_purchase.php">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="-100">
-          <caret line="76" column="55" selection-start-line="76" selection-start-column="55" selection-end-line="76" selection-end-column="55" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/application/modules/main/views/delivery_form.php">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="200">
@@ -674,16 +680,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="219">
           <caret line="261" column="49" lean-forward="true" selection-start-line="261" selection-start-column="49" selection-end-line="261" selection-end-column="49" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/application/modules/main/views/riwayat_belanja_vendor.php">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="441">
-          <caret line="153" column="58" lean-forward="true" selection-start-line="153" selection-start-column="58" selection-end-line="153" selection-end-column="58" />
-          <folding>
-            <element signature="n#style#0;n#span#0;n#!!top" expanded="true" />
-          </folding>
         </state>
       </provider>
     </entry>
@@ -759,16 +755,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/application/modules/main/views/riwayat_belanja.php">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="422">
-          <caret line="46" column="30" lean-forward="true" selection-start-line="46" selection-start-column="30" selection-end-line="46" selection-end-column="30" />
-          <folding>
-            <element signature="n#style#0;n#span#0;n#!!top" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/application/modules/main/views/vendor.php">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="764">
@@ -794,16 +780,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="15">
           <caret line="1" column="15" selection-start-line="1" selection-start-column="15" selection-end-line="1" selection-end-column="15" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/application/modules/main/views/jurnal_umum.php">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="135">
-          <caret line="9" column="61" lean-forward="true" selection-start-line="9" selection-start-column="61" selection-end-line="9" selection-end-column="77" />
-          <folding>
-            <element signature="n#style#0;n#span#0;n#!!top" expanded="true" />
-          </folding>
         </state>
       </provider>
     </entry>
@@ -927,13 +903,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/application/modules/main/views/laporan_produk.php">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="557">
-          <caret line="142" column="62" selection-start-line="142" selection-start-column="62" selection-end-line="142" selection-end-column="62" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/application/modules/main/views/delivery_list.php">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="3300">
@@ -969,13 +938,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="360">
           <caret line="24" column="53" selection-start-line="24" selection-start-column="53" selection-end-line="24" selection-end-column="53" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/application/modules/main/models/Main_model.php">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="203">
-          <caret line="1197" column="24" selection-start-line="1197" selection-start-column="13" selection-end-line="1197" selection-end-column="24" />
         </state>
       </provider>
     </entry>
@@ -1036,20 +998,74 @@
         </state>
       </provider>
     </entry>
+    <entry file="file://$PROJECT_DIR$/application/modules/main/views/jurnal_umum.php">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="360">
+          <caret line="32" column="59" selection-start-line="32" selection-start-column="59" selection-end-line="32" selection-end-column="59" />
+          <folding>
+            <element signature="n#style#0;n#button#0;n#div#0;n#!!top" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/application/modules/main/views/laporan_purchase.php">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="355">
+          <caret line="117" column="17" lean-forward="true" selection-start-line="112" selection-start-column="16" selection-end-line="117" selection-end-column="17" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/application/modules/main/views/laporan_produk.php">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="420">
+          <caret line="28" column="47" selection-start-line="28" selection-start-column="47" selection-end-line="28" selection-end-column="47" />
+          <folding>
+            <element signature="n#style#0;n#th#3;n#tr#0;n#thead#0;n#table#0;n#div#0;n#div#1;n#div#0;n#div#0;n#!!top" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/application/modules/main/views/riwayat_belanja.php">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="-1267">
+          <caret line="46" column="30" lean-forward="true" selection-start-line="46" selection-start-column="30" selection-end-line="46" selection-end-column="30" />
+          <folding>
+            <element signature="n#style#0;n#span#0;n#!!top" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
     <entry file="file://$PROJECT_DIR$/application/modules/main/controllers/Main.php">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="16868">
-          <caret line="4318" column="31" selection-start-line="4318" selection-start-column="31" selection-end-line="4318" selection-end-column="31" />
+        <state relative-caret-position="8910">
+          <caret line="596" column="28" selection-start-line="596" selection-start-column="13" selection-end-line="596" selection-end-column="28" />
           <folding>
             <element signature="e#70#88#0#PHP" expanded="true" />
           </folding>
         </state>
       </provider>
     </entry>
+    <entry file="file://$PROJECT_DIR$/application/modules/main/models/Main_model.php">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="6690">
+          <caret line="446" column="60" selection-start-line="446" selection-start-column="60" selection-end-line="446" selection-end-column="60" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/application/modules/main/views/riwayat_belanja_vendor.php">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="308">
+          <caret line="172" column="17" lean-forward="true" selection-start-line="172" selection-start-column="17" selection-end-line="172" selection-end-column="17" />
+          <folding>
+            <element signature="n#style#0;n#span#0;n#!!top" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
     <entry file="file://$PROJECT_DIR$/application/config/config.php">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="272">
-          <caret line="383" column="35" lean-forward="true" selection-start-line="383" selection-start-column="35" selection-end-line="383" selection-end-column="35" />
+        <state relative-caret-position="282">
+          <caret line="385" column="33" lean-forward="true" selection-start-line="385" selection-start-column="33" selection-end-line="385" selection-end-column="33" />
         </state>
       </provider>
     </entry>

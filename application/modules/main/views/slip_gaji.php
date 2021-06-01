@@ -108,6 +108,14 @@
             "&tahun=" + $('#tahun_salary').val());
     })
 
+    $('#awal_akhir_salary').change(function(){
+        $('#print-link').attr("href", admin_url +
+            "pdf_slip_gaji?staff=" + <?php echo $this->session->userdata('id_staff')?> +
+                "&periode=" + $('#awal_akhir_salary').val() +
+            "&bulan=" + $('#bulan_salary').val() +
+            "&tahun=" + $('#tahun_salary').val());
+    })
+
 
 
 </script>

@@ -28,7 +28,13 @@
             <div id="vendor_info" style="font-size: 14px">
                 <strong> <?php echo $orders[0]->nama_vendor; echo " (".$orders[0]->no_hp_vendor.")"?></strong><br>
                 <span style="font-size: 12px"> <?php echo $orders[0]->alamat_vendor; ?> </span>
-                <?php if($orders[0]->is_in_store == '1'){ echo "<br><br><p>In Store (Tanpa Pickup)</p>"; } ?>
+                <?php
+                    if($orders[0]->is_in_store == '1'){
+                        echo "<br><br><p>In Store (Tanpa Pickup)</p>";
+                    } else {
+                        echo "<br><br><span style='font-size: 12px;'>Pick up oleh: ".$orders[0]->nama_staff."</span>";
+                    }
+                ?>
             </div>
 
 

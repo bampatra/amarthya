@@ -62,6 +62,7 @@
         searching: true,
         bInfo: false,
         bSort: false,
+        ordering:false,
         language: {
             search: ""
         },

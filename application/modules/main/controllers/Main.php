@@ -722,6 +722,8 @@ class Main extends MX_Controller
         $bulan = htmlentities($_GET['bulan'], ENT_QUOTES);
         $tahun = htmlentities($_GET['tahun'], ENT_QUOTES);
 
+        $temp_date = new DateTime("$tahun-$bulan-01");
+
         if($periode == "AWAL"){
 
             $tgl_awal = $tahun."-".sprintf('%02d', $bulan)."-01";
@@ -729,7 +731,7 @@ class Main extends MX_Controller
 
         } else if($periode == "AKHIR"){
             $tgl_awal = $tahun."-".sprintf('%02d', $bulan)."-16";
-            $tgl_akhir = $tahun."-".sprintf('%02d', $bulan)."-".date('t');
+            $tgl_akhir = $tahun."-".sprintf('%02d', $bulan)."-".$temp_date->format('t');
         }
 
         // server-side pagination
@@ -778,6 +780,8 @@ class Main extends MX_Controller
         $bulan = htmlentities($_GET['bulan'], ENT_QUOTES);
         $tahun = htmlentities($_GET['tahun'], ENT_QUOTES);
 
+        $temp_date = new DateTime("$tahun-$bulan-01");
+
         if($periode == "AWAL"){
 
             $tgl_awal = $tahun."-".sprintf('%02d', $bulan)."-01";
@@ -785,7 +789,7 @@ class Main extends MX_Controller
 
         } else if($periode == "AKHIR"){
             $tgl_awal = $tahun."-".sprintf('%02d', $bulan)."-16";
-            $tgl_akhir = $tahun."-".sprintf('%02d', $bulan)."-".date('t');
+            $tgl_akhir = $tahun."-".sprintf('%02d', $bulan)."-".$temp_date->format('t');
         }
 
         // server-side pagination
@@ -1307,15 +1311,15 @@ class Main extends MX_Controller
         if($this->Main_model->update_product($updated_data_product, $id_product)){
 
             // delete stok in and out data
-            if($this->Main_model->delete_stok_in_out_by_product($id_product)) {
+            // if($this->Main_model->delete_stok_in_out_by_product($id_product)) {
                 $return_arr = array("Status" => 'OK', "Message" => 'Data berhasil dihapus');
                 echo json_encode($return_arr);
                 return;
-            } else {
-                $return_arr = array("Status" => 'ERROR', "Message" => 'Gagal menghapus data stok');
-                echo json_encode($return_arr);
-                return;
-            }
+            // } else {
+            //     $return_arr = array("Status" => 'ERROR', "Message" => 'Gagal menghapus data stok');
+            //     echo json_encode($return_arr);
+            //     return;
+            // }
 
         } else {
             $return_arr = array("Status" => 'ERROR', "Message" => 'Gagal menghapus produk');
@@ -1566,6 +1570,8 @@ class Main extends MX_Controller
         $bulan_salary = htmlentities($_REQUEST['bulan_salary'], ENT_QUOTES);
         $tahun_salary = htmlentities($_REQUEST['tahun_salary'], ENT_QUOTES);
 
+        $temp_date = new DateTime("$tahun_salary-$bulan_salary-01");
+
         // Periode Delivery
         if($awal_akhir_salary == "AWAL"){
 
@@ -1574,10 +1580,11 @@ class Main extends MX_Controller
 
         } else if($awal_akhir_salary == "AKHIR"){
             $tgl_awal = $tahun_salary."-".sprintf('%02d', $bulan_salary)."-16";
-            $tgl_akhir = $tahun_salary."-".sprintf('%02d', $bulan_salary)."-".date('t');
+            $tgl_akhir = $tahun_salary."-".sprintf('%02d', $bulan_salary)."-".$temp_date->format('t');
         }
 
         $data = $this->Main_model->get_staff_salary($id_staff, $awal_akhir_salary, $bulan_salary, $tahun_salary, $tgl_awal, $tgl_akhir);
+
         echo json_encode($data->row());
         return;
     }
@@ -4008,6 +4015,8 @@ class Main extends MX_Controller
             $bulan_salary = htmlentities($_GET['bulan'], ENT_QUOTES);
             $tahun_salary = htmlentities($_GET['tahun'], ENT_QUOTES);
 
+            $temp_date = new DateTime("$tahun_salary-$bulan_salary-01");
+
             // Periode Delivery
             if($awal_akhir_salary == "AWAL"){
                 $tgl_awal = $tahun_salary."-".sprintf('%02d', $bulan_salary)."-01";
@@ -4018,10 +4027,10 @@ class Main extends MX_Controller
 
             } else if($awal_akhir_salary == "AKHIR"){
                 $tgl_awal = $tahun_salary."-".sprintf('%02d', $bulan_salary)."-16";
-                $tgl_akhir = $tahun_salary."-".sprintf('%02d', $bulan_salary)."-".date('t');
+                $tgl_akhir = $tahun_salary."-".sprintf('%02d', $bulan_salary)."-".$temp_date->format('t');
 
                 $start = "16-".sprintf('%02d', $bulan_salary)."-".$tahun_salary;
-                $end = date('t').sprintf('%02d', $bulan_salary)."-".$tahun_salary;
+                $end = $temp_date->format('t').sprintf('%02d', $bulan_salary)."-".$tahun_salary;
             }
 
             $data_salary = $this->Main_model->get_staff_salary($id_staff, $awal_akhir_salary, $bulan_salary, $tahun_salary, $tgl_awal, $tgl_akhir);
@@ -4308,15 +4317,11 @@ class Main extends MX_Controller
                 $HP_product = htmlentities(trim($data[4]));
                 $HR_product = htmlentities(trim($data[5]));
                 $HJ_product = htmlentities(trim($data[6]));
-                $brand_product = "BAHAN";
+                $brand_product = "AF";
 
                 $stok_in_out = htmlentities(trim($data[7]));
 
                 $this->db->trans_begin();
-
-                $HP_product = 1;
-                $HR_product = 1;
-                $HJ_product = 1;
 
                 // add product
                 $product_data = compact('nama_product', 'SKU_product', 'satuan_product', 'HP_product',
@@ -4326,28 +4331,28 @@ class Main extends MX_Controller
 
                 if($id_product){
 
-//                    $tipe_in_out = "IN";
-//                    $tgl_in = date('Y-m-d H:i:s');
-//
-//                    $catatan_in_out = "";
-//                    $ref_order_m = "";
-//                    $tgl_out = "";
-//                    $tgl_expired = "";
-//
-//
-//                    $data_in_out = compact('tipe_in_out', 'stok_in_out', 'tgl_in', 'id_product', 'catatan_in_out', 'ref_order_m',
-//                        'tgl_out', 'tgl_expired');
-//
-//                    $id_stok_in_out = $this->Main_model->add_stok_in_out($data_in_out);
-//
-//                    if(!$id_stok_in_out){
-//                        $this->db->trans_rollback();
-//                        $return_arr = array("Status" => 'ERROR', "Message" => 'Gagal menambahkan in out');
-//                        echo json_encode($return_arr);
-//                        return;
-//                    } else {
+                    $tipe_in_out = "IN";
+                    $tgl_in = date('Y-m-d H:i:s');
+
+                    $catatan_in_out = "";
+                    $ref_order_m = "";
+                    $tgl_out = "";
+                    $tgl_expired = "";
+
+
+                    $data_in_out = compact('tipe_in_out', 'stok_in_out', 'tgl_in', 'id_product', 'catatan_in_out', 'ref_order_m',
+                        'tgl_out', 'tgl_expired');
+
+                    $id_stok_in_out = $this->Main_model->add_stok_in_out($data_in_out);
+
+                    if(!$id_stok_in_out){
+                        $this->db->trans_rollback();
+                        $return_arr = array("Status" => 'ERROR', "Message" => 'Gagal menambahkan in out');
+                        echo json_encode($return_arr);
+                        return;
+                    } else {
                         $this->db->trans_commit();
-//                    }
+                    }
 
                 } else {
                     $this->db->trans_rollback();

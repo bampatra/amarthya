@@ -15,6 +15,11 @@
             <h6 class="m-0 font-weight-bold text-primary">Pengaturan</h6>
         </div>
         <div class="card-body">
+
+            <div class="alert alert-info" role="alert" style="font-size: 12px;">
+                Menampilkan pembelian vendor dan penjualan customer yang sudah dibayar saja
+            </div>
+
             <form class="form-inline" style="margin-bottom: 5px;">
                 <div class="form-group">
                     Dari tanggal

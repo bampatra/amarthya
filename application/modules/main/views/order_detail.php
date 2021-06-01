@@ -28,7 +28,13 @@
             <div id="customer_info" style="font-size: 14px">
                 <strong> <?php echo $orders[0]->nama_customer; echo " (".$orders[0]->no_hp_customer.")"?></strong><br>
                 <span style="font-size: 12px"> <?php echo $orders[0]->alamat_customer; ?> </span>
-                <?php   if($orders[0]->is_in_store == '1'){ echo "<br><br><p>In Store (Tanpa Delivery)</p>"; } ?>
+                <?php
+                if($orders[0]->is_in_store == '1'){
+                    echo "<br><br><p>In Store (Tanpa Delivery)</p>";
+                } else {
+                    echo "<br><br><span style='font-size: 12px;'>Delivery oleh: ".$orders[0]->nama_staff."</span>";
+                }
+                ?>
 
             </div>
 

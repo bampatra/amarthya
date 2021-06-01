@@ -444,6 +444,10 @@ class Main_model extends CI_Model
                         WHEN TRUE THEN ROUND(b.stok_out, 2)
                         ELSE IFNULL(b.stok_out, 0)
                     END AS stok_out, 
+                    CASE (e.stok_in MOD 1 > 0)
+                        WHEN TRUE THEN ROUND(e.stok_in, 2)
+                        ELSE IFNULL(e.stok_in, 0)
+                    END AS stok_in, 
                     IFNULL(c.total_sales, 0) AS total_sales,
                     IFNULL(d.total_purchase, 0) AS total_purchase,
                     a.satuan_product
@@ -471,6 +475,13 @@ class Main_model extends CI_Model
                         AND (b.tgl_order_vendor BETWEEN '{$start_date}' AND '{$end_date}') 
                     GROUP BY a.id_product
                 )d ON d.id_product = a.id_product
+                LEFT JOIN (
+                    SELECT id_product, SUM(stok_in_out) AS stok_in
+                    FROM stok_in_out 
+                    WHERE tipe_in_out = 'IN'
+                        AND (tgl_in BETWEEN '{$start_date}' AND '{$end_date}') 
+                    GROUP BY id_product
+                )e ON e.id_product = a.id_product
                 WHERE a.nama_product NOT LIKE '%TEST%' AND a.brand_product <> 'BAHAN'";
 
         if($search != "" || $search != null){
@@ -694,7 +705,12 @@ class Main_model extends CI_Model
                 INNER JOIN order_vendor_s b ON a.id_order_vendor_m = b.id_order_vendor_m
                 INNER JOIN product d ON b.id_product = d.id_product
                 LEFT JOIN vendor c ON a.id_vendor = c.id_vendor
-                LEFT JOIN pick_up e ON a.id_order_vendor_m = e.id_order_vendor_m
+                /*LEFT JOIN pick_up e ON a.id_order_vendor_m = e.id_order_vendor_m*/
+                LEFT JOIN (
+                    SELECT a.id_order_vendor_m, a.status_pick_up, b.nama_staff 
+                    FROM pick_up a
+                    INNER JOIN staff b ON a.id_staff = b.id_staff
+                )e ON a.id_order_vendor_m = e.id_order_vendor_m
                 WHERE a.no_order_vendor = '".$no_order."' AND a.status_order_vendor = '1'";
 
         $query = $this->db->query($sql);
@@ -990,7 +1006,12 @@ class Main_model extends CI_Model
                 INNER JOIN order_s b ON a.id_order_m = b.id_order_m
                 INNER JOIN product d ON b.id_product = d.id_product
                 LEFT JOIN customer c ON a.id_customer = c.id_customer
-                LEFT JOIN delivery e ON a.id_order_m = e.id_order_m
+                /*LEFT JOIN delivery e ON a.id_order_m = e.id_order_m*/
+                LEFT JOIN (
+                    SELECT a.id_order_m, a.status_delivery, b.nama_staff 
+                    FROM delivery a
+                    INNER JOIN staff b ON a.id_staff = b.id_staff
+                )e ON a.id_order_m = e.id_order_m
                 WHERE a.no_order = '".$no_order."'
                     AND a.status_order = '1'";
 

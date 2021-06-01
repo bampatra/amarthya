@@ -12,6 +12,9 @@
             <h6 class="m-0 font-weight-bold text-primary">Data</h6>
         </div>
         <div class="card-body">
+            <div class="alert alert-info" role="alert" style="font-size: 12px;">
+                Menampilkan semua pembelian vendor dan penjualan customer (termasuk yang belum dibayar)
+            </div>
             <form class="form-inline" style="margin-bottom: 10px;">
                 <div class="form-group">
                     Dari tanggal
@@ -20,7 +23,7 @@
                     <button class="btn btn-primary btn-sm apply" style="margin-right: 5px">Terapkan</button>
                     <button id="export_excel" class="btn btn-warning btn-sm">Export Excel</button>
                 </div>
-            </form>
+            </form>bkj
             <div class="table-responsive">
                 <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
                     <thead>
@@ -28,6 +31,7 @@
                         <th style="display: none;"> ID </th>
                         <th style="min-width: 400px"> Nama Produk </th>
                         <th style="min-width: 150px"> Purchase </th>
+                        <th> Stok In </th>
                         <th style="min-width: 150px"> Sales </th>
                         <th> Stok Out </th>
                         <th> Satuan </th>
@@ -143,6 +147,7 @@
                         return convertToRupiah(data.total_purchase)
                     }
                 },
+                {"data": "stok_in"},
                 {
                     "data": {"total_sales":"total_sales"},
                     mRender : function(data, type, full) {

@@ -23,7 +23,8 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 | a PHP script and you can easily do that on your own.
 |
 */
-//$config['base_url'] = 'http://localhost/amarthya/';
+// $config['base_url'] = 'http://localhost/amarthya/';
+//$config['base_url'] = 'https://amarthya.000webhostapp.com/';
 $config['base_url'] = 'https://amarthyabali.herokuapp.com/';
 
 /*
@@ -381,7 +382,7 @@ $config['encryption_key'] = 'piraencryption';
 $config['sess_driver'] = 'files';
 $config['sess_cookie_name'] = 'ci_session';
 $config['sess_expiration'] = 60*60*24*365; // full year
-//$config['sess_save_path'] = NULL;
+// $config['sess_save_path'] = NULL;
 $config['sess_save_path'] = sys_get_temp_dir();
 $config['sess_match_ip'] = FALSE;
 $config['sess_time_to_update'] = 300;

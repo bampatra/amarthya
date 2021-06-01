@@ -2,6 +2,7 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="822c5f09-bd0b-4858-81e7-523fc1d476f6" name="Default Changelist" comment="">
+      <change beforePath="$PROJECT_DIR$/application/modules/main/controllers/Main.php" beforeDir="false" afterPath="$PROJECT_DIR$/application/modules/main/controllers/Main.php" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/application/modules/main/views/slip_gaji.php" beforeDir="false" afterPath="$PROJECT_DIR$/application/modules/main/views/slip_gaji.php" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
@@ -35,8 +36,8 @@
       <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/application/modules/main/controllers/Main.php">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="-185">
-              <caret line="1274" column="22" selection-start-line="1274" selection-start-column="13" selection-end-line="1274" selection-end-column="22" />
+            <state relative-caret-position="302">
+              <caret line="4039" column="58" selection-start-line="4039" selection-start-column="58" selection-end-line="4039" selection-end-column="58" />
               <folding>
                 <element signature="e#70#88#0#PHP" expanded="true" />
               </folding>
@@ -47,8 +48,8 @@
       <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/application/modules/main/views/slip_gaji.php">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="458">
-              <caret line="115" column="50" selection-start-line="115" selection-start-column="50" selection-end-line="115" selection-end-column="50" />
+            <state relative-caret-position="425">
+              <caret line="116" column="6" lean-forward="true" selection-start-line="110" selection-start-column="4" selection-end-line="116" selection-end-column="6" />
             </state>
           </provider>
         </entry>
@@ -84,7 +85,6 @@
   </component>
   <component name="FindInProjectRecents">
     <findStrings>
-      <find>monthly</find>
       <find>start_date</find>
       <find>tgl_awal</find>
       <find>periode</find>
@@ -112,8 +112,9 @@
       <find>laporan_delivery</find>
       <find>order_vendor_detail</find>
       <find>date('t')</find>
-      <find>order_detail</find>
       <find>slip_gaji</find>
+      <find>order_detail</find>
+      <find>pdf_slip</find>
     </findStrings>
     <replaceStrings>
       <replace>id_stok_in_out</replace>
@@ -199,11 +200,11 @@
         <option value="$PROJECT_DIR$/application/modules/main/views/jurnal_umum.php" />
         <option value="$PROJECT_DIR$/application/modules/main/views/laporan_produk.php" />
         <option value="$PROJECT_DIR$/application/modules/POS/views/POS.php" />
-        <option value="$PROJECT_DIR$/application/modules/main/controllers/Main.php" />
         <option value="$PROJECT_DIR$/application/modules/main/views/order_vendor_detail.php" />
         <option value="$PROJECT_DIR$/application/modules/main/models/Main_model.php" />
         <option value="$PROJECT_DIR$/application/modules/main/views/order_detail.php" />
         <option value="$PROJECT_DIR$/application/modules/main/views/slip_gaji.php" />
+        <option value="$PROJECT_DIR$/application/modules/main/controllers/Main.php" />
         <option value="$PROJECT_DIR$/application/config/config.php" />
       </list>
     </option>
@@ -577,12 +578,12 @@
       <workItem from="1622176075690" duration="354000" />
       <workItem from="1622182912778" duration="2830000" />
       <workItem from="1622406894473" duration="192000" />
-      <workItem from="1622512512545" duration="3064000" />
+      <workItem from="1622512512545" duration="3503000" />
     </task>
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="1704324000" />
+    <option name="totallyTimeSpent" value="1704763000" />
   </component>
   <component name="ToolWindowManager">
     <frame x="0" y="23" width="1280" height="777" extended-state="0" />
@@ -1036,15 +1037,15 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/application/modules/main/views/slip_gaji.php">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="458">
-          <caret line="115" column="50" selection-start-line="115" selection-start-column="50" selection-end-line="115" selection-end-column="50" />
+        <state relative-caret-position="425">
+          <caret line="116" column="6" lean-forward="true" selection-start-line="110" selection-start-column="4" selection-end-line="116" selection-end-column="6" />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/application/modules/main/controllers/Main.php">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="-185">
-          <caret line="1274" column="22" selection-start-line="1274" selection-start-column="13" selection-end-line="1274" selection-end-column="22" />
+        <state relative-caret-position="302">
+          <caret line="4039" column="58" selection-start-line="4039" selection-start-column="58" selection-end-line="4039" selection-end-column="58" />
           <folding>
             <element signature="e#70#88#0#PHP" expanded="true" />
           </folding>

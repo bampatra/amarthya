@@ -4030,7 +4030,7 @@ class Main extends MX_Controller
                 $tgl_akhir = $tahun_salary."-".sprintf('%02d', $bulan_salary)."-".$temp_date->format('t');
 
                 $start = "16-".sprintf('%02d', $bulan_salary)."-".$tahun_salary;
-                $end = $temp_date->format('t').sprintf('%02d', $bulan_salary)."-".$tahun_salary;
+                $end = $temp_date->format('t')."-".sprintf('%02d', $bulan_salary)."-".$tahun_salary;
             }
 
             $data_salary = $this->Main_model->get_staff_salary($id_staff, $awal_akhir_salary, $bulan_salary, $tahun_salary, $tgl_awal, $tgl_akhir);

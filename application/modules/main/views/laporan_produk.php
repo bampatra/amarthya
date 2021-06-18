@@ -23,7 +23,7 @@
                     <button class="btn btn-primary btn-sm apply" style="margin-right: 5px">Terapkan</button>
                     <button id="export_excel" class="btn btn-warning btn-sm">Export Excel</button>
                 </div>
-            </form>bkj
+            </form>
             <div class="table-responsive">
                 <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
                     <thead>

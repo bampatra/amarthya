@@ -46,6 +46,12 @@ class Main extends MX_Controller
         $this->load->view('template/admin_footer');
     }
 
+    function join_inv_cust(){
+        $this->load->view('template/admin_header');
+        $this->load->view('join_inv_cust');
+        $this->load->view('template/admin_footer');
+    }
+
     function fb_menu(){
 
         if($this->session->userdata('is_admin') != "1" && $this->session->userdata('is_admin') != "2" && $this->session->userdata('is_admin') != "5"){
@@ -1096,8 +1102,10 @@ class Main extends MX_Controller
             redirect(base_url('main'));
         }
 
+        $data['brands'] = $this->Main_model->get_brand_database()->result_object();
+
         $this->load->view('template/admin_header');
-        $this->load->view('jurnal_umum');
+        $this->load->view('jurnal_umum', $data);
         $this->load->view('template/admin_footer');
     }
 
@@ -1925,6 +1933,7 @@ class Main extends MX_Controller
                 // kosong
             } else {
                 $data['orders'] = $data_order->result_object();
+                $data['brand_order'] = $this->get_brand($data_order->row()->brand_order);
                 $this->load->view('order_vendor_detail', $data);
             }
 
@@ -1940,8 +1949,10 @@ class Main extends MX_Controller
             redirect(base_url('main'));
         }
 
+        $data['brands'] = $this->Main_model->get_brand_database()->result_object();
+
         $this->load->view('template/admin_header');
-        $this->load->view('order_vendor_list');
+        $this->load->view('order_vendor_list', $data);
         $this->load->view('template/admin_footer');
     }
 
@@ -2239,8 +2250,10 @@ class Main extends MX_Controller
             redirect(base_url('main'));
         }
 
+        $data['brands'] = $this->Main_model->get_brand_database(true)->result_object();
+
         $this->load->view('template/admin_header');
-        $this->load->view('order_vendor_form');
+        $this->load->view('order_vendor_form', $data);
         $this->load->view('template/admin_footer');
     }
 
@@ -2456,8 +2469,10 @@ class Main extends MX_Controller
             redirect(base_url('main'));
         }
 
+        $data['brands'] = $this->Main_model->get_brand_database()->result_object();
+
         $this->load->view('template/admin_header');
-        $this->load->view('order_list');
+        $this->load->view('order_list', $data);
         $this->load->view('template/admin_footer');
     }
 
@@ -2589,13 +2604,25 @@ class Main extends MX_Controller
             $brand = "all";
         }
 
-        if(!isset($_GET['delivery'])){
-            $total = $this->Main_model->get_order_m($search, 10000000000, 0, $status, $brand)->num_rows();
-            $output['data'] = $this->Main_model->get_order_m($search, $length, $start, $status, $brand)->result_object();
+        if(isset($_GET['customer'])){
+            $customer = htmlentities($_GET['customer'], ENT_QUOTES);
+            $start_date = '2000-01-01';
+            $end_date = '3000-12-31';
+
+            $total = $this->Main_model->get_order_m_by_customer($customer, $start_date, $end_date)->num_rows();
+            $output['data'] = $this->Main_model->get_order_m_by_customer($customer, $start_date, $end_date, $length, $start)->result_object();
+
         } else {
-            $total = $this->Main_model->get_order_m_deliv($search, $length, $start, $status, $brand)->num_rows();
-            $output['data'] = $this->Main_model->get_order_m_deliv($search, $length, $start, $status, $brand)->result_object();
+
+            if(!isset($_GET['delivery'])){
+                $total = $this->Main_model->get_order_m($search, 10000000000, 0, $status, $brand)->num_rows();
+                $output['data'] = $this->Main_model->get_order_m($search, $length, $start, $status, $brand)->result_object();
+            } else {
+                $total = $this->Main_model->get_order_m_deliv($search, $length, $start, $status, $brand)->num_rows();
+                $output['data'] = $this->Main_model->get_order_m_deliv($search, $length, $start, $status, $brand)->result_object();
+            }
         }
+
 
         $output['recordsTotal'] = $output['recordsFiltered'] = $total;
 
@@ -2697,6 +2724,7 @@ class Main extends MX_Controller
                 // kosong
             } else {
                 $data['orders'] = $data_order->result_object();
+                $data['brand_order'] = $this->get_brand($data_order->row()->brand_order);
                 $this->load->view('order_detail', $data);
             }
 
@@ -2713,8 +2741,10 @@ class Main extends MX_Controller
             redirect(base_url('main'));
         }
 
+        $data['brands'] = $this->Main_model->get_brand_database(true)->result_object();
+
         $this->load->view('template/admin_header');
-        $this->load->view('order_form');
+        $this->load->view('order_form', $data);
         $this->load->view('template/admin_footer');
     }
 
@@ -3073,8 +3103,11 @@ class Main extends MX_Controller
             redirect(base_url('main'));
         }
 
+        $data['brands'] = $this->Main_model->get_brand_database()->result_object();
+        $data['brands_order_active'] = $this->Main_model->get_brand_database(true)->result_object();
+
         $this->load->view('template/admin_header');
-        $this->load->view('product');
+        $this->load->view('product', $data);
         $this->load->view('template/admin_footer');
     }
 
@@ -3669,16 +3702,12 @@ class Main extends MX_Controller
 
                 if($data_order->row()->brand_order == "KA"){
                     $pdf->Image(base_url('assets/images/logopdf.jpg'), 10, 10, 48, 22 ,'');
-                    $brand = "Kedai Amarthya";
                 } else if ($data_order->row()->brand_order == "AH"){
                     $pdf->Image(base_url('assets/images/amarthya_herbal.png'), 10, 10, 30, 30 ,'');
-                    $brand = "Amarthya Herbal";
                 } else if ($data_order->row()->brand_order == "AHF") {
                     $pdf->Image(base_url('assets/images/phonto.PNG'), 10, 10, 30, 30 ,'');
-                    $brand = "Amarthya Healthy Food";
                 } else if ($data_order->row()->brand_order == "AF") {
                     $pdf->Image(base_url('assets/images/fashion.png'), 10, 0, 48, 48 ,'');
-                    $brand = "Amarthya Fashion";
                 }
 
 
@@ -3693,13 +3722,13 @@ class Main extends MX_Controller
 
                 $pdf->SetX($x);
                 $pdf->Cell(25 ,5,'',0,0, 'R');
-                $pdf->Cell(34 ,5,$brand,0,1, 'R');//end of line
+                $pdf->Cell(34 ,5,$this->get_brand($data_order->row()->brand_order),0,1, 'R');//end of line
 
                 $pdf->SetFont('Nunito','',11);
 
                 $pdf->SetX($x);
                 $pdf->Cell(25 ,5,'',0,0, 'R');
-                $pdf->Cell(34 ,5,'+62 819-3618-1788',0,1, 'R');//end of line
+                $pdf->Cell(34 ,5,'+62 821-4575-0857',0,1, 'R');//end of line
 
                 $pdf->SetX($x);
                 $pdf->Cell(25 ,5,'',0,0, 'R');
@@ -3707,7 +3736,7 @@ class Main extends MX_Controller
 
                 $pdf->SetX($x);
                 $pdf->Cell(25 ,5,'',0,0, 'R');
-                $pdf->Cell(34 ,5,'Jalan Gelogor Indah IB, Gg Kresna No 1',0,1, 'R');//end of line
+                $pdf->Cell(34 ,5,'Jalan Drupadi No 54, Denpasar Timur',0,1, 'R');//end of line
 
                 //buat dummy cell untuk memberi jarak vertikal
                 $pdf->Cell(189 ,10,'',0,1);//end of line
@@ -3870,16 +3899,12 @@ class Main extends MX_Controller
 
                 if($data_order->row()->brand_order == "KA"){
                     $pdf->Image(base_url('assets/images/logopdf.jpg'), 10, 10, 48, 22 ,'');
-                    $brand = "Kedai Amarthya";
                 } else if ($data_order->row()->brand_order == "AH"){
                     $pdf->Image(base_url('assets/images/amarthya_herbal.png'), 10, 10, 30, 30 ,'');
-                    $brand = "Amarthya Herbal";
                 } else if ($data_order->row()->brand_order == "AHF") {
                     $pdf->Image(base_url('assets/images/phonto.PNG'), 10, 10, 30, 30 ,'');
-                    $brand = "Amarthya Healthy Food";
                 } else if ($data_order->row()->brand_order == "AF") {
                     $pdf->Image(base_url('assets/images/fashion.png'), 10, 0, 48, 48 ,'');
-                    $brand = "Amarthya Fashion";
                 }
 
                 $x = $pdf->GetX();
@@ -3893,13 +3918,13 @@ class Main extends MX_Controller
 
                 $pdf->SetX($x);
                 $pdf->Cell(25 ,5,'',0,0, 'R');
-                $pdf->Cell(34 ,5,$brand,0,1, 'R');//end of line
+                $pdf->Cell(34 ,5,$this->get_brand($data_order->row()->brand_order),0,1, 'R');//end of line
 
                 $pdf->SetFont('Nunito','',11);
 
                 $pdf->SetX($x);
                 $pdf->Cell(25 ,5,'',0,0, 'R');
-                $pdf->Cell(34 ,5,'+62 819-3618-1788',0,1, 'R');//end of line
+                $pdf->Cell(34 ,5,'+62 821-4575-0857',0,1, 'R');//end of line
 
                 $pdf->SetX($x);
                 $pdf->Cell(25 ,5,'',0,0, 'R');
@@ -3907,7 +3932,7 @@ class Main extends MX_Controller
 
                 $pdf->SetX($x);
                 $pdf->Cell(25 ,5,'',0,0, 'R');
-                $pdf->Cell(34 ,5,'Jalan Gelogor Indah IB, Gg Kresna No 1',0,1, 'R');//end of line
+                $pdf->Cell(34 ,5,'Jalan Drupadi No 54, Denpasar Timur',0,1, 'R');//end of line
 
                 //buat dummy cell untuk memberi jarak vertikal
                 $pdf->Cell(189 ,10,'',0,1);//end of line
@@ -4081,7 +4106,7 @@ class Main extends MX_Controller
 
                 $pdf->SetX($x);
                 $pdf->Cell(25 ,5,'',0,0, 'R');
-                $pdf->Cell(34 ,5,'+62 819-3618-1788',0,1, 'R');//end of line
+                $pdf->Cell(34 ,5,'+62 821-4575-0857',0,1, 'R');//end of line
 
                 $pdf->SetX($x);
                 $pdf->Cell(25 ,5,'',0,0, 'R');
@@ -4089,7 +4114,7 @@ class Main extends MX_Controller
 
                 $pdf->SetX($x);
                 $pdf->Cell(25 ,5,'',0,0, 'R');
-                $pdf->Cell(34 ,5,'Jalan Gelogor Indah IB, Gg Kresna No 1',0,1, 'R');//end of line
+                $pdf->Cell(34 ,5,'Jalan Drupadi No 54, Denpasar Timur',0,1, 'R');//end of line
 
                 //buat dummy cell untuk memberi jarak vertikal
                 $pdf->Cell(189 ,10,'',0,1);//end of line
@@ -4218,6 +4243,231 @@ class Main extends MX_Controller
         } else {
 
         }
+
+    }
+
+    function pdf_join_inv(){
+
+        $total_terbayar = 0.0;
+        $total_yang_harus_dibayar = 0.0;
+
+        $id_customer = htmlentities($_REQUEST['id_customer'], ENT_QUOTES);
+
+        // Get customer
+
+        $customer = $this->Main_model->get_customer_by_id($id_customer);
+
+        if($customer->num_rows() == 0){
+            return;
+        }
+
+
+        // ====================================
+
+        require_once APPPATH.'third_party/fpdf182/fpdf.php';
+
+        $pdf = new FPDF('P','mm','A4');
+        $pdf->AddPage();
+
+        //set font
+        $pdf->AddFont('Nunito','','Nunito-Regular.php');
+        $pdf->AddFont('Nunito','B','Nunito-Bold.php');
+
+
+        $pdf->SetFont('Nunito','B',20);
+
+        //====================== HEADER ======================
+
+        $pdf->Cell(130 ,5,'',0,0);
+
+        $pdf->Image(base_url('assets/images/logopdf.jpg'), 10, 10, 48, 22 ,'');
+
+
+        $x = $pdf->GetX();
+
+        $pdf->Cell(59 ,5,'INVOICE',0,1, 'R');//end of line
+
+        $pdf->SetFont('Nunito','B',11);
+
+        $pdf->SetX($x);
+        $pdf->Cell(59 ,5,'',0,1);//end of line
+
+        $pdf->SetX($x);
+        $pdf->Cell(25 ,5,'',0,0, 'R');
+        $pdf->Cell(34 ,5,"Amarthya Group",0,1, 'R');//end of line
+
+        $pdf->SetFont('Nunito','',11);
+
+        $pdf->SetX($x);
+        $pdf->Cell(25 ,5,'',0,0, 'R');
+        $pdf->Cell(34 ,5,'+62 821-4575-0857',0,1, 'R');//end of line
+
+        $pdf->SetX($x);
+        $pdf->Cell(25 ,5,'',0,0, 'R');
+        $pdf->Cell(34 ,5,'amarthyagroup@gmail.com',0,1, 'R');//end of line
+
+        $pdf->SetX($x);
+        $pdf->Cell(25 ,5,'',0,0, 'R');
+        $pdf->Cell(34 ,5,'Jalan Drupadi No 54, Denpasar Timur',0,1, 'R');//end of line
+
+        //buat dummy cell untuk memberi jarak vertikal
+        $pdf->Cell(189 ,10,'',0,1);//end of line
+
+        // ================ ORDER INFO ===============
+
+        $pdf->SetFont('Nunito','B',10);
+        $pdf->Cell(100 ,5,'Ditagih Kepada',0,1);//end of line
+
+        $pdf->SetFont('Nunito','',10);
+        $pdf->Cell(25 ,5,$customer->row()->nama_customer,0,0);
+        $pdf->Cell(95 ,5,'',0,0);
+        $pdf->Cell(25 ,5,"",0,1);
+
+
+
+        $pdf->Cell(25 ,5,$customer->row()->no_hp_customer,0,0);
+        $pdf->Cell(95 ,5,'',0,0);
+        $pdf->Cell(25 ,5,"Tgl Invoice",0,0);
+        $pdf->Cell(34 ,5,date("d/m/Y"),0,1);
+
+
+        //buat dummy cell untuk memberi jarak vertikal
+        $pdf->Cell(189 ,5,'',0,1);//end of line
+
+
+
+        // ================ INVOICE DETAIL ===============
+
+        $pdf->SetFont('Nunito','',9);
+
+        $list_of_IDs = array();
+
+        foreach(json_decode($_REQUEST['order_lists']) as $order){
+            array_push($list_of_IDs,$order->id_order_m);
+        }
+
+        $actual_data = $this->Main_model->get_order_m_join(implode(",", $list_of_IDs))->result_object();
+
+        $prev_order = null;
+
+        foreach($actual_data as $data){
+
+            $mysqldate = strtotime($data->tgl_order);
+            $phpdate = date( 'd/m/Y', $mysqldate );
+
+            if($prev_order != $data->no_order){
+
+                //buat dummy cell untuk memberi jarak vertikal
+                $pdf->Cell(189 ,5,'',0,1);//end of line
+
+                $pdf->setFillColor(245,245,245);
+
+                $pdf->SetFont('Nunito','',6);
+
+                $pdf->Cell(25 ,3,"Tgl Order",'',0,'L', TRUE);
+                $pdf->Cell(67 ,3,"No Order",'',0, 'L', TRUE);
+                $pdf->Cell(28 ,3,"Brand",'',0,'L', TRUE);
+                $pdf->Cell(28 ,3,"Payment",'',0,'R', TRUE);
+                $pdf->Cell(42 ,3,"Total Order (termasuk Ongkir)",'',1, 'R', TRUE);
+
+                $pdf->SetFont('Nunito','',8);
+
+                $pdf->Cell(25 ,5,$phpdate,'',0,'L', TRUE);
+                $pdf->Cell(67 ,5,$data->no_order,'',0, 'L', TRUE);
+                $pdf->Cell(28 ,5,$this->get_brand($data->brand_order),'',0,'L', TRUE);
+
+                if($data->is_paid == '1'){
+                    $pdf->Cell(28 ,5,"Lunas",'',0,'R', TRUE);
+                    $total_terbayar += floatval($data->grand_total_order);
+                } else {
+                    $pdf->Cell(28 ,5,"Belum Bayar",'',0,'R', TRUE);
+                    $total_yang_harus_dibayar += floatval($data->grand_total_order);
+                }
+
+
+                $pdf->Cell(42 ,5,"Rp. " . number_format($data->grand_total_order,2,',','.'),'',1, 'R', TRUE);
+
+                // ================ INVOICE HEADER ===============
+
+                //buat dummy cell untuk memberi jarak vertikal
+                $pdf->Cell(189 ,1,'',0,1);//end of line
+
+                $pdf->setFillColor(222,237,247);
+                $pdf->Cell(25 ,5,'','',0,'L', FALSE);
+                $pdf->Cell(67 ,5,'Barang','',0, 'L', TRUE);
+                $pdf->Cell(28 ,5,'Harga','',0,'L', TRUE);
+                $pdf->Cell(28 ,5,'Qty','',0,'R', TRUE);
+                $pdf->Cell(42 ,5,'Total','',1, 'R', TRUE);//end of line
+
+                if($data->is_ongkir_kas == '0' && $data->ongkir_order != '0'){
+                    $pdf->setFillColor(255,255,255);
+                    $pdf->Cell(25 ,6,"",'',0,'L', TRUE);
+                    $pdf->Cell(67 ,6,"Ongkir",'',0, 'L', TRUE);
+                    $pdf->Cell(56 ,6,"",'',0, 'L', TRUE);
+                    $pdf->Cell(42 ,5,"Rp. " . number_format($data->ongkir_order,2,',','.'),'',1, 'R', TRUE);//end of line
+                }
+
+                if($data->diskon_order != '0'){
+                    $pdf->setFillColor(255,255,255);
+                    $pdf->Cell(25 ,6,"",'',0,'L', TRUE);
+                    $pdf->Cell(67 ,6,"Diskon",'',0, 'L', TRUE);
+                    $pdf->Cell(56 ,6,"",'',0, 'L', TRUE);
+                    $pdf->Cell(42 ,5,"(Rp. " . number_format($data->diskon_order,2,',','.').")",'',1, 'R', TRUE);//end of line
+                }
+
+                $prev_order = $data->no_order;
+            }
+
+            $pdf->setFillColor(255,255,255);
+            $pdf->Cell(25 ,6,"",'',0,'L', TRUE);
+            $pdf->Cell(67 ,6,$data->nama_product,'',0, 'L', TRUE);
+            $pdf->Cell(28 ,5,"Rp. " . number_format($data->harga_order,2,',','.'),'',0,'L', TRUE);
+            $pdf->Cell(28 ,5,$data->qty_order,'',0,'R', TRUE);
+            $pdf->Cell(42 ,5,"Rp. " . number_format($data->total_order,2,',','.'),'',1, 'R', TRUE);//end of line
+
+
+
+        }
+
+        // ================ PAYMENT DETAIL ===============
+
+        //buat dummy cell untuk memberi jarak vertikal
+        $pdf->Cell(189 ,5,'',0,1);//end of line
+
+        $payment_detail_height = 5;
+
+        $pdf->SetFont('Nunito','B',8);
+        $pdf->Cell(130 ,$payment_detail_height,'Instruksi Pembayaran',0,1);
+
+        $pdf->SetFont('Nunito','',8);
+
+        $pdf->Cell(130 ,$payment_detail_height,'MNC Bank 206010001126284 An. Ngurah Bramantha Patra',0,1);
+
+        $pdf->SetFont('Nunito','B',8);
+
+        $pdf->Cell(110 ,$payment_detail_height,'',0,0);
+        $pdf->Cell(45 ,$payment_detail_height,'Total Terbayar','',0);
+        $pdf->Cell(34 ,$payment_detail_height,"Rp. " . number_format($total_terbayar,2,',','.'),'',1,'R');//end of line
+
+        $pdf->Cell(110 ,$payment_detail_height,'',0,0);
+        $pdf->Cell(45 ,$payment_detail_height,'Total yang Harus Dibayar','B',0);
+        $pdf->Cell(34 ,$payment_detail_height,"Rp. " . number_format($total_yang_harus_dibayar,2,',','.'),'B',1,'R');//end of line
+
+        // ================ SIGNATURE ===============
+
+
+        $pdf->Image(base_url('assets/images/ttdarina.png'), 20, $pdf->GetY()+5, 72, 33 ,'');
+
+        $pdf->Cell(75 ,33,'','',1);//end of line
+        $pdf->Cell(15 ,1,'','',0);//end of line
+        $pdf->Cell(50 ,1,'','T',0);//end of line
+        $pdf->Cell(15 ,1,'','',1);//end of line
+
+        $pdf->SetFont('Nunito','',9);
+        $pdf->Cell(75 ,5,date("d/m/Y"),'',0, 'C');
+
+        $pdf->Output("I", "Invoice Gabungan - ".$customer->row()->nama_customer.".pdf", true);
+
 
     }
 
@@ -5001,7 +5251,7 @@ class Main extends MX_Controller
         } else if ($brand == "AF") {
             return "Amarthya Fashion";
         } else if ($brand == "AHF") {
-            return "Amarthya Healthy Food";
+            return "Amarthya Eatery";
         } else if ($brand == "AH") {
             return "Amarthya Herbal";
         } else if ($brand == "all"){

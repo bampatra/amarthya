@@ -22,12 +22,12 @@
                     </div>
                     <div class="form-group">
                         <select id="brand_product" name="brand_product" class="form-control form-control-sm form-active-control" data-live-search="true">
-                            <option value="all">Semua Brand</option>
-                            <option value="KA"> Kedai Amarthya </option>
-                            <option value="AF"> Amarthya Fashion </option>
-                            <option value="AHF"> Amarthya Healthy Food </option>
-                            <option value="AH"> Amarthya Herbal </option>
-                            <option value="BAHAN"> Bahan Eatery </option>
+                            <?php
+                            foreach($brands as $brand){
+                                echo "<option value='".$brand->kode_brand."'>".$brand->nama_brand."</option>";
+                            }
+
+                            ?>
                         </select>
                     </div>
                 </form>

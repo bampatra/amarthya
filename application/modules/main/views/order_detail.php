@@ -6,17 +6,8 @@
     <!-- Page Heading -->
     <h1 class="h3 mb-2 text-gray-800">Detail Order</h1>
     <span>
-        <?php   if($orders[0]->brand_order == 'KA'){
-            echo "Kedai Amarthya";
-        } else if ($orders[0]->brand_order == 'AHF'){
-            echo "Amarthya Healthy Food";
-        } else if ($orders[0]->brand_order == 'AH'){
-            echo "Amarthya Herbal";
-        } else if ($orders[0]->brand_order == 'AF'){
-            echo "Amarthya Fashion";
-        }
 
-        ?>
+        <?php echo $brand_order; ?>
     </span>
     <br><br>
     <!-- DataTales Example -->

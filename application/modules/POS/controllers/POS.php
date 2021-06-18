@@ -17,7 +17,7 @@ class POS extends MX_Controller
 
     function front_staff(){
 
-        $data['file_destination'] = 'POS';
+        $data['file_destination'] = 'front_staff';
         $this->load->view('index', $data);
     }
 

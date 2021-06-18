@@ -37,11 +37,12 @@
                 <label class="col-sm-3 col-form-label col-form-label-sm">Brand</label>
                 <div class="col-sm-9">
                     <select id="brand_order" name="brand_order" class="form-control form-active-control form-control-sm">
-                        <option value="KA"> Kedai Amarthya </option>
-                        <option value="AF"> Amarthya Fashion </option>
-                        <option value="AHF"> Amarthya Healthy Food </option>
-                        <option value="AH"> Amarthya Herbal </option>
-                        <option value="BAHAN"> Bahan Eatery </option>
+                        <?php
+                        foreach($brands as $brand){
+                            echo "<option value='".$brand->kode_brand."'>".$brand->nama_brand."</option>";
+                        }
+
+                        ?>
                     </select>
                 </div>
                 <div class="invalid-feedback invalid-brand">Data tidak valid</div>

@@ -30,12 +30,12 @@
             <form class="form-inline">
                 <div class="form-group">
                     <select id="brand" name="brand" class="form-control form-control-sm" data-live-search="true" style="margin-right: 5px">
-                        <option value="all">Semua Brand</option>
-                        <option value="KA"> Kedai Amarthya </option>
-                        <option value="AF"> Amarthya Fashion </option>
-                        <option value="AHF"> Amarthya Healthy Food </option>
-                        <option value="AH"> Amarthya Herbal </option>
-                        <option value="BAHAN"> Bahan Eatery </option>
+                        <?php
+                            foreach($brands as $brand){
+                                echo "<option value='".$brand->kode_brand."'>".$brand->nama_brand."</option>";
+                            }
+
+                        ?>
                     </select>
                     <select id="tipe_pembayaran" name="tipe_pembayaran" class="form-control form-control-sm" data-live-search="true" style="margin-right: 5px">
                         <option value="all">Semua Pembayaran</option>

@@ -285,6 +285,7 @@
                     <h6 class="collapse-header">Option:</h6>
                     <a class="collapse-item" href="<?php echo base_url('main/order_form')?>">Form</a>
                     <a class="collapse-item" href="<?php echo base_url('main/order_list')?>">Semua Order</a>
+                    <a class="collapse-item" href="<?php echo base_url('main/join_inv_cust')?>">Join Invoice</a>
                 </div>
             </div>
         </li>

@@ -43,7 +43,11 @@
         color: black;
     }
 
+     .dataTable > thead > tr > th[class*="sort"]::after{display: none}
+     .dataTable > thead > tr > th[class*="sort"]::before{display: none}
+
 </style>
+
 
 <script>
     document.title = "Order Portal - Amarthya Eatery";
@@ -62,7 +66,8 @@
         searching: true,
         bInfo: false,
         bSort: false,
-        ordering:false,
+        ordering: false,
+        orderable: false,
         language: {
             search: ""
         },

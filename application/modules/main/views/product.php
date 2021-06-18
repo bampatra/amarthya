@@ -19,11 +19,12 @@
                 <form class="form-inline" style="margin-bottom: 3px;">
                     <div class="form-group" style="margin-right: 5px;">
                         <select id="brand_product_filter" name="brand_product_filter" class="form-control form-control-sm" data-live-search="true">
-                            <option value="all">Semua Brand</option>
-                            <option value="KA"> Kedai Amarthya </option>
-                            <option value="AF"> Amarthya Fashion </option>
-                            <option value="AHF"> Amarthya Healthy Food </option>
-                            <option value="AH"> Amarthya Herbal </option>
+                            <?php
+                            foreach($brands as $brand){
+                                echo "<option value='".$brand->kode_brand."'>".$brand->nama_brand."</option>";
+                            }
+
+                            ?>
                         </select>
                     </div>
                     <div class="form-group" style="margin-right: 5px;">
@@ -91,10 +92,12 @@
                         <div class="col-md-8 mb-3">
                             <label class="col-form-label">Brand</label>
                             <select id="brand_product" name="brand_product" class="form-control form-active-control">
-                                <option value="KA"> Kedai Amarthya </option>
-                                <option value="AF"> Amarthya Fashion </option>
-                                <option value="AHF"> Amarthya Healthy Food </option>
-                                <option value="AH"> Amarthya Herbal </option>
+                                <?php
+                                foreach($brands_order_active as $brand){
+                                    echo "<option value='".$brand->kode_brand."'>".$brand->nama_brand."</option>";
+                                }
+
+                                ?>
                             </select>
                             <div class="invalid-feedback invalid-brand">Data tidak valid</div>
                         </div>

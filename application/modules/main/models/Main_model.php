@@ -3,6 +3,18 @@ class Main_model extends CI_Model
 {
 
 
+    function get_brand_database($order_active = false){
+        $sql = "SELECT * FROM brand";
+
+        if($order_active){
+            $sql .= " WHERE order_active = '1'";
+        }
+
+        $query = $this->db->query($sql);
+        return $query;
+
+    }
+
     function get_bahan_by_menu($id_menu){
         $sql = "SELECT a.id_menu_bahan_eatery, a.id_menu, a.qty_bahan, a.id_product, b.nama_product, b.satuan_product, b.HP_product	
                 FROM menu_bahan_eatery a
@@ -15,9 +27,15 @@ class Main_model extends CI_Model
     }
 
     function get_menu_eatery($kategori = "all", $search = null, $length = 10000000000, $start = 0){
-        $sql = "SELECT a.*, b.nama_kategori
+        $sql = "SELECT a.*, b.nama_kategori, c.harga_bahan as HP_menu
                 FROM menu_eatery a
                 INNER JOIN kategori_eatery b ON a.kategori_menu = b.id_kategori_eatery
+                INNER JOIN (
+                    SELECT a.id_menu, a.qty_bahan, SUM(a.qty_bahan * b.HP_product) AS harga_bahan
+                    FROM menu_bahan_eatery a
+                    INNER JOIN product b ON a.id_product = b.id_product
+                    GROUP BY a.id_menu
+                )c ON a.id_menu = c.id_menu
                 WHERE (a.kategori_menu = '{$kategori}' || 'all' = '{$kategori}')
                     AND a.active_menu = '1'";
 
@@ -926,7 +944,7 @@ class Main_model extends CI_Model
                 WHERE id_customer = '{$id_customer}'
                     AND (tgl_order BETWEEN '{$start_date}' AND '{$end_date}')
                     AND status_order = '1'
-                ORDER BY tgl_order DESC LIMIT {$start}, {$length}";
+                ORDER BY tgl_order DESC, id_order_m DESC LIMIT {$start}, {$length}";
 
         $query = $this->db->query($sql);
         return $query;
@@ -937,6 +955,17 @@ class Main_model extends CI_Model
                 FROM order_m a
                 INNER JOIN customer b ON a.id_customer = b.id_customer
                 WHERE a.id_order_m = '".$id_order_m."'";
+
+        $query = $this->db->query($sql);
+        return $query;
+    }
+
+    function get_order_m_join($list_of_IDs){
+        $sql = "SELECT * 
+                FROM order_s a
+                INNER JOIN product b ON a.id_product = b.id_product
+                INNER JOIN order_m c ON a.id_order_m = c.id_order_m
+                WHERE a.id_order_m IN ($list_of_IDs)";
 
         $query = $this->db->query($sql);
         return $query;

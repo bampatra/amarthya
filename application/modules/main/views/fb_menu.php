@@ -32,6 +32,7 @@
                         <th style="display: none;"> ID </th>
                         <th> Nama Menu </th>
                         <th> Kategori </th>
+                        <th> HP </th>
                         <th> HJ </th>
                     </tr>
                     </thead>
@@ -84,6 +85,7 @@
             serverSide: true,
             responsive: true,
             lengthChange: false,
+            pageLength: 20,
             searching: true,
             bInfo: false,
             language: {
@@ -102,6 +104,12 @@
                 {"data": "nama_menu"},
                 {"data": "nama_kategori"},
                 {
+                    "data": {"HP_menu":"HP_menu"},
+                    mRender : function(data, type, full) {
+                        return convertToRupiah(data.HP_menu)
+                    }
+                },
+                {
                     "data": {"HJ_menu":"HJ_menu"},
                     mRender : function(data, type, full) {
                         return convertToRupiah(data.HJ_menu)
@@ -119,7 +127,6 @@
 
 
     $('#dataTable').on( 'click', 'tbody tr', function () {
-        $('body').addClass('modal-open');
 
         data = $('#dataTable').DataTable().row( this ).data();
         window.open(admin_url + 'fb_costing?menu=' + data.id_menu)

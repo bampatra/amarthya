@@ -4556,64 +4556,86 @@ class Main extends MX_Controller
 
             //================== Product Excel ===============
 
-            date_default_timezone_set('Asia/Singapore');
+//            date_default_timezone_set('Asia/Singapore');
+//
+//            foreach($rec_tbl as $data){
+//                set_time_limit(0);
+//
+//                $nama_product = htmlentities(trim($data[1]));
+//                $SKU_product = htmlentities(trim($data[2]));
+//                $satuan_product = htmlentities(trim($data[3]));
+//                $HP_product = htmlentities(trim($data[4]));
+//                $HR_product = htmlentities(trim($data[5]));
+//                $HJ_product = htmlentities(trim($data[6]));
+//                $brand_product = "AF";
+//
+//                $stok_in_out = htmlentities(trim($data[7]));
+//
+//                $this->db->trans_begin();
+//
+//                // add product
+//                $product_data = compact('nama_product', 'SKU_product', 'satuan_product', 'HP_product',
+//                                        'HR_product', 'HJ_product', 'brand_product');
+//
+//                $id_product = $this->Main_model->add_product($product_data);
+//
+//                if($id_product){
+//
+//                    $tipe_in_out = "IN";
+//                    $tgl_in = date('Y-m-d H:i:s');
+//
+//                    $catatan_in_out = "";
+//                    $ref_order_m = "";
+//                    $tgl_out = "";
+//                    $tgl_expired = "";
+//
+//
+//                    $data_in_out = compact('tipe_in_out', 'stok_in_out', 'tgl_in', 'id_product', 'catatan_in_out', 'ref_order_m',
+//                        'tgl_out', 'tgl_expired');
+//
+//                    $id_stok_in_out = $this->Main_model->add_stok_in_out($data_in_out);
+//
+//                    if(!$id_stok_in_out){
+//                        $this->db->trans_rollback();
+//                        $return_arr = array("Status" => 'ERROR', "Message" => 'Gagal menambahkan in out');
+//                        echo json_encode($return_arr);
+//                        return;
+//                    } else {
+//                        $this->db->trans_commit();
+//                    }
+//
+//                } else {
+//                    $this->db->trans_rollback();
+//                    $return_arr = array("Status" => 'ERROR', "Message" => 'Gagal menambahkan product');
+//                    echo json_encode($return_arr);
+//                    return;
+//
+//                }
+//
+//            }
+
+            //================== Update HJ Menu ===============
+
+            $this->db->trans_begin();
 
             foreach($rec_tbl as $data){
                 set_time_limit(0);
 
-                $nama_product = htmlentities(trim($data[1]));
-                $SKU_product = htmlentities(trim($data[2]));
-                $satuan_product = htmlentities(trim($data[3]));
-                $HP_product = htmlentities(trim($data[4]));
-                $HR_product = htmlentities(trim($data[5]));
-                $HJ_product = htmlentities(trim($data[6]));
-                $brand_product = "AF";
+                $id_menu = htmlentities(trim($data[0]));
+                $HJ_menu = htmlentities(trim($data[6]));
 
-                $stok_in_out = htmlentities(trim($data[7]));
+                $updated_data = compact('HJ_menu');
 
-                $this->db->trans_begin();
-
-                // add product
-                $product_data = compact('nama_product', 'SKU_product', 'satuan_product', 'HP_product',
-                                        'HR_product', 'HJ_product', 'brand_product');
-
-                $id_product = $this->Main_model->add_product($product_data);
-
-                if($id_product){
-
-                    $tipe_in_out = "IN";
-                    $tgl_in = date('Y-m-d H:i:s');
-
-                    $catatan_in_out = "";
-                    $ref_order_m = "";
-                    $tgl_out = "";
-                    $tgl_expired = "";
-
-
-                    $data_in_out = compact('tipe_in_out', 'stok_in_out', 'tgl_in', 'id_product', 'catatan_in_out', 'ref_order_m',
-                        'tgl_out', 'tgl_expired');
-
-                    $id_stok_in_out = $this->Main_model->add_stok_in_out($data_in_out);
-
-                    if(!$id_stok_in_out){
-                        $this->db->trans_rollback();
-                        $return_arr = array("Status" => 'ERROR', "Message" => 'Gagal menambahkan in out');
-                        echo json_encode($return_arr);
-                        return;
-                    } else {
-                        $this->db->trans_commit();
-                    }
-
-                } else {
+                if(!$this->Main_model->update_menu_eatery($updated_data, $id_menu)){
                     $this->db->trans_rollback();
-                    $return_arr = array("Status" => 'ERROR', "Message" => 'Gagal menambahkan product');
+                    $return_arr = array("Status" => 'ERROR', "Message" => 'Error');
                     echo json_encode($return_arr);
-                    return;
-
                 }
+
 
             }
 
+            $this->db->trans_commit();
             $return_arr = array("Status" => 'OK', "Message" => 'Done');
             echo json_encode($return_arr);
 

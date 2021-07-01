@@ -353,6 +353,8 @@
                             return "Amarthya Healthy Food"
                         } else if (data.brand_order == "AH") {
                             return "Amarthya Herbal"
+                        } else {
+                            return "";
                         }
 
                     }

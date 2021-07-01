@@ -62,7 +62,7 @@
                         <div class="form-group row">
                             <label class="col-sm-3 col-form-label col-form-label-sm">Deskripsi</label>
                             <div class="col-sm-8">
-                                <textarea id="deskripsi_menu"  name="deskripsi_menu" class="form-control form-active-control form-control-sm" value="<?php if(isset($_GET['menu'])){ echo $master->deskripsi_menu; }?>"></textarea>
+                                <textarea id="deskripsi_menu"  name="deskripsi_menu" class="form-control form-active-control form-control-sm"><?php if(isset($_GET['menu'])){ echo $master->deskripsi_menu; }?></textarea>
                             </div>
                         </div>
                     </div>

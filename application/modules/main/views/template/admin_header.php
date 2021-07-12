@@ -274,6 +274,19 @@
             </a>
         </li>
 
+        <li class="nav-item">
+            <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseEatery" aria-expanded="true" aria-controls="collapseMaster">
+                <i class="fas fa-fw fa-cutlery"></i>
+                <span style="font-size: 11px !important">Eatery</span>
+            </a>
+            <div id="collapseEatery" class="collapse" aria-labelledby="headingTwo" data-parent="#accordionSidebar">
+                <div class="bg-white py-2 collapse-inner rounded">
+                    <h6 class="collapse-header">Option:</h6>
+                    <a class="collapse-item" href="<?php echo base_url('main/POS_eatery')?>">POS</a>
+                </div>
+            </div>
+        </li>
+
         <?php if($this->session->userdata('is_admin') == "1" || $this->session->userdata('is_admin') == "2") { ?>
         <li class="nav-item">
             <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseOrder" aria-expanded="true" aria-controls="collapseMaster">
@@ -408,8 +421,6 @@
         border-radius: 5px;
         padding: 15px 30px;
         margin-top:10px
-
-
     }
 
     .green-line{
@@ -436,6 +447,12 @@
             padding: 15px 20px;
         }
     }
+
+    .input-rupiah {
+        text-align: right;
+    }
+
+
 </style>
 
 <style>
@@ -961,7 +978,7 @@
         var rupiah = '';
         var angkarev = angka.toString().split('').reverse().join('');
         for(var i = 0; i < angkarev.length; i++) if(i%3 == 0) rupiah += angkarev.substr(i,3)+'.';
-        return 'Rp. '+rupiah.split('',rupiah.length-1).reverse().join('')+',00';
+        return 'Rp. '+rupiah.split('',rupiah.length-1).reverse().join('');
     }
 
     function isNumber(evt) {

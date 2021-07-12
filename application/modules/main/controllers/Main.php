@@ -1,8 +1,6 @@
 <?php
 defined('BASEPATH') OR exit('No direct script access allowed');
-use Dompdf\Dompdf;
-use Dompdf\Options;
-use Spipu\Html2Pdf\Html2Pdf;
+use \Mpdf\Mpdf;
 
 class Main extends MX_Controller
 {
@@ -44,6 +42,272 @@ class Main extends MX_Controller
         $this->load->view('template/admin_header');
         $this->load->view('index', $data);
         $this->load->view('template/admin_footer');
+    }
+
+    function POS_eatery(){
+
+        $data['metode_pembayaran_list'] = $this->Main_model->get_metode_pembayaran()->result_object();
+        $data['staffs'] = $this->Main_model->get_staff()->result_object();
+
+        $this->load->view('template/admin_header');
+        $this->load->view('POS_eatery', $data);
+        $this->load->view('template/admin_footer');
+    }
+
+    function POS_transaksi_list(){
+        $data[] = "";
+
+        $this->load->view('template/admin_header');
+        $this->load->view('POS_transaksi_list', $data);
+        $this->load->view('template/admin_footer');
+    }
+
+    function POS_transaksi_detail(){
+
+        $this->load->view('template/admin_header');
+
+        if(isset($_GET['no'])){
+
+            $data_order = $this->Main_model->get_POS_transaksi_detail(htmlentities($_GET['no'], ENT_QUOTES));
+
+            if($data_order->num_rows() == 0){
+                // kosong
+            } else {
+                $data['orders'] = $data_order->result_object();
+//                $this->load->view('POS_transaksi_detail', $data);
+            }
+
+        } else {
+            // kosong
+        }
+
+        $this->load->view('template/admin_footer');
+    }
+
+    function get_order_eatery_m(){
+
+        $draw = $_REQUEST['draw'];
+        $length = $_REQUEST['length'];
+        $start = $_REQUEST['start'];
+        $search = trim(htmlentities($_REQUEST['search']["value"], ENT_QUOTES));
+
+
+        if(isset($_GET['status'])){
+            $status = htmlentities($_GET['status'], ENT_QUOTES);
+        } else {
+            $status = "all";
+        }
+
+        $total = $this->Main_model->get_order_eatery_m()->num_rows();
+
+        $output = array();
+        $output['draw'] = $draw;
+        $output['recordsTotal'] = $output['recordsFiltered'] = $total;
+        $output['data']=array();
+
+
+        $output['data'] = $this->Main_model->get_order_eatery_m($search, $length, $start)->result_object();
+        echo json_encode($output);
+        return;
+
+    }
+
+    function add_order_eatery(){
+
+//        $return_arr = array("Status" => 'OK', "Message" => "Berhasil");
+//        echo json_encode($return_arr);
+//        return;
+
+        if($this->session->userdata('is_admin') != "1" && $this->session->userdata('is_admin') != "2" ){
+            redirect(base_url('main'));
+        }
+
+        date_default_timezone_set('Asia/Singapore');
+
+        if(isset($_GET['savelater'])){
+            if($_GET['savelater'] == 'true'){
+                $savelater = true;
+                $is_paid = '0';
+            } else {
+                $savelater = false;
+                $is_paid = '1';
+            }
+        } else {
+                $savelater = false;
+                $is_paid = '1';
+        }
+
+        $no_order_eatery = uniqid('E');
+        $jenis_transaksi = trim(htmlentities($_REQUEST['jenis_transaksi'], ENT_QUOTES));
+        $catatan_informasi = trim(htmlentities($_REQUEST['catatan_informasi'], ENT_QUOTES));
+        $catatan_order = trim(htmlentities($_REQUEST['catatan_order'], ENT_QUOTES));
+        $subtotal_order = 0.0;
+        $ongkir_order = trim(htmlentities($_REQUEST['hidden_ongkir_order'], ENT_QUOTES));
+        $is_ongkir_kas = filter_var($_REQUEST['is_ongkir_kas'], FILTER_VALIDATE_BOOLEAN);
+        $promosi = trim(htmlentities($_REQUEST['promosi'], ENT_QUOTES));
+        $nominal_promosi = trim(htmlentities($_REQUEST['hidden_nominal_promosi'], ENT_QUOTES));
+        $persen_promosi = trim(htmlentities($_REQUEST['persen_promosi'], ENT_QUOTES));
+        $metode_pembayaran = trim(htmlentities($_REQUEST['metode_pembayaran'], ENT_QUOTES));
+        $nominal_bayar = trim(htmlentities($_REQUEST['hidden_nominal_bayar'], ENT_QUOTES));
+        $kembalian_bayar = 0.0;
+        $jenis_kartu = trim(htmlentities($_REQUEST['jenis_kartu'], ENT_QUOTES));
+        $no_kartu = trim(htmlentities($_REQUEST['no_kartu'], ENT_QUOTES));
+        $approval_kartu = trim(htmlentities($_REQUEST['approval_kartu'], ENT_QUOTES));
+        $platform_QRIS = trim(htmlentities($_REQUEST['platform_QRIS'], ENT_QUOTES));
+        $no_QRIS = trim(htmlentities($_REQUEST['no_QRIS'], ENT_QUOTES));
+        $approval_QRIS = trim(htmlentities($_REQUEST['approval_QRIS'], ENT_QUOTES));
+        $tax_order = 0.0;
+        $service_order = 0.0;
+        $grand_total_order = 0.0;
+        $staff_order = trim(htmlentities($_REQUEST['staff_order'], ENT_QUOTES));
+        $input_username = $this->session->userdata('username');
+        $tgl_order = date("Y-m-d h:i:s");
+
+        // ERROR    : if no staff
+        if($this->Main_model->get_staff_by_id($staff_order)->num_rows() == 0){
+            $return_arr = array("Status" => 'ERROR', "Message" => 'Staff tidak valid');
+            echo json_encode($return_arr);
+            return;
+        }
+
+        // VALIDATION   : Catatan informasi
+        if($jenis_transaksi != "Delivery" && empty($catatan_informasi)){
+            if($jenis_transaksi == "Dine In"){
+                $status = "Nomor Meja";
+            } else if($jenis_transaksi == "Take Away"){
+                $status = "Nama Customer";
+            } else if($jenis_transaksi == "GrabFood" || $jenis_transaksi == "GoFood"){
+                $status = "No. Pesanan dan Nama Driver";
+            }
+
+            $return_arr = array("Status" => 'ERROR', "Message" => "$status tidak boleh kosong!");
+            echo json_encode($return_arr);
+            return;
+        }
+
+        // ERROR    : if not order
+        if(!isset($_REQUEST['order_s'])){
+            $return_arr = array("Status" => 'ERROR', "Message" => 'Tidak ada pesanan');
+            echo json_encode($return_arr);
+            return;
+        }
+
+        if(!$savelater){
+            // VALIDATION   : metode pembayaran
+            if($metode_pembayaran == "cash"){
+                if(!is_numeric($nominal_bayar) || $nominal_bayar <= 0 ){
+                    $return_arr = array("Status" => 'ERROR', "Message" => 'Detail pembayaran invalid');
+                    echo json_encode($return_arr);
+                    return;
+                }
+            } else if($metode_pembayaran == "edc-bca" || $metode_pembayaran == "edc-mandiri") {
+                if(empty($jenis_kartu) || empty($no_kartu) || empty($approval_kartu)){
+                    $return_arr = array("Status" => 'ERROR', "Message" => 'Detail pembayaran invalid');
+                    echo json_encode($return_arr);
+                    return;
+                }
+            } else if($metode_pembayaran == "qris"){
+                if(empty($platform_QRIS) || empty($no_QRIS) || empty($approval_QRIS)){
+                    $return_arr = array("Status" => 'ERROR', "Message" => 'Detail pembayaran invalid');
+                    echo json_encode($return_arr);
+                    return;
+                }
+            }
+        }
+
+        if($metode_pembayaran == "none"){
+            $return_arr = array("Status" => 'ERROR', "Message" => 'Mohon pilih metode pembayaran');
+            echo json_encode($return_arr);
+            return;
+        }
+
+        $is_ongkir_kas = ($is_ongkir_kas == true ? "1" : "0");
+
+        $data_m = compact('no_order_eatery', 'jenis_transaksi', 'catatan_informasi', 'catatan_order',
+            'subtotal_order', 'ongkir_order', 'is_ongkir_kas', 'promosi', 'nominal_promosi', 'persen_promosi',
+            'metode_pembayaran', 'nominal_bayar', 'kembalian_bayar', 'jenis_kartu', 'no_kartu', 'approval_kartu',
+            'platform_QRIS', 'no_QRIS', 'approval_QRIS', 'tax_order', 'service_order', 'grand_total_order',
+            'staff_order', 'input_username', 'tgl_order', 'is_paid');
+
+        $this->db->trans_begin();
+
+        $id_order_eatery_m = $this->Main_model->add_order_eatery_m($data_m);
+
+        if(!$id_order_eatery_m){
+            $this->db->trans_rollback();
+            $return_arr = array("Status" => 'ERROR', "Message" => 'Terjadi kesalahan sistem. Hubungi Admin (code: form_1)');
+            echo json_encode($return_arr);
+            return;
+        }
+
+
+        foreach($_REQUEST['order_s'] as $order){
+            $is_free = filter_var($order['is_free'], FILTER_VALIDATE_BOOLEAN);
+
+            $id_menu = $order['id_menu'];
+            $qty_menu = $order['qty_order'];
+
+
+            if(!$is_free){
+                $get_price = $this->Main_model->get_menu_price($id_menu)->row();
+
+                if($jenis_transaksi == "GrabFood" || $jenis_transaksi == "GoFood"){
+                    $HJ_menu = $get_price->HJ_online_menu;
+                } else {
+                    $HJ_menu = $get_price->HJ_menu;
+                }
+
+                $total_order = floatval($qty_menu) * floatval($HJ_menu);
+            } else {
+                $HJ_menu = 0;
+                $total_order = 0;
+            }
+
+            $subtotal_order += $total_order;
+
+            $is_free = ($is_free == true ? "1" : "0");
+
+            $data_s = compact('id_order_eatery_m', 'id_menu', 'HJ_menu', 'qty_menu', 'is_free');
+
+            $id_order_eatery_s = $this->Main_model->add_order_eatery_s($data_s);
+
+            if(!$id_order_eatery_s){
+                $this->db->trans_rollback();
+                $return_arr = array("Status" => 'ERROR', "Message" => 'Terjadi kesalahan sistem. Hubungi Admin (code: form_2)');
+                echo json_encode($return_arr);
+                return;
+            }
+        }
+
+        $tax_order = floatval($subtotal_order) * 10 / 100;
+        $service_order = floatval($subtotal_order) * 5 / 100;
+
+        // update price
+        if(filter_var($is_ongkir_kas, FILTER_VALIDATE_BOOLEAN)){
+            $grand_total_order = floatval($subtotal_order)  - floatval($nominal_promosi);
+        } else {
+            $grand_total_order = floatval($subtotal_order) + floatval($ongkir_order) - floatval($nominal_promosi);
+        }
+
+        $tax_and_service = floatval($tax_order) + floatval($service_order);
+        $grand_total_order += $tax_and_service;
+
+        if($metode_pembayaran == "cash"){
+            $kembalian_bayar = floatval($nominal_bayar) - floatval($grand_total_order);
+        }
+
+        $data_m_update = compact('subtotal_order', 'grand_total_order', 'tax_order', 'service_order', 'kembalian_bayar');
+
+        if($this->Main_model->update_order_eatery_m($data_m_update, $id_order_eatery_m)){
+            $this->db->trans_commit();
+            $return_arr = array("Status" => 'OK', "Message" => $no_order_eatery);
+        } else {
+            $return_arr = array("Status" => 'ERROR', "Message" => 'Terjadi kesalahan sistem. Hubungi Admin (code: form_3)');
+        }
+
+
+        echo json_encode($return_arr);
+
     }
 
     function join_inv_cust(){
@@ -3682,10 +3946,6 @@ class Main extends MX_Controller
 
                 $data = $data_order->result_object();
 
-//                $html2pdf = new Html2Pdf('P','A4','fr', true, 'UTF-8', array(15, 15, 15, 15), false);
-//                $html2pdf->writeHTML($this->load->view('template/invoice', $data, true));
-//                $html2pdf->output();
-
                 $pdf = new FPDF('P','mm','A4');
                 $pdf->AddPage();
 
@@ -3878,10 +4138,6 @@ class Main extends MX_Controller
             } else {
 
                 $data = $data_order->result_object();
-
-//                $html2pdf = new Html2Pdf('P','A4','fr', true, 'UTF-8', array(15, 15, 15, 15), false);
-//                $html2pdf->writeHTML($this->load->view('template/invoice', $data, true));
-//                $html2pdf->output();
 
                 $pdf = new FPDF('P','mm','A4');
                 $pdf->AddPage();
@@ -4491,7 +4747,7 @@ class Main extends MX_Controller
             $media = $this->upload->data();
             $inputFileName = 'assets/upload/excel/'.$media['file_name'];
             $isheet = 0;
-            $irow = 3;
+            $irow = 2;
             $icol = 'A';
 
             try {
@@ -4622,9 +4878,9 @@ class Main extends MX_Controller
                 set_time_limit(0);
 
                 $id_menu = htmlentities(trim($data[0]));
-                $HJ_menu = htmlentities(trim($data[6]));
+                $HJ_online_menu = htmlentities(trim($data[11]));
 
-                $updated_data = compact('HJ_menu');
+                $updated_data = compact('HJ_online_menu');
 
                 if(!$this->Main_model->update_menu_eatery($updated_data, $id_menu)){
                     $this->db->trans_rollback();
@@ -5252,6 +5508,119 @@ class Main extends MX_Controller
         header('Cache-Control: max-age=0'); //no cache
         $objWriter = PHPExcel_IOFactory::createWriter($objPHPExcel, 'Excel2007');
         $objWriter->save('php://output');
+
+    }
+
+    function thermal_receipt_order(){
+//        $this->load->view('thermal');
+
+        require_once $_SERVER['DOCUMENT_ROOT'].'/amarthya' . '/vendor/autoload.php';
+        $mpdf = new Mpdf(['tempDir' => APPPATH . '/temp', 'margin_bottom' => 0, 'margin_footer' => 0]); // Create new mPDF Document
+
+        $html = '<!DOCTYPE html>
+                    <html lang="en">
+                    <!-- <html lang="ar"> for arabic only -->
+                    <head>
+                        <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+                    
+                        <title>Express Wash Customer Invoice</title>
+                        <style>
+                            @media print {
+                                @page {
+                                    margin: 0 auto; /* imprtant to logo margin */
+                                    sheet-size: 58mm 200mm; /* imprtant to set paper size */
+                                    page-break-after: always;
+                                }
+                                html {
+                                    direction: rtl;
+                                }
+                                html,body{margin:0;padding:0}
+                                #printContainer {
+                                    width: 250px;
+                                    margin: auto;
+                                    padding: 10px;
+                                    /*border: 2px dotted #000;*/
+                                    text-align: justify;
+                                }
+                    
+                               .text-center{text-align: center;}
+                               
+                               td{
+                                font-size: 10px !important;
+                               }
+                            }
+                        </style>
+                    </head>
+                    <body onload="window.print();"><br>
+                    
+                    <div id=\'printContainer\'>
+                        <h5 id="slogan" style="margin-top:0" class="text-center">Amarthya Eatery</h5>
+                        <p style="font-size: 9px; padding-top: -15px;" class="text-center"> Jalan Drupadi No 54, Denpasar Timur </p>
+                    
+                        <table>
+                            <tr>
+                                <td>Invoice Num</td>
+                                <td>#59867</td>
+                            </tr>
+                            <tr>
+                                <td>Created At</td>
+                                <td>'.date("d-m-Y H:i:s", time()).'<br></td>
+                            </tr>
+                    
+                            <tr>
+                                <td>Client Name</td>
+                                <td>John Cena</td>
+                            </tr>
+                        </table>
+                        <hr>
+                    
+                        <table style="width: 100%">
+                            <tr>
+                                <td>Service Type</td>
+                                <td style="text-align: right;">Price</td>
+                            </tr>
+                            <tr><td colspan="2"><hr></td></tr>
+                            <tr>
+                                <td>Clean Cars</td>
+                                <td style="text-align: right;">15.7 USD</td>
+                            </tr>
+                            <tr>
+                                <td> </td>
+                                <td></td>
+                            </tr>
+                        </table>
+                        <hr>
+                    
+                        <table style="width: 100%">
+                            <tr>
+                                <td>Service Fee</td>
+                                <td style="text-align: right;">15.7 USD</td>
+                            </tr>
+                            <tr>
+                                <td>Discount</td>
+                                <td style="text-align: right;">1.7 USD</td>
+                            </tr>
+                            <tr>
+                                <td>Net Value</td>
+                                <td style="text-align: right;">14 USD</td>
+                            </tr>
+                        </table>
+                        <hr>
+                    
+                    </div>
+                    </body>
+                    </html>';
+
+        $mpdf->allow_charset_conversion = true;  // Set by default to TRUE
+        $mpdf->charset_in = 'UTF-8';
+        $mpdf->autoLangToFont = true;
+        $mpdf->WriteHTML($html);
+
+        $p = 'P';
+
+        $nama_file = "TestReceipt";
+        $mpdf->Output($nama_file."-".date("Y/m/d H:i:s").".pdf" ,'I');
+
 
     }
 

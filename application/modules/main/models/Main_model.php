@@ -2,6 +2,96 @@
 class Main_model extends CI_Model
 {
 
+    function get_menu_price($id_menu){
+        $sql = "SELECT HJ_menu, HJ_online_menu
+                FROM menu_eatery
+                WHERE id_menu = '$id_menu'";
+
+        $query = $this->db->query($sql);
+        return $query;
+
+    }
+
+    function get_order_eatery_m($search = null, $length = 10000000000, $start = 0){
+        $sql = "SELECT * 
+                FROM order_eatery_m a
+                INNER JOIN metode_pembayaran b ON a.metode_pembayaran = b.html_id";
+
+        if($search != "" || $search != null){
+            $sql .= " AND CONCAT(a.no_order_eatery) LIKE '%$search%'";
+        }
+
+        $sql .= " ORDER BY a.tgl_order DESC LIMIT {$start}, {$length}";
+
+        $query = $this->db->query($sql);
+        return $query;
+    }
+
+    function get_order_eatery_detail(){
+
+    }
+
+    function add_order_eatery_m($data){
+        $input_data = array(
+            'no_order_eatery' => $data['no_order_eatery'],
+            'jenis_transaksi' => $data['jenis_transaksi'],
+            'catatan_informasi' => $data['catatan_informasi'],
+            'catatan_order' => $data['catatan_order'],
+            'subtotal_order' => $data['subtotal_order'],
+            'ongkir_order' => $data['ongkir_order'],
+            'is_ongkir_kas' => $data['is_ongkir_kas'],
+            'promosi' => $data['promosi'],
+            'nominal_promosi' => $data['nominal_promosi'],
+            'persen_promosi' => $data['persen_promosi'],
+            'metode_pembayaran' => $data['metode_pembayaran'],
+            'nominal_bayar' => $data['nominal_bayar'],
+            'kembalian_bayar' => $data['kembalian_bayar'],
+            'jenis_kartu' => $data['jenis_kartu'],
+            'no_kartu' => $data['no_kartu'],
+            'approval_kartu' => $data['approval_kartu'],
+            'platform_QRIS' => $data['platform_QRIS'],
+            'no_QRIS' => $data['no_QRIS'],
+            'approval_QRIS' => $data['approval_QRIS'],
+            'tax_order' => $data['tax_order'],
+            'service_order' => $data['service_order'],
+            'grand_total_order' => $data['grand_total_order'],
+            'staff_order' => $data['staff_order'],
+            'input_username' => $data['input_username'],
+            'tgl_order' => $data['tgl_order'],
+            'is_paid' => $data['is_paid']
+
+        );
+
+        $this->db->insert('order_eatery_m',$input_data);
+        $insert_id = $this->db->insert_id();
+        return $insert_id;
+    }
+
+    function add_order_eatery_s($data){
+        $input_data = array(
+            'id_order_eatery_m' => $data['id_order_eatery_m'],
+            'id_menu' => $data['id_menu'],
+            'HJ_menu' => $data['HJ_menu'],
+            'qty_menu' => $data['qty_menu'],
+            'is_free' => $data['is_free']
+        );
+
+        $this->db->insert('order_eatery_s',$input_data);
+        $insert_id = $this->db->insert_id();
+        return $insert_id;
+    }
+
+    function update_order_eatery_m($updated_data, $id_order_eatery_m){
+        $this->db->where('id_order_eatery_m', $id_order_eatery_m);
+        return $this->db->update('order_eatery_m',$updated_data);
+    }
+
+    function get_metode_pembayaran(){
+        $sql = "SELECT * FROM metode_pembayaran";
+        $query = $this->db->query($sql);
+        return $query;
+    }
+
 
     function get_brand_database($order_active = false){
         $sql = "SELECT * FROM brand";

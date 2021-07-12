@@ -32,8 +32,9 @@
                         <th style="display: none;"> ID </th>
                         <th> Nama Menu </th>
                         <th> Kategori </th>
-                        <th> HP </th>
-                        <th> HJ </th>
+                        <th style="width: 15%"> HP </th>
+                        <th style="width: 15%"> HJ </th>
+                        <th style="width: 15%"> HJ Online </th>
                     </tr>
                     </thead>
                     <tbody id="main-content">
@@ -113,6 +114,12 @@
                     "data": {"HJ_menu":"HJ_menu"},
                     mRender : function(data, type, full) {
                         return convertToRupiah(data.HJ_menu)
+                    }
+                },
+                {
+                    "data": {"HJ_online_menu":"HJ_online_menu"},
+                    mRender : function(data, type, full) {
+                        return convertToRupiah(data.HJ_online_menu)
                     }
                 }
 

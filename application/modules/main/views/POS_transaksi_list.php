@@ -21,11 +21,11 @@
                         </select>
                     </div>
                     <div class="form-group">
-                        <select id="brand_product" name="brand_product" class="form-control form-control-sm form-active-control" data-live-search="true">
+                        <select id="metode_pembayaran" name="metode_pembayaran" class="form-control form-control-sm form-active-control" data-live-search="true">
                             <option value="all">Semua Metode Pembayaran</option>
                             <?php
-                            foreach($brands as $brand){
-                                echo "<option value='".$brand->kode_brand."'>".$brand->nama_brand."</option>";
+                            foreach($metode_pembayaran as $payment){
+                                echo "<option value='".$payment->html_id."'>".$payment->nama_metode_pembayaran."</option>";
                             }
 
                             ?>
@@ -106,16 +106,16 @@
 
     document.title = "Daftar Transaksi Eatery - Amarthya Group";
 
-    var status = "all", brand_order = "all";
+    var status = "all", payment = "all";
 
     $('#is_paid').change(function(){
         status = $(this).val();
-        get_order_m(status, brand_order);
+        get_order_m(status, payment);
     })
 
-    $('#brand_product').change(function(){
-        brand_order = $(this).val();
-        get_order_m(status, brand_order);
+    $('#metode_pembayaran').change(function(){
+        payment = $(this).val();
+        get_order_m(status, payment);
     })
 
     const urlParams = new URLSearchParams(location.search);
@@ -128,7 +128,7 @@
     }
 
 
-    function get_order_m(status = "all", brand_order = "all"){
+    function get_order_m(status = "all", payment = "all"){
         $('.loading').css("display", "block");
         $('.Veil-non-hover').fadeIn();
 
@@ -145,7 +145,7 @@
             },
             pagingType: "simple",
             ajax: {
-                url     : admin_url + 'get_order_eatery_m?status=' + status + '&brand=' + brand_order,
+                url     : admin_url + 'get_order_eatery_m?status=' + status + '&payment=' + payment,
                 type    : 'POST',
             },
             createdRow: function ( row, data, index ) {

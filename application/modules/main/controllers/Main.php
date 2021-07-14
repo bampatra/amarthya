@@ -55,7 +55,7 @@ class Main extends MX_Controller
     }
 
     function POS_transaksi_list(){
-        $data[] = "";
+        $data['metode_pembayaran'] = $this->Main_model->get_metode_pembayaran()->result_object();
 
         $this->load->view('template/admin_header');
         $this->load->view('POS_transaksi_list', $data);
@@ -68,13 +68,16 @@ class Main extends MX_Controller
 
         if(isset($_GET['no'])){
 
-            $data_order = $this->Main_model->get_POS_transaksi_detail(htmlentities($_GET['no'], ENT_QUOTES));
+            $data_order = $this->Main_model->get_order_eatery_detail(htmlentities($_GET['no'], ENT_QUOTES));
 
             if($data_order->num_rows() == 0){
                 // kosong
             } else {
                 $data['orders'] = $data_order->result_object();
-//                $this->load->view('POS_transaksi_detail', $data);
+                $data['staffs'] = $this->Main_model->get_staff()->result_object();
+                $data['metode_pembayaran_list'] = $this->Main_model->get_metode_pembayaran()->result_object();
+
+                $this->load->view('POS_transaksi_detail', $data);
             }
 
         } else {
@@ -82,6 +85,31 @@ class Main extends MX_Controller
         }
 
         $this->load->view('template/admin_footer');
+    }
+
+    function void_order_eatery(){
+        $no_order_eatery = trim(htmlentities($_REQUEST['no_order'], ENT_QUOTES));
+
+        $data_order = $this->Main_model->get_order_eatery_by_no_order($no_order_eatery);
+
+        if($data_order->num_rows() == 0){
+            $return_arr = array("Status" => 'ERROR', "Message" => 'Data tidak ditemukan atau Void');
+        } else {
+            $id_order_eatery_m = $data_order->row()->id_order_eatery_m;
+            $void = '1';
+            $updated_data = compact('void');
+
+            if($this->Main_model->update_order_eatery_m($updated_data, $id_order_eatery_m)){
+                $this->db->trans_commit();
+                $return_arr = array("Status" => 'OK', "Message" => 'Data void');
+            } else {
+                $return_arr = array("Status" => 'ERROR', "Message" => 'Gagal update data. Silahkan hubungi admin.');
+            }
+        }
+
+        echo json_encode($return_arr);
+        return;
+
     }
 
     function get_order_eatery_m(){
@@ -98,7 +126,13 @@ class Main extends MX_Controller
             $status = "all";
         }
 
-        $total = $this->Main_model->get_order_eatery_m()->num_rows();
+        if(isset($_GET['payment'])){
+            $payment = htmlentities($_GET['payment'], ENT_QUOTES);
+        } else {
+            $payment = "all";
+        }
+
+        $total = $this->Main_model->get_order_eatery_m($search, $status, $payment)->num_rows();
 
         $output = array();
         $output['draw'] = $draw;
@@ -106,7 +140,7 @@ class Main extends MX_Controller
         $output['data']=array();
 
 
-        $output['data'] = $this->Main_model->get_order_eatery_m($search, $length, $start)->result_object();
+        $output['data'] = $this->Main_model->get_order_eatery_m($search, $status, $payment, $length, $start)->result_object();
         echo json_encode($output);
         return;
 
@@ -162,6 +196,8 @@ class Main extends MX_Controller
         $staff_order = trim(htmlentities($_REQUEST['staff_order'], ENT_QUOTES));
         $input_username = $this->session->userdata('username');
         $tgl_order = date("Y-m-d h:i:s");
+
+        $void = "0";
 
         // ERROR    : if no staff
         if($this->Main_model->get_staff_by_id($staff_order)->num_rows() == 0){
@@ -227,7 +263,7 @@ class Main extends MX_Controller
             'subtotal_order', 'ongkir_order', 'is_ongkir_kas', 'promosi', 'nominal_promosi', 'persen_promosi',
             'metode_pembayaran', 'nominal_bayar', 'kembalian_bayar', 'jenis_kartu', 'no_kartu', 'approval_kartu',
             'platform_QRIS', 'no_QRIS', 'approval_QRIS', 'tax_order', 'service_order', 'grand_total_order',
-            'staff_order', 'input_username', 'tgl_order', 'is_paid');
+            'staff_order', 'input_username', 'tgl_order', 'is_paid', 'void');
 
         $this->db->trans_begin();
 
@@ -2010,7 +2046,7 @@ class Main extends MX_Controller
         $start = $_REQUEST['start'];
         $search = trim(htmlentities($_REQUEST['search']["value"], ENT_QUOTES));
 
-        $total = $this->Main_model->get_pick_up()->num_rows();
+        $total = $this->Main_model->get_pick_up($search)->num_rows();
 
         $output = array();
         $output['draw'] = $draw;
@@ -2614,7 +2650,7 @@ class Main extends MX_Controller
         $start = $_REQUEST['start'];
         $search = trim(htmlentities($_REQUEST['search']["value"], ENT_QUOTES));
 
-        $total = $this->Main_model->get_delivery()->num_rows();
+        $total = $this->Main_model->get_delivery($search)->num_rows();
 
         $output = array();
         $output['draw'] = $draw;
@@ -2969,6 +3005,32 @@ class Main extends MX_Controller
         }
 
         echo json_encode($return_arr);
+
+    }
+
+    function lunas_from_list(){
+        if($this->session->userdata('is_admin') != "1" && $this->session->userdata('is_admin') != "2" ){
+            redirect(base_url('main'));
+        }
+
+        $no_order = strtoupper(trim(htmlentities($_REQUEST['no_order'], ENT_QUOTES)));
+        $tipe_order = trim(htmlentities($_REQUEST['tipe_order'], ENT_QUOTES));
+        $is_paid = '1';
+
+        $order_m_data = $this->Main_model->get_order_m_by_no_order($no_order)->row();
+
+        $updated_data = compact('is_paid', 'tipe_order');
+
+        if($this->Main_model->update_order_m($updated_data, $order_m_data->id_order_m)){
+            $this->db->trans_commit();
+            $return_arr = array("Status" => 'OK', "Message" => 'Data berhasil diupdate');
+        } else {
+            $this->db->trans_rollback();
+            $return_arr = array("Status" => 'ERROR', "Message" => 'Gagal mengupdate data');
+        }
+
+        echo json_encode($return_arr);
+
 
     }
 

@@ -36,8 +36,13 @@
                 <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
                     <thead>
                     <tr class="no-hover-style">
-                        <th style="display: none;"> No. Order </th>
-                        <th> Order </th>
+                        <th> Tgl Order </th>
+                        <th> No Order </th>
+                        <th> Brand </th>
+                        <th> Nama Customer </th>
+                        <th> Grand Total </th>
+                        <th> Status </th>
+                        <th></th>
                     </tr>
                     </thead>
                     <tbody id="main-content">
@@ -65,6 +70,30 @@
                 <div style="text-align: right" id="info_payment"></div>
                 <a id="edit-info" target="_blank"><span class="link"> Edit </span></a>
 
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" tabindex="-1" role="dialog" id="action-modal" style="z-index: 5000;">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <h5 id="action-title"></h5>
+                <br>
+                <div class="form-group">
+                    <select id="tipe_order" name="tipe_order" class="form-control form-active-control form-control-sm">
+                        <option value="REK">Rekening</option>
+                        <option value="TUNAI">Tunai</option>
+                        <option value="FREE">Free</option>
+                    </select>
+                </div>
+                <div id="action-button"></div>
             </div>
         </div>
     </div>
@@ -155,6 +184,7 @@
             responsive: true,
             lengthChange: false,
             searching: true,
+            pageLength: 20,
             bInfo: false,
             language: {
                 search: ""
@@ -165,74 +195,83 @@
                 type    : 'POST',
             },
             createdRow: function ( row, data, index ) {
-                $('td', row).eq(0).css("display", "none");
+                // $('td', row).eq(0).css("display", "none");
             },
             columns: [
-                {"data": "no_order"},
                 {
-                    "data": {
-                        "nama_customer":"nama_customer",
-                        "no_hp_customer":"no_hp_customer",
-                        "alamat_customer":"alamat_customer",
-                        "tgl_order":"tgl_order",
-                        "grand_total_order":"grand_total_order",
-                        "is_paid": "is_paid",
-                        "no_order": "no_order",
-                        "brand_order": "brand_order"
-                    },
+                    "data": {"tgl_order": "tgl_order"},
                     mRender : function(data, type, full) {
-
                         let dateTimeParts= data.tgl_order.split(/[- :]/);
                         dateTimeParts[1]--;
                         const temp_date = new Date(...dateTimeParts);
 
-                        html = '<div class="detail-row">' +
-                                '<div class="detail-column">' +
-                            '       <span>'+ temp_date.getDate() + '/' + (temp_date.getMonth() + 1) + '/' + temp_date.getFullYear() +'</span><br>' +
-                                    '<strong>'+ data.no_order +'</strong>\n<br>' +
-                                    '<span>'+ data.nama_customer +'</span><br>';
+                        return temp_date.getDate() + '/' + (temp_date.getMonth() + 1) + '/' + temp_date.getFullYear();
 
+                    }
+                },
+                {"data": "no_order"},
+                {
+                    "data": {"brand_order": "brand_order"},
+                    mRender : function(data, type, full) {
                         if(data.brand_order == "KA"){
-                            html += '<img src="<?php echo base_url('assets/images/logopdf.jpg');?>" style="float: left; margin-top: 3px" width="48px" height="22px">';
-                        } else if(data.brand_order == "AH"){
-                            html += '<img src="<?php echo base_url('assets/images/amarthya_herbal.png');?>" style="float: left; margin-top: 3px" width="40px" height="40px">';
-                        } else if(data.brand_order == "AF"){
-                            html += '<img src="<?php echo base_url('assets/images/fashion.png');?>" style="float: left; margin-top: 3px" left="48px" height="48px">';
-                        } else if(data.brand_order == "AHF"){
-                            html += '<img src="<?php echo base_url('assets/images/phonto.PNG');?>" style="float: left; margin-top: 3px" left="40px" height="40px">';
+                            return "Kedai Amarthya"
+                        } else if (data.brand_order == "AF") {
+                            return "Amarthya Fashion"
+                        } else if (data.brand_order == "AHF") {
+                            return "Amarthya Eatery"
+                        } else if (data.brand_order == "AH") {
+                            return "Amarthya Herbal"
+                        } else {
+                            return "";
                         }
 
+                    }
+                },
+                {"data": "nama_customer"},
+                {
+                    "data": {"grand_total_order": "grand_total_order"},
+                    mRender : function(data, type, full) {
+                        return convertToRupiah(data.grand_total_order);
 
-
-                        html += '</div>' +
-                                '<div class="detail-column" style="text-align: left">' +
-                                    '<strong style="font-size: 11px;">Total Order</strong>\n' +
-                                    '<h6>'+ convertToRupiah(data.grand_total_order) +'</h6>';
-
+                    }
+                },
+                {
+                    "data": {"is_paid": "is_paid"},
+                    mRender : function(data, type, full) {
                         if(data.is_paid == "0"){
-                            html += '<div class="alert alert-danger alert-payment" role="alert">\n' +
+                            html = '<div class="alert alert-danger alert-payment" role="alert">\n' +
                                 '                            <strong>BELUM BAYAR</strong>\n' +
                                 '                        </div>';
                         } else {
-                            html += '<div class="alert alert-success alert-payment" role="alert">\n' +
+                            html = '<div class="alert alert-success alert-payment" role="alert">\n' +
                                 '                            <strong>LUNAS</strong>\n' +
                                 '                        </div>';
                         }
 
-                        html += '</div>' +
-                                // '<div class="detail-column desktop-only" style="text-align: right">' +
-                                //     // '<button type="button" class="btn btn-info mr-1"></button>' +
-                                //     '<a role="button" class="btn btn-warning btn-sm mr-1" target="_blank" href="'+ admin_url +'order_detail?no='+ data.no_order +'"><i class="fa fa-info-circle" aria-hidden="true"></i></a>' +
-                                //     '<a role="button" class="btn btn-success btn-sm mr-1" target="_blank"><i class="fa fa-print" aria-hidden="true"></i></a>' +
-                                //     '<a role="button" class="btn btn-danger btn-sm mr-1"><i class="fa fa-trash" aria-hidden="true"></i></a>' +
-                                //     // '<button type="button" class="btn btn-dark"></button>' +
-                                // '</div>' +
-                            '</div>';
-
                         return html;
 
                     }
+                },
+                {
+                    "data": {
+                        "is_paid":"is_paid",
+                        "no_order":"no_order"
+
+                    },
+                    mRender : function(data, type, full) {
+
+                        if(data.is_paid == '0'){
+                            html = '<button onclick="event.stopPropagation(); lunas(\''+ data.no_order +'\')" class="btn btn-success control-btn"> Lunas </button>';
+                            return html;
+                        } else {
+
+                            html = "";
+                            return html;
+                        }
+
+                    }
                 }
+
 
             ],
             initComplete: function (settings, json) {
@@ -240,6 +279,38 @@
                 $('.Veil-non-hover').fadeOut();
             }
         });
+    }
+
+    function lunas(no_order){
+        $('#action-modal').modal('toggle');
+        $('#action-title').html("Yakin ingin <bold> melunasi </bold> pesanan ini?");
+        $('#action-button').html('<button style="width: 100%" class="btn btn-sm btn-primary" onclick="final_lunas(\''+ no_order +'\')">Lunas</button>')
+    }
+
+    function final_lunas(no_order){
+
+        $('.loading').css("display", "block");
+        $('.Veil-non-hover').fadeIn();
+        $.ajax({
+            type: 'POST', // define the type of HTTP verb we want to use (POST for our form)
+            url: admin_url + 'lunas_from_list', // the url where we want to POST// our data object
+            dataType: 'json',
+            data: {no_order: no_order, tipe_order: $('#tipe_order').val()},
+            success: function (response) {
+                $('.invalid-feedback').css('display', 'none');
+                if(response.Status == "OK"){
+                    get_order_m(status, brand_order);
+                    $('#action-modal').modal('hide');
+                } else if(response.Status == "ERROR" ){
+                    show_snackbar(response.Message);
+                }
+
+                $('.loading').css("display", "none");
+                $('.Veil-non-hover').fadeOut();
+            }
+        })
+
+
     }
 
     $('#dataTable').on( 'click', 'tbody tr', function () {

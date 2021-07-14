@@ -12,10 +12,13 @@ class Main_model extends CI_Model
 
     }
 
-    function get_order_eatery_m($search = null, $length = 10000000000, $start = 0){
+    function get_order_eatery_m($search = null, $status = "all", $payment = "all", $length = 10000000000, $start = 0){
         $sql = "SELECT * 
                 FROM order_eatery_m a
-                INNER JOIN metode_pembayaran b ON a.metode_pembayaran = b.html_id";
+                INNER JOIN metode_pembayaran b ON a.metode_pembayaran = b.html_id
+                WHERE a.void = '0'
+                    AND (a.is_paid = '{$status}' || 'all' = '{$status}')
+                    AND (a.metode_pembayaran = '{$payment}' || 'all' = '{$payment}')";
 
         if($search != "" || $search != null){
             $sql .= " AND CONCAT(a.no_order_eatery) LIKE '%$search%'";
@@ -27,8 +30,23 @@ class Main_model extends CI_Model
         return $query;
     }
 
-    function get_order_eatery_detail(){
+    function get_order_eatery_detail($no_order_eatery){
+        $sql ="SELECT a.*, b.*, c.nama_menu
+                FROM order_eatery_m a
+                INNER JOIN order_eatery_s b ON a.id_order_eatery_m = b.id_order_eatery_m
+                INNER JOIN menu_eatery c ON b.id_menu = c.id_menu
+                WHERE a.no_order_eatery = '$no_order_eatery'";
 
+        $query = $this->db->query($sql);
+        return $query;
+    }
+
+    function get_order_eatery_by_no_order($no_order_eatery){
+        $sql = "SELECT * FROM order_eatery_m
+                WHERE no_order_eatery = '$no_order_eatery' AND void = '0'";
+
+        $query = $this->db->query($sql);
+        return $query;
     }
 
     function add_order_eatery_m($data){
@@ -58,7 +76,8 @@ class Main_model extends CI_Model
             'staff_order' => $data['staff_order'],
             'input_username' => $data['input_username'],
             'tgl_order' => $data['tgl_order'],
-            'is_paid' => $data['is_paid']
+            'is_paid' => $data['is_paid'],
+            'void' => $data['void']
 
         );
 
@@ -769,7 +788,7 @@ class Main_model extends CI_Model
                 $sql .= " AND CONCAT(b.nama_vendor, c.no_order_vendor, a.alamat_pick_up, c.tgl_order_vendor) LIKE '%$search%'
                             AND d.id_staff = '".$id_staff."'";
             } else {
-                $sql .= " AND CONCAT(b.nama_vendor, c.no_order_vendor, a.alamat_pick_up, c.tgl_order_vendor) LIKE '%$search%'";
+                $sql .= " AND CONCAT(b.nama_vendor, c.no_order_vendor, a.alamat_pick_up, c.tgl_order_vendor, d.nama_staff) LIKE '%$search%'";
             }
 
         } else {
@@ -979,7 +998,7 @@ class Main_model extends CI_Model
                 $sql .= " AND CONCAT(b.nama_customer, c.no_order, a.alamat_delivery, c.tgl_order) LIKE '%$search%'
                             AND d.id_staff = '".$id_staff."'";
             } else {
-                $sql .= " AND CONCAT(b.nama_customer, c.no_order, a.alamat_delivery, c.tgl_order) LIKE '%$search%'";
+                $sql .= " AND CONCAT(b.nama_customer, c.no_order, a.alamat_delivery, c.tgl_order, d.nama_staff) LIKE '%$search%'";
             }
 
         } else {

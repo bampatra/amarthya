@@ -4,9 +4,15 @@
 <div class="container-fluid">
 
     <!-- Page Heading -->
-    <h1 class="h3 mb-2 text-gray-800">Point of Sales - Amarthya Eatery</h1>
-    <br>
+    <h1 class="h3 mb-2 text-gray-800">Detail Transaksi POS</h1>
+    <span> No Order: <?php echo $orders[0]->no_order_eatery; ?> </span>
+    <br><br>
     <!-- DataTales Example -->
+
+    <div class="alert alert-primary" role="alert" style="font-size: 14px;">
+        Untuk sementara, fitur ini hanya bisa digunakan untuk melihat dan hapus data. Fitur update data akan tersedia nanti.
+    </div>
+
 
     <div id="first">
 
@@ -32,7 +38,7 @@
                 <div class="form-group row">
                     <label class="col-sm-4 col-form-label col-form-label-sm" id="label-catatan-informasi">No. Meja</label>
                     <div class="col-sm-8">
-                        <input type="text" value="" name="catatan-informasi" id="catatan-informasi" class="form-control form-control-sm form-active-control catatan-informasi">
+                        <input type="text" value="<?php echo $orders[0]->catatan_informasi; ?>" name="catatan-informasi" id="catatan-informasi" class="form-control form-control-sm form-active-control catatan-informasi">
                     </div>
                 </div>
 
@@ -54,7 +60,7 @@
                         </select>
                     </div>
                 </div>
-                <input type="text" id="catatan_order" name="catatan_order" class="form-control form-control-sm form-active-control" placeholder="Tulis catatan disini...">
+                <input type="text" value="<?php echo $orders[0]->catatan_order; ?>" id="catatan_order" name="catatan_order" class="form-control form-control-sm form-active-control" placeholder="Tulis catatan disini...">
 
             </div>
         </div>
@@ -68,19 +74,19 @@
             </div>
 
 
-            <button class="btn btn-primary-empty add-item" style="width: 100%;  font-size: 11px; margin-top: 20px;">Tambah Pesanan</button>
+            <?php if($orders[0]->is_paid == '0'){ ?>
+
+                <button class="btn btn-primary-empty add-item" style="width: 100%;  font-size: 11px; margin-top: 20px;">Tambah Pesanan</button>
+
+            <?php } ?>
+
+
         </div>
-
-        <br>
-
-        <button class="btn btn-primary save-for-later" style="width: 50%;  font-size: 14px;">Simpan</button>
-        <button class="btn btn-primary continue-to-payment" style="width: 49%;  font-size: 14px;">Lanjutkan ke Pembayaran</button>
-
     </div>
 
 
-    <div class="wrapper payment-wrapper" style=" display: none;">
-        <span class="link back-to-first">Kembali</span><br>
+    <div class="wrapper payment-wrapper" >
+        <br>
         <div class="two">
 
             <h6> Pembayaran </h6>
@@ -106,7 +112,12 @@
             <div class="form-group row">
                 <label class="col-sm-3 col-form-label col-form-label-sm"></label>
                 <div class="col-sm-9">
-                    <input type="checkbox" id="is_ongkir_kas">
+                    <?php if($orders[0]->is_ongkir_kas == '1'){
+                        echo '<input type="checkbox" id="is_ongkir_kas" checked>';
+                    } else {
+                        echo '<input type="checkbox" id="is_ongkir_kas">';
+                    }?>
+
                     Ongkir dari Kas
                 </div>
 
@@ -198,19 +209,19 @@
                     <div class="form-group row">
                         <label class="col-sm-3 col-form-label col-form-label-sm">Bank / Tipe (contoh: BCA / Visa)</label>
                         <div class="col-sm-9">
-                            <input type="text" id="jenis_kartu" name="jenis_kartu" class="form-control form-control-sm form-active-control">
+                            <input value="<?php echo $orders[0]->jenis_kartu; ?>" type="text" id="jenis_kartu" name="jenis_kartu" class="form-control form-control-sm form-active-control">
                         </div>
                     </div>
                     <div class="form-group row">
                         <label class="col-sm-3 col-form-label col-form-label-sm">No. Card</label>
                         <div class="col-sm-9">
-                            <input type="text" id="no_kartu" name="no_kartu" class="form-control form-control-sm form-active-control">
+                            <input value="<?php echo $orders[0]->no_kartu; ?>" type="text" id="no_kartu" name="no_kartu" class="form-control form-control-sm form-active-control">
                         </div>
                     </div>
                     <div class="form-group row">
                         <label class="col-sm-3 col-form-label col-form-label-sm">Approval No.</label>
                         <div class="col-sm-9">
-                            <input type="text" id="approval_kartu" name="approval_kartu" class="form-control form-control-sm form-active-control">
+                            <input value="<?php echo $orders[0]->approval_kartu; ?>" type="text" id="approval_kartu" name="approval_kartu" class="form-control form-control-sm form-active-control">
                         </div>
                     </div>
                 </div>
@@ -219,19 +230,19 @@
                     <div class="form-group row">
                         <label class="col-sm-3 col-form-label col-form-label-sm">Platform (contoh: OVO)</label>
                         <div class="col-sm-9">
-                            <input type="text" id="platform_QRIS" name="platform_QRIS" class="form-control form-control-sm form-active-control">
+                            <input value="<?php echo $orders[0]->platform_QRIS; ?>" type="text" id="platform_QRIS" name="platform_QRIS" class="form-control form-control-sm form-active-control">
                         </div>
                     </div>
                     <div class="form-group row">
                         <label class="col-sm-3 col-form-label col-form-label-sm">No. HP (jika lewat e-wallet)</label>
                         <div class="col-sm-9">
-                            <input type="text" id="no_QRIS" name="no_QRIS" class="form-control form-control-sm form-active-control">
+                            <input value="<?php echo $orders[0]->no_QRIS; ?>" type="text" id="no_QRIS" name="no_QRIS" class="form-control form-control-sm form-active-control">
                         </div>
                     </div>
                     <div class="form-group row">
                         <label class="col-sm-3 col-form-label col-form-label-sm">Approval No.</label>
                         <div class="col-sm-9">
-                            <input type="text" id="approval_QRIS" name="approval_QRIS" class="form-control form-control-sm form-active-control">
+                            <input value="<?php echo $orders[0]->approval_QRIS; ?>" type="text" id="approval_QRIS" name="approval_QRIS" class="form-control form-control-sm form-active-control">
                         </div>
                     </div>
                 </div>
@@ -243,7 +254,8 @@
                 <h2 id="grand_total">Rp. 0</h2>
             </div>
 
-            <button class="btn btn-primary save" style="width: 100%;  font-size: 14px;">Selesai</button>
+            <button class="btn btn-danger delete" style="width: 50%;  font-size: 14px;">Void</button>
+            <button class="btn btn-primary save" style="width: 49%;  font-size: 14px;">Update Data</button>
 
         </div>
     </div>
@@ -346,23 +358,168 @@
 
 <script>
 
-    $('.continue-to-payment').click(function(){
-        $('#first').css("display", "none");
-        $('.payment-wrapper').fadeIn();
-        $(window).scrollTop(0);
+
+
+    init();
+
+    function init(){
+        $('#jenis_transaksi').val('<?php echo $orders[0]->jenis_transaksi; ?>');
+        $('#staff_order').selectpicker('val', '<?php echo $orders[0]->staff_order; ?>');
+        $('#metode_pembayaran').selectpicker('val', '<?php echo $orders[0]->metode_pembayaran; ?>');
+        $('#promosi').selectpicker('val', '<?php echo $orders[0]->promosi; ?>');
+        $('#nominal_promosi').val(formatRupiah(convertToRupiah('<?php echo $orders[0]->nominal_promosi; ?>'), 'Rp. ', $('#nominal_promosi').parent().find('.hidden_form')));
+        $('#persen_promosi').val('<?php echo $orders[0]->persen_promosi; ?>');
+        $('#ongkir_order').val(formatRupiah(convertToRupiah('<?php echo $orders[0]->ongkir_order; ?>'), 'Rp. ', $('#ongkir_order').parent().find('.hidden_form')));
+
+        payment_detail_dynamic($('#metode_pembayaran').val());
+        promosi_detail_dynamic($('#promosi').val())
+
+
+    }
+
+
+    function payment_detail_dynamic(value){
+        $('.payment-type').css('display', 'none');
+
+        if(value == "cash"){
+            $('#payment-cash').css('display', 'block');
+        } else if (value == "edc-bca" || value == "edc-mandiri"){
+            $('#payment-EDC').css('display', 'block');
+        } else if (value == "qris"){
+            $('#payment-QRIS').css('display', 'block');
+        }
+    }
+
+    function promosi_detail_dynamic(value){
+        if(value == 'inputmanual'){
+            $('#promosi-inputmanual').css("display", "flex");
+        } else {
+            $('#promosi-inputmanual').css("display", "none");
+        }
+    }
+
+    var temp_HJ = 0, temp_menu = 0, temp_object;
+    var subtotal = 0, ongkir = 0, diskon = 0, grandtotal = 0;
+
+    item_lists = [];
+
+    <?php foreach($orders as $order){ ?>
+
+        id_menu = <?php echo $order->id_menu; ?>;
+        nama_menu = '<?php echo $order->nama_menu; ?>';
+        qty_order = <?php echo $order->qty_menu; ?>;
+        harga_order = <?php echo $order->HJ_menu; ?>;
+        total_order = Math.round(parseFloat(qty_order) * parseFloat(harga_order));
+        is_free = <?php echo $order->is_free; ?>;
+
+
+        if(is_free){
+            total_order = 0;
+            nama_menu = $('.nama-menu').val() + ' (FREE)';
+        }
+
+        item_lists.push({
+            id_menu     : id_menu,
+            nama_menu   : nama_menu,
+            qty_order   : qty_order,
+            harga_order : harga_order,
+            total_order : total_order,
+            is_free     : is_free
+        });
+
+        refresh_item();
+
+        subtotal += Math.round(total_order);
+        set_harga();
+
+
+    <?php } ?>
+
+    $('.save-item').click(function(){
+
+        if(temp_menu == 0){
+            return;
+        }
+
+        id_menu = temp_menu;
+        nama_menu = $('.nama-menu').val();
+        qty_order = $('#qty_order').val();
+        harga_order = temp_HJ;
+        total_order = Math.round(parseFloat(qty_order) * parseFloat(harga_order));
+        is_free = $('#is_free').prop("checked");
+
+
+        if(is_free){
+            total_order = 0;
+            nama_menu = $('.nama-menu').val() + ' (FREE)';
+        }
+
+        item_lists.push({
+            id_menu     : id_menu,
+            nama_menu   : nama_menu,
+            qty_order   : qty_order,
+            harga_order : harga_order,
+            total_order : total_order,
+            is_free     : is_free
+        });
+
+
+        $('#menu-modal').modal('hide');
+        refresh_item();
+
+        subtotal += Math.round(total_order);
+        set_harga();
+
+
+
     })
 
-    $('.back-to-first').click(function(){
-        $('#first').fadeIn();
-        $('.payment-wrapper').css("display", "none");
-        $(window).scrollTop(0);
-    })
+    function refresh_item(){
+        html = '';
+        $('#item-lists').html(html);
+        item_lists.forEach(function(item, index){
+            html += '<div class="menu-item"">\n' +
+                '            <table width="100%">\n' +
+                '                <tr class="no-hover-style">\n' +
+                '                    <td> '+ item.nama_menu +' <br>';
+
+            <?php if($orders[0]->is_paid == '0'){ ?>
+
+              html +=  '                       <span onclick="delete_item('+ index +')" class="link">Hapus</span></td>\n';
+
+            <?php } ?>
+
+            html += '                    <td style="text-align: right">\n' +
+                '                        <span style="font-size: 9px;">'+ item.qty_order +' x '+ convertToRupiah(item.harga_order) +'</span> <br>\n' +
+                '                        <strong style="font-size: 13px;">'+ convertToRupiah(item.total_order) +'</strong>\n' +
+                '                    </td>\n' +
+                '                </tr>\n' +
+                '\n' +
+                '            </table>\n' +
+                '        </div>';
+
+
+        })
+        $('#item-lists').html(html);
+    }
+
+
+    function delete_item(index){
+        if(confirm("Hapus item?")){
+
+            subtotal -= item_lists[index].total_order;
+
+            item_lists.splice(index, 1);
+
+            set_harga();
+            refresh_item();
+        }
+    }
+
 
     $('#jenis_transaksi').focus(function() {
         prev_val = $(this).val();
     }).change(function(){
-
-
 
         if(item_lists.length > 0) {
             if(confirm("Semua data akan dihapus. Lanjutkan?")){
@@ -400,25 +557,11 @@
     })
 
     $('#metode_pembayaran').change(function(){
-
-        $('.payment-type').css('display', 'none');
-
-        if($(this).val() == "cash"){
-            $('#payment-cash').css('display', 'block');
-        } else if ($(this).val() == "edc-bca" || $(this).val() == "edc-mandiri" ){
-            $('#payment-EDC').css('display', 'block');
-        } else if ($(this).val() == "qris"){
-            $('#payment-QRIS').css('display', 'block');
-        }
+        payment_detail_dynamic($(this).val());
     })
 
     $('#promosi').change(function(){
-        if($(this).val() == 'inputmanual'){
-            $('#promosi-inputmanual').css("display", "flex");
-        } else {
-            $('#promosi-inputmanual').css("display", "none");
-        }
-
+        promosi_detail_dynamic($(this).val())
         set_harga();
     })
 
@@ -468,10 +611,7 @@
     }
 
 
-    var temp_HJ = 0, temp_menu = 0, temp_object;
-    var subtotal = 0, ongkir = 0, diskon = 0, grandtotal = 0;
 
-    item_lists = [];
     get_menu("all");
 
 
@@ -508,9 +648,8 @@
         return prefix == undefined ? rupiah : (rupiah ? 'Rp. ' + rupiah : '');
     }
 
-    // =======================================================================
 
-    document.title = "Point of Sales - Amarthya Group";
+    document.title = "Detail Transaksi #<?php echo $orders[0]->no_order_eatery ?> - Amarthya Group";
 
     function get_menu(kategori = "all"){
         $('#menuDataTable').DataTable().destroy();
@@ -554,55 +693,78 @@
 
     }
 
-    $('.save-for-later').click(function(){
-        show_snackbar('Fitur belum tersedia');
-    })
 
-    $('.save').click(function(e){
-        if(confirm("Pastikan semua data sudah benar. Lanjutkan?")){
+    $('.delete').click(function(e){
+        if(confirm("Data akan dihapus permanen. Yakin ingin menghapus data?")) {
             $('.loading').css("display", "block");
             $('.Veil-non-hover').fadeIn();
 
             $.ajax({
                 type: 'POST', // define the type of HTTP verb we want to use (POST for our form)
-                url: admin_url + 'add_order_eatery?savelater=false', // the url where we want to POST// our data object
+                url: admin_url + 'void_order_eatery', // the url where we want to POST// our data object
                 dataType: 'json',
                 data: {
-                    jenis_transaksi: $('#jenis_transaksi').val(),
-                    catatan_informasi: $('#catatan-informasi').val(),
-                    staff_order: $('#staff_order').val(),
-                    catatan_order: $('#catatan_order').val(),
-                    hidden_ongkir_order: $('#hidden_ongkir_order').val(),
-                    is_ongkir_kas: $('#is_ongkir_kas').prop("checked"),
-                    promosi: $('#promosi').val(),
-                    hidden_nominal_promosi: $('#hidden_nominal_promosi').val(),
-                    persen_promosi: $('#persen_promosi').val(),
-                    metode_pembayaran: $('#metode_pembayaran').val(),
-                    hidden_nominal_bayar: $('#hidden_nominal_bayar').val(),
-                    jenis_kartu: $('#jenis_kartu').val(),
-                    no_kartu: $('#no_kartu').val(),
-                    approval_kartu: $('#approval_kartu').val(),
-                    platform_QRIS: $('#platform_QRIS').val(),
-                    no_QRIS: $('#no_QRIS').val(),
-                    approval_QRIS: $('#approval_QRIS').val(),
-                    order_s: item_lists
+                    no_order: '<?php echo $orders[0]->no_order_eatery; ?>'
                 },
                 success: function (response) {
-
-
                     if(response.Status == "OK"){
+                        show_snackbar(response.Message);
                         window.location.href = admin_url + 'POS_transaksi_list';
                     } else if(response.Status == "ERROR" ){
                         show_snackbar(response.Message);
-
-                        $('.loading').css("display", "none");
-                        $('.Veil-non-hover').fadeOut();
                     }
 
+                    $('.loading').css("display", "none");
+                    $('.Veil-non-hover').fadeOut();
 
                 }
             })
         }
+    })
+
+    $('.save').click(function(e){
+
+        show_snackbar("Fitur belum tersedia")
+
+        // if(confirm("Pastikan semua data sudah benar. Lanjutkan?")){
+        //     $('.loading').css("display", "block");
+        //     $('.Veil-non-hover').fadeIn();
+        //
+        //     $.ajax({
+        //         type: 'POST', // define the type of HTTP verb we want to use (POST for our form)
+        //         url: admin_url + 'add_order_eatery?savelater=false', // the url where we want to POST// our data object
+        //         dataType: 'json',
+        //         data: {
+        //             jenis_transaksi: $('#jenis_transaksi').val(),
+        //             catatan_informasi: $('#catatan-informasi').val(),
+        //             staff_order: $('#staff_order').val(),
+        //             catatan_order: $('#catatan_order').val(),
+        //             hidden_ongkir_order: $('#hidden_ongkir_order').val(),
+        //             is_ongkir_kas: $('#is_ongkir_kas').val(),
+        //             promosi: $('#promosi').val(),
+        //             hidden_nominal_promosi: $('#hidden_nominal_promosi').val(),
+        //             persen_promosi: $('#persen_promosi').val(),
+        //             metode_pembayaran: $('#metode_pembayaran').val(),
+        //             hidden_nominal_bayar: $('#hidden_nominal_bayar').val(),
+        //             jenis_kartu: $('#jenis_kartu').val(),
+        //             no_kartu: $('#no_kartu').val(),
+        //             approval_kartu: $('#approval_kartu').val(),
+        //             platform_QRIS: $('#platform_QRIS').val(),
+        //             no_QRIS: $('#no_QRIS').val(),
+        //             approval_QRIS: $('#approval_QRIS').val(),
+        //             order_s: item_lists
+        //         },
+        //         success: function (response) {
+        //
+        //             show_snackbar(response.Message);
+        //
+        //             $('.loading').css("display", "none");
+        //             $('.Veil-non-hover').fadeOut();
+        //
+        //
+        //         }
+        //     })
+        // }
 
     })
 
@@ -686,79 +848,7 @@
     });
 
 
-    $('.save-item').click(function(){
 
-        if(temp_menu == 0){
-            return;
-        }
-
-        id_menu = temp_menu;
-        nama_menu = $('.nama-menu').val();
-        qty_order = $('#qty_order').val();
-        harga_order = temp_HJ;
-        total_order = Math.round(parseFloat(qty_order) * parseFloat(harga_order));
-        is_free = $('#is_free').prop("checked");
-
-
-        if(is_free){
-            total_order = 0;
-            nama_menu = $('.nama-menu').val() + ' (FREE)';
-        }
-
-        item_lists.push({
-            id_menu     : id_menu,
-            nama_menu   : nama_menu,
-            qty_order   : qty_order,
-            harga_order : harga_order,
-            total_order : total_order,
-            is_free     : is_free
-        });
-
-
-        $('#menu-modal').modal('hide');
-        refresh_item();
-
-        subtotal += Math.round(total_order);
-        set_harga();
-
-
-
-    })
-
-    function refresh_item(){
-        html = '';
-        $('#item-lists').html(html);
-        item_lists.forEach(function(item, index){
-            html += '<div class="menu-item"">\n' +
-                '            <table width="100%">\n' +
-                '                <tr class="no-hover-style">\n' +
-                '                    <td> '+ item.nama_menu +' <br><span onclick="delete_item('+ index +')" class="link">Hapus</span></td>\n' +
-                '                    <td style="text-align: right">\n' +
-                '                        <span style="font-size: 9px;">'+ item.qty_order +' x '+ convertToRupiah(item.harga_order) +'</span> <br>\n' +
-                '                        <strong style="font-size: 13px;">'+ convertToRupiah(item.total_order) +'</strong>\n' +
-                '                    </td>\n' +
-                '                </tr>\n' +
-                '\n' +
-                '            </table>\n' +
-                '        </div>';
-
-
-        })
-        $('#item-lists').html(html);
-    }
-
-
-    function delete_item(index){
-        if(confirm("Hapus item?")){
-
-            subtotal -= item_lists[index].total_order;
-
-            item_lists.splice(index, 1);
-
-            set_harga();
-            refresh_item();
-        }
-    }
 
 
 

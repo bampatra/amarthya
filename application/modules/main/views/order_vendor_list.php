@@ -34,8 +34,13 @@
                 <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
                     <thead>
                     <tr class="no-hover-style">
-                        <th style="display: none;"> No. Order Vendor </th>
-                        <th> Order </th>
+                        <th> Tgl Order </th>
+                        <th> No Order </th>
+                        <th> Brand </th>
+                        <th> Nama Vendor </th>
+                        <th> Grand Total </th>
+                        <th> Status </th>
+                        <th></th>
                     </tr>
                     </thead>
                     <tbody id="main-content">
@@ -163,70 +168,67 @@
                 type    : 'POST',
             },
             createdRow: function ( row, data, index ) {
-                $('td', row).eq(0).css("display", "none");
             },
             columns: [
-                {"data": "no_order_vendor"},
                 {
-                    "data": {
-                        "nama_vendor":"nama_vendor",
-                        "no_hp_vendor":"no_hp_vendor",
-                        "alamat_vendor":"alamat_vendor",
-                        "tgl_order_vendor":"tgl_order_vendor",
-                        "grand_total_order":"grand_total_order",
-                        "is_paid_vendor": "is_paid_vendor",
-                        "no_order_vendor": "no_order_vendor",
-                        "brand_order": "brand_order"
-                    },
+                    "data": {"tgl_order_vendor": "tgl_order_vendor"},
                     mRender : function(data, type, full) {
-
                         let dateTimeParts= data.tgl_order_vendor.split(/[- :]/);
                         dateTimeParts[1]--;
                         const temp_date = new Date(...dateTimeParts);
 
-                        html = '<div class="detail-row">' +
-                                '<div class="detail-column">' +
-                            '       <span>'+ temp_date.getDate() + '/' + (temp_date.getMonth() + 1) + '/' + temp_date.getFullYear() +'</span><br>' +
-                                    '<strong>'+ data.no_order_vendor +'</strong><br>\n' +
-                                    '<span>'+ data.nama_vendor +'</span><br>';
+                        return temp_date.getDate() + '/' + (temp_date.getMonth() + 1) + '/' + temp_date.getFullYear();
 
+                    }
+                },
+                {"data": "no_order_vendor"},
+                {
+                    "data": {"brand_order": "brand_order"},
+                    mRender : function(data, type, full) {
                         if(data.brand_order == "KA"){
-                            html += '<img src="<?php echo base_url('assets/images/logopdf.jpg');?>" style="float: left; margin-top: 3px" width="48px" height="22px">';
-                        } else if(data.brand_order == "AH"){
-                            html += '<img src="<?php echo base_url('assets/images/amarthya_herbal.png');?>" style="float: left; margin-top: 3px" width="40px" height="40px">';
-                        } else if(data.brand_order == "AF"){
-                            html += '<img src="<?php echo base_url('assets/images/fashion.png');?>" style="float: left margin-top: 3px" left="48px" height="48px">';
-                        } else if(data.brand_order == "AHF"){
-                            html += '<img src="<?php echo base_url('assets/images/phonto.PNG');?>" style="float: left; margin-top: 3px" left="40px" height="40px">';
+                            return "Kedai Amarthya"
+                        } else if (data.brand_order == "AF") {
+                            return "Amarthya Fashion"
+                        } else if (data.brand_order == "AHF") {
+                            return "Amarthya Eatery"
+                        } else if (data.brand_order == "AH") {
+                            return "Amarthya Herbal"
+                        } else {
+                            return "";
                         }
 
-                        html += '</div>' +
-                                '<div class="detail-column" style="text-align: left">' +
-                                    '<strong style="font-size: 11px;">Total Order</strong>\n' +
-                                    '<h6>'+ convertToRupiah(data.grand_total_order) +'</h6>';
+                    }
+                },
+                {"data": "nama_vendor"},
+                {
+                    "data": {"grand_total_order": "grand_total_order"},
+                    mRender : function(data, type, full) {
+                        return convertToRupiah(data.grand_total_order);
 
+                    }
+                },
+                {
+                    "data": {"is_paid_vendor": "is_paid_vendor"},
+                    mRender : function(data, type, full) {
                         if(data.is_paid_vendor == "0"){
-                            html += '<div class="alert alert-danger alert-payment" role="alert">\n' +
+                            html = '<div class="alert alert-danger alert-payment" role="alert">\n' +
                                 '                            <strong>BELUM BAYAR</strong>\n' +
                                 '                        </div>';
                         } else {
-                            html += '<div class="alert alert-success alert-payment" role="alert">\n' +
+                            html = '<div class="alert alert-success alert-payment" role="alert">\n' +
                                 '                            <strong>LUNAS</strong>\n' +
                                 '                        </div>';
                         }
 
-                        html += '</div>' +
-                                // '<div class="detail-column desktop-only" style="text-align: right">' +
-                                //     // '<button type="button" class="btn btn-info mr-1"></button>' +
-                                //     '<a role="button" class="btn btn-warning btn-sm mr-1" target="_blank" href="'+ admin_url +'order_detail?no='+ data.no_order +'"><i class="fa fa-info-circle" aria-hidden="true"></i></a>' +
-                                //     '<a role="button" class="btn btn-success btn-sm mr-1" target="_blank"><i class="fa fa-print" aria-hidden="true"></i></a>' +
-                                //     '<a role="button" class="btn btn-danger btn-sm mr-1"><i class="fa fa-trash" aria-hidden="true"></i></a>' +
-                                //     // '<button type="button" class="btn btn-dark"></button>' +
-                                // '</div>' +
-                            '</div>';
-
                         return html;
 
+                    }
+                },
+                {
+                    "data": {"no_order_vendor":"no_order_vendor"},
+                    mRender : function(data, type, full) {
+                        html = '<button onclick="event.stopPropagation(); window.open(\'' + admin_url + 'order_vendor_detail?no=' + data.no_order_vendor + '\');" class="btn btn-success control-btn"> Detail </button>';
+                        return html;
                     }
                 }
 

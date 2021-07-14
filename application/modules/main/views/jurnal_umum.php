@@ -350,7 +350,7 @@
                         } else if (data.brand_order == "AF") {
                             return "Amarthya Fashion"
                         } else if (data.brand_order == "AHF") {
-                            return "Amarthya Healthy Food"
+                            return "Amarthya Eatery"
                         } else if (data.brand_order == "AH") {
                             return "Amarthya Herbal"
                         } else {

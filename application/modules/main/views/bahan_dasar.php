@@ -189,6 +189,7 @@
             serverSide: true,
             responsive: true,
             lengthChange: false,
+            pageLength: 20,
             searching: true,
             bInfo: false,
             language: {

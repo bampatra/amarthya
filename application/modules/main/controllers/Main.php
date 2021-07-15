@@ -44,6 +44,101 @@ class Main extends MX_Controller
         $this->load->view('template/admin_footer');
     }
 
+    function manual_refresh_HJ(){
+
+        if($this->session->userdata('username') != "bampatra"){
+            echo "Bam doang yang bisa akses";
+        }
+
+        $line = 1;
+
+        $get_all_data = $this->Main_model->get_HP_food()->result_object();
+
+        $this->db->trans_begin();
+
+        foreach($get_all_data as $data){
+
+            $id_menu = $data->id_menu;
+            $HP_menu = floatval($data->harga_bahan);
+
+            if($HP_menu > 10000){
+                // kali 150%
+                $HJ_menu = $HP_menu * 1.5;
+            } else {
+                // kali 200%
+                $HJ_menu = $HP_menu * 2;
+            }
+
+            $HJ_online_menu = floatval($HJ_menu) * 1.3;
+
+            $updated_data = compact('HJ_menu', 'HJ_online_menu');
+
+            if(!$this->Main_model->update_menu_eatery($updated_data, $id_menu)){
+                $this->db->trans_rollback();
+                echo "Error at Line $line";
+            }
+
+            $line++;
+
+        }
+
+        $this->db->trans_commit();
+        echo "Done";
+
+    }
+
+    function manual_add_packaging_to_each_menu(){
+
+        if($this->session->userdata('username') != "bampatra"){
+            echo "Bam doang yang bisa akses";
+        }
+
+        $exist = false;
+        $id_packaging = '5494';
+        $get_all_data = $this->Main_model->get_HP_food()->result_object();
+
+        $this->db->trans_begin();
+        set_time_limit(0);
+
+        foreach($get_all_data as $data) {
+
+            // TODO: check if packaging exists
+
+            $bahan_list = $this->Main_model->get_bahan_by_menu($data->id_menu)->result_object();
+
+            foreach ($bahan_list as $bahan){
+                if($bahan->id_product == $id_packaging){
+                    $exist = true;
+                }
+            }
+
+            // TODO: if packaging doesnt exist, add packaging
+
+            if(!$exist){
+
+                // ==== Add Menu Bahan Eatery ====
+
+                $id_menu = $data->id_menu;
+                $id_product = $id_packaging;
+                $qty_bahan = 1;
+
+                $data_bahan = compact('id_menu', 'id_product', 'qty_bahan');
+
+                if(!$this->Main_model->add_menu_bahan_eatery($data_bahan)){
+                    $this->db->trans_rollback();
+                    echo "Error at ".$data->nama_menu;
+                }
+
+                // ===============================
+
+            }
+        }
+
+        $this->db->trans_commit();
+        echo "Done";
+
+    }
+
     function POS_eatery(){
 
         $data['metode_pembayaran_list'] = $this->Main_model->get_metode_pembayaran()->result_object();
@@ -303,7 +398,7 @@ class Main extends MX_Controller
 
             $is_free = ($is_free == true ? "1" : "0");
 
-            $data_s = compact('id_order_eatery_m', 'id_menu', 'HJ_menu', 'qty_menu', 'is_free');
+            $data_s = compact('id_order_eatery_m', 'id_menu', 'HJ_menu', 'qty_menu', 'is_free', 'total_order');
 
             $id_order_eatery_s = $this->Main_model->add_order_eatery_s($data_s);
 
@@ -449,7 +544,7 @@ class Main extends MX_Controller
             return;
         }
 
-        if(empty($HJ_menu)){
+        if(empty($HJ_menu) || !is_numeric($HJ_menu)){
             $return_arr = array("Status" => 'ERROR', "Message" => 'Harga Jual tidak boleh kosong');
             echo json_encode($return_arr);
             return;
@@ -466,7 +561,9 @@ class Main extends MX_Controller
 
         $this->db->trans_begin();
 
-        $data_menu = compact('nama_menu', 'kategori_menu', 'deskripsi_menu', 'HJ_menu', 'active_menu');
+        $HJ_online_menu = floatval($HJ_menu) * 1.3;
+
+        $data_menu = compact('nama_menu', 'kategori_menu', 'deskripsi_menu', 'HJ_menu', 'active_menu', 'HJ_online_menu');
 
         $id_menu = $this->Main_model->add_menu_eatery($data_menu);
 
@@ -602,7 +699,7 @@ class Main extends MX_Controller
             return;
         }
 
-        if(empty($HJ_menu)){
+        if(empty($HJ_menu) || !is_numeric($HJ_menu)){
             $return_arr = array("Status" => 'ERROR', "Message" => 'Harga Jual tidak boleh kosong');
             echo json_encode($return_arr);
             return;
@@ -614,7 +711,9 @@ class Main extends MX_Controller
             return;
         }
 
-        $updated_data = compact('nama_menu', 'kategori_menu', 'deskripsi_menu', 'HJ_menu');
+        $HJ_online_menu = floatval($HJ_menu) * 1.3;
+
+        $updated_data = compact('nama_menu', 'kategori_menu', 'deskripsi_menu', 'HJ_menu', 'HJ_online_menu');
 
         if($this->Main_model->update_menu_eatery($updated_data, $id_menu)){
 
@@ -1435,6 +1534,53 @@ class Main extends MX_Controller
 
             $output['data'] = $this->Main_model->jurnal_umum_gabung($start_date, $end_date, $brand_order, $tipe_order, $cash_flow, false, $length, $start)->result_object();
             $output['recordsTotal'] = $output['recordsFiltered'] = $this->Main_model->jurnal_umum_gabung($start_date, $end_date, $brand_order, $tipe_order, $cash_flow, false)->num_rows();
+
+
+        } else {
+            $output['data'] = '';
+            $output['recordsTotal'] = $output['recordsFiltered'] = 0;
+        }
+
+        echo json_encode($output);
+    }
+
+    function laporan_menu(){
+
+        if($this->session->userdata('is_admin') != "1" ){
+            redirect(base_url('main'));
+        }
+
+        $this->load->view('template/admin_header');
+        $this->load->view('laporan_menu');
+        $this->load->view('template/admin_footer');
+    }
+
+    function get_laporan_menu(){
+        if($this->session->userdata('is_admin') != "1" ){
+            redirect(base_url('main'));
+        }
+
+        // server-side pagination
+        $draw = $_REQUEST['draw'];
+        $length = $_REQUEST['length'];
+        $start = $_REQUEST['start'];
+        $search = trim(htmlentities($_REQUEST['search']["value"], ENT_QUOTES));
+
+        $output = array();
+        $output['draw'] = $draw;
+        $output['data']=array();
+
+        if(isset($_GET['start']) && isset($_GET['end'])){
+
+            $start_date = htmlentities($_GET['start'], ENT_QUOTES);
+            $raw_end_date = htmlentities($_GET['end'], ENT_QUOTES);
+
+            $datetime = new DateTime($raw_end_date);
+            $datetime->modify('+1 day');
+            $end_date = $datetime->format('Y-m-d H:i:s');
+
+            $output['data'] = $this->Main_model->laporan_menu($start_date, $end_date, $search, $length, $start)->result_object();
+            $output['recordsTotal'] = $output['recordsFiltered'] = $this->Main_model->laporan_menu($start_date, $end_date)->num_rows();
 
 
         } else {

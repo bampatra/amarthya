@@ -370,6 +370,8 @@
         $('#nominal_promosi').val(formatRupiah(convertToRupiah('<?php echo $orders[0]->nominal_promosi; ?>'), 'Rp. ', $('#nominal_promosi').parent().find('.hidden_form')));
         $('#persen_promosi').val('<?php echo $orders[0]->persen_promosi; ?>');
         $('#ongkir_order').val(formatRupiah(convertToRupiah('<?php echo $orders[0]->ongkir_order; ?>'), 'Rp. ', $('#ongkir_order').parent().find('.hidden_form')));
+        $('#nominal_bayar').val(formatRupiah(convertToRupiah('<?php echo $orders[0]->nominal_bayar; ?>'), 'Rp. ', $('#nominal_bayar').parent().find('.hidden_form')));
+        $('#kembalian_bayar').val(formatRupiah(convertToRupiah('<?php echo $orders[0]->kembalian_bayar; ?>'), 'Rp. ', $('#kembalian_bayar').parent().find('.hidden_form')));
 
         payment_detail_dynamic($('#metode_pembayaran').val());
         promosi_detail_dynamic($('#promosi').val())

@@ -236,6 +236,7 @@
                     <h6 class="collapse-header">Option:</h6>
                     <a class="collapse-item" href="<?php echo base_url('main/laporan_transaksi')?>">Transaksi Umum</a>
                     <a class="collapse-item" href="<?php echo base_url('main/laporan_produk')?>">Penjualan Produk</a>
+                    <a class="collapse-item" href="<?php echo base_url('main/laporan_menu')?>">Penjualan Eatery</a>
                     <a class="collapse-item" href="<?php echo base_url('main/laporan_sales')?>">Sales per Customer</a>
                     <a class="collapse-item" href="<?php echo base_url('main/laporan_purchase')?>">Purchase per Vendor</a>
                     <a class="collapse-item" href="<?php echo base_url('main/laporan_delivery')?>">Delivery per staff</a>

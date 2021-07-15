@@ -2,6 +2,18 @@
 class Main_model extends CI_Model
 {
 
+    function get_HP_food(){
+        $sql = "SELECT a.id_menu, d.nama_menu, SUM(a.qty_bahan * b.HP_product) AS harga_bahan
+                FROM menu_bahan_eatery a
+                INNER JOIN menu_eatery d ON a.id_menu = d.id_menu
+                INNER JOIN product b ON a.id_product = b.id_product
+                WHERE (d.kategori_menu <> '14' && d.kategori_menu <> '16')
+                GROUP BY a.id_menu";
+
+        $query = $this->db->query($sql);
+        return $query;
+    }
+
     function get_menu_price($id_menu){
         $sql = "SELECT HJ_menu, HJ_online_menu
                 FROM menu_eatery
@@ -92,7 +104,8 @@ class Main_model extends CI_Model
             'id_menu' => $data['id_menu'],
             'HJ_menu' => $data['HJ_menu'],
             'qty_menu' => $data['qty_menu'],
-            'is_free' => $data['is_free']
+            'is_free' => $data['is_free'],
+            'total_order' => $data['total_order']
         );
 
         $this->db->insert('order_eatery_s',$input_data);
@@ -174,6 +187,7 @@ class Main_model extends CI_Model
             'kategori_menu' => $data['kategori_menu'],
             'deskripsi_menu' => $data['deskripsi_menu'],
             'HJ_menu' => $data['HJ_menu'],
+            'HJ_online_menu' => $data['HJ_online_menu'],
             'active_menu' => $data['active_menu']
         );
 
@@ -616,6 +630,30 @@ class Main_model extends CI_Model
         }
 
         $sql.= " ORDER BY a.nama_product LIMIT {$start}, {$length}";
+
+        $query = $this->db->query($sql);
+        return $query;
+    }
+
+    function laporan_menu($start_date, $end_date, $search = '', $length = 10000000000, $start = 0){
+        $sql = "SELECT a.id_menu, a.nama_menu,
+                        IFNULL(b.total_qty, 0) AS total_qty,
+                        IFNULL(b.total_order, 0) AS total_order
+                FROM menu_eatery a
+                LEFT JOIN (
+                    SELECT a.id_menu, SUM(a.qty_menu) AS total_qty, SUM(a.total_order) AS total_order
+                    FROM order_eatery_s a
+                    INNER JOIN order_eatery_m b ON a.id_order_eatery_m = b.id_order_eatery_m
+                    WHERE b.void <> '1'
+                        AND (b.tgl_order BETWEEN '{$start_date}' AND '{$end_date}') 
+                    GROUP BY a.id_menu
+                )b ON a.id_menu = b.id_menu";
+
+        if($search != "" || $search != null){
+            $sql .= " AND a.nama_menu LIKE '%{$search}%'";
+        }
+
+        $sql.= " ORDER BY a.nama_menu LIMIT {$start}, {$length}";
 
         $query = $this->db->query($sql);
         return $query;

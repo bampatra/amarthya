@@ -41,6 +41,8 @@
                         <th> No Order </th>
                         <th> Jenis Transaksi </th>
                         <th> Grand Total </th>
+                        <th> Tax </th>
+                        <th> Service </th>
                         <th> Payment </th>
                         <th> Status  </th>
                     </tr>
@@ -170,6 +172,20 @@
                     "data": {"grand_total_order": "grand_total_order"},
                     mRender : function(data, type, full) {
                         return convertToRupiah(data.grand_total_order);
+
+                    }
+                },
+                {
+                    "data": {"tax_order": "tax_order"},
+                    mRender : function(data, type, full) {
+                        return convertToRupiah(data.tax_order);
+
+                    }
+                },
+                {
+                    "data": {"service_order": "service_order"},
+                    mRender : function(data, type, full) {
+                        return convertToRupiah(data.service_order);
 
                     }
                 },

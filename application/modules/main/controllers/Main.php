@@ -411,7 +411,7 @@ class Main extends MX_Controller
         }
 
         $tax_order = floatval($subtotal_order) * 10 / 100;
-        $service_order = floatval($subtotal_order) * 5 / 100;
+        $service_order = (floatval($subtotal_order) + floatval($tax_order)) * 5 / 100;
 
         // update price
         if(filter_var($is_ongkir_kas, FILTER_VALIDATE_BOOLEAN)){

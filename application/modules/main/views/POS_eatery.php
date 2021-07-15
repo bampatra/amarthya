@@ -346,6 +346,9 @@
 
 <script>
 
+    var temp_HJ = 0, temp_menu = 0, temp_object;
+    var subtotal = 0, ongkir = 0, diskon = 0, grandtotal = 0, tax = 0, service = 0;
+
     $('.continue-to-payment').click(function(){
         $('#first').css("display", "none");
         $('.payment-wrapper').fadeIn();
@@ -440,7 +443,7 @@
     })
 
     $('#nominal_promosi').change(function(){
-        percentage = Math.round((parseFloat($('#hidden_nominal_promosi').val()) / parseFloat(subtotal)) * 100)
+        percentage = Math.round((parseInt($('#hidden_nominal_promosi').val()) / parseInt(subtotal + tax + service)) * 100)
         $('#persen_promosi').val(percentage);
 
         set_harga()
@@ -448,16 +451,16 @@
 
     $('#persen_promosi').change(function(){
 
-        nominal_promosi = subtotal * parseFloat($(this).val()) / 100
+        nominal_promosi = parseInt(subtotal + tax + service) * parseInt($(this).val()) / 100
 
-        $('#nominal_promosi').val(formatRupiah(convertToRupiah(nominal_promosi), 'Rp. ', $('#nominal_promosi').parent().find('.hidden_form')));
+        $('#nominal_promosi').val(formatRupiah(convertToRupiah(parseInt(nominal_promosi)), 'Rp. ', $('#nominal_promosi').parent().find('.hidden_form')));
 
         set_harga()
 
     })
 
     $('#nominal_bayar').change(function(){
-        kembalian = $('#hidden_nominal_bayar').val() - parseFloat(grandtotal);
+        kembalian = $('#hidden_nominal_bayar').val() - parseInt(grandtotal);
         $('#kembalian_bayar').val(formatRupiah(convertToRupiah(kembalian), 'Rp. ', $('#kembalian_bayar').parent().find('.hidden_form')));
 
 
@@ -468,9 +471,6 @@
     }
 
 
-    var temp_HJ = 0, temp_menu = 0, temp_object;
-    var subtotal = 0, ongkir = 0, diskon = 0, grandtotal = 0;
-
     item_lists = [];
     get_menu("all");
 
@@ -480,7 +480,7 @@
     })
 
     $('#qty_order').keyup(function(){
-        temp_subtotal = parseFloat($('#qty_order').val()) * parseFloat(temp_HJ);
+        temp_subtotal = parseInt($('#qty_order').val()) * parseInt(temp_HJ);
         $('#subtotal-item').html(convertToRupiah(Math.round(temp_subtotal)));
     })
 
@@ -628,8 +628,8 @@
             tax = 0;
             service = 0;
         } else {
-            tax = parseFloat(subtotal) * 10 / 100;
-            service = parseFloat(subtotal) * 5 / 100;
+            tax = parseInt(subtotal) * 10 / 100;
+            service = (parseInt(subtotal) + tax) * 5 / 100;
         }
 
 
@@ -641,15 +641,15 @@
         ongkir = $('#hidden_ongkir_order').val() || 0;
 
         if($('#promosi').val() == 'inputmanual'){
-            diskon = parseFloat($('#hidden_nominal_promosi').val()) || 0;
+            diskon = parseInt($('#hidden_nominal_promosi').val()) || 0;
         } else {
             diskon = 0;
         }
 
         if($('#is_ongkir_kas').prop("checked")) {
-            grandtotal = parseFloat(subtotal) - parseFloat(diskon);
+            grandtotal = parseInt(subtotal) - parseInt(diskon);
         } else {
-            grandtotal = parseFloat(subtotal) + parseFloat(ongkir) - parseFloat(diskon);
+            grandtotal = parseInt(subtotal) + parseInt(ongkir) - parseInt(diskon);
         }
 
         tax_and_service = tax + service;
@@ -676,7 +676,7 @@
         temp_menu = data.id_menu;
 
 
-        temp_subtotal = parseFloat($('#qty_order').val()) * parseFloat(temp_HJ);
+        temp_subtotal = parseInt($('#qty_order').val()) * parseInt(temp_HJ);
 
         if(is_free){
             temp_subtotal = 0;
@@ -696,7 +696,7 @@
         nama_menu = $('.nama-menu').val();
         qty_order = $('#qty_order').val();
         harga_order = temp_HJ;
-        total_order = Math.round(parseFloat(qty_order) * parseFloat(harga_order));
+        total_order = Math.round(parseInt(qty_order) * parseInt(harga_order));
         is_free = $('#is_free').prop("checked");
 
 

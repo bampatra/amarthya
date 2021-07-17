@@ -425,7 +425,12 @@ class Main extends MX_Controller
         }
 
         $tax_and_service = floatval($tax_order) + floatval($service_order);
-        $grand_total_order += $tax_and_service;
+
+        if($jenis_transaksi == "GrabFood" || $jenis_transaksi == "GoFood"){
+            
+        } else {
+            $grand_total_order += $tax_and_service;
+        }
 
         if($metode_pembayaran == "cash"){
             $kembalian_bayar = floatval($nominal_bayar) - floatval($grand_total_order);

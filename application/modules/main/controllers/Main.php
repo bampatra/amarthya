@@ -63,13 +63,13 @@ class Main extends MX_Controller
 
             if($HP_menu > 10000){
                 // kali 150%
-                $HJ_menu = $HP_menu * 1.5;
+                $HJ_menu = round($HP_menu * 1.5, -3);
             } else {
                 // kali 200%
-                $HJ_menu = $HP_menu * 2;
+                $HJ_menu = round($HP_menu * 2, -3);
             }
 
-            $HJ_online_menu = floatval($HJ_menu) * 1.3;
+            $HJ_online_menu = round(floatval($HJ_menu) * 1.22, -2);
 
             $updated_data = compact('HJ_menu', 'HJ_online_menu');
 
@@ -292,6 +292,7 @@ class Main extends MX_Controller
         $input_username = $this->session->userdata('username');
         $tgl_order = date("Y-m-d h:i:s");
 
+        $tipe_order = "";
         $void = "0";
 
         // ERROR    : if no staff
@@ -326,18 +327,21 @@ class Main extends MX_Controller
         if(!$savelater){
             // VALIDATION   : metode pembayaran
             if($metode_pembayaran == "cash"){
+                $tipe_order = 'TUNAI';
                 if(!is_numeric($nominal_bayar) || $nominal_bayar <= 0 ){
                     $return_arr = array("Status" => 'ERROR', "Message" => 'Detail pembayaran invalid');
                     echo json_encode($return_arr);
                     return;
                 }
             } else if($metode_pembayaran == "edc-bca" || $metode_pembayaran == "edc-mandiri") {
+                $tipe_order = 'REK';
                 if(empty($jenis_kartu) || empty($no_kartu) || empty($approval_kartu)){
                     $return_arr = array("Status" => 'ERROR', "Message" => 'Detail pembayaran invalid');
                     echo json_encode($return_arr);
                     return;
                 }
             } else if($metode_pembayaran == "qris"){
+                $tipe_order = 'REK';
                 if(empty($platform_QRIS) || empty($no_QRIS) || empty($approval_QRIS)){
                     $return_arr = array("Status" => 'ERROR', "Message" => 'Detail pembayaran invalid');
                     echo json_encode($return_arr);
@@ -358,7 +362,7 @@ class Main extends MX_Controller
             'subtotal_order', 'ongkir_order', 'is_ongkir_kas', 'promosi', 'nominal_promosi', 'persen_promosi',
             'metode_pembayaran', 'nominal_bayar', 'kembalian_bayar', 'jenis_kartu', 'no_kartu', 'approval_kartu',
             'platform_QRIS', 'no_QRIS', 'approval_QRIS', 'tax_order', 'service_order', 'grand_total_order',
-            'staff_order', 'input_username', 'tgl_order', 'is_paid', 'void');
+            'staff_order', 'input_username', 'tgl_order', 'is_paid', 'void', 'tipe_order');
 
         $this->db->trans_begin();
 
@@ -410,8 +414,8 @@ class Main extends MX_Controller
             }
         }
 
-        $tax_order = floatval($subtotal_order) * 10 / 100;
-        $service_order = (floatval($subtotal_order) + floatval($tax_order)) * 5 / 100;
+        $tax_order = round(floatval($subtotal_order) * 10 / 100);
+        $service_order = round((floatval($subtotal_order) + floatval($tax_order)) * 5 / 100);
 
         // update price
         if(filter_var($is_ongkir_kas, FILTER_VALIDATE_BOOLEAN)){
@@ -561,7 +565,7 @@ class Main extends MX_Controller
 
         $this->db->trans_begin();
 
-        $HJ_online_menu = floatval($HJ_menu) * 1.3;
+        $HJ_online_menu = round(floatval($HJ_menu) * 1.22, -2);
 
         $data_menu = compact('nama_menu', 'kategori_menu', 'deskripsi_menu', 'HJ_menu', 'active_menu', 'HJ_online_menu');
 
@@ -711,7 +715,7 @@ class Main extends MX_Controller
             return;
         }
 
-        $HJ_online_menu = floatval($HJ_menu) * 1.3;
+        $HJ_online_menu = round(floatval($HJ_menu) * 1.22, -2);
 
         $updated_data = compact('nama_menu', 'kategori_menu', 'deskripsi_menu', 'HJ_menu', 'HJ_online_menu');
 

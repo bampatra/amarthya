@@ -311,7 +311,13 @@ class Main_model extends CI_Model
     }
 
 	function dashboard_data($today, $month){
-		$sql = "SELECT 'daily_sales' AS title, t1.tgl_order AS detail, IFNULL(t2.data,0) as data
+
+        $datetime = new DateTime($today);
+        $datetime->modify('+1 day');
+        $end_date = $datetime->format('Y-m-d H:i:s');
+
+
+		$sql = "SELECT 'daily_sales' AS title, t1.tgl_order AS detail, SUM(IFNULL(t2.data,0) + IFNULL(t3.data,0)) as data
 				FROM (
 					SELECT '{$today}' AS tgl_order
 				)t1
@@ -323,9 +329,17 @@ class Main_model extends CI_Model
 						AND tgl_order = '{$today}'
 					GROUP BY tgl_order
 				)t2 ON t1.tgl_order = t2.tgl_order
+                LEFT JOIN (
+                    SELECT id_order_eatery_m, DATE(tgl_order) AS tgl_order, SUM(subtotal_order - nominal_promosi + tax_order + service_order) as data
+                    FROM order_eatery_m
+                    WHERE void = '0'
+                        AND is_paid = '1'
+                        AND DATE(tgl_order) = '{$today}'
+                        GROUP BY DATE(tgl_order)
+                )t3 ON t1.tgl_order = t3.tgl_order
 				UNION
 				/* penjualan bulanan yang sudah dibayar, tidak termasuk ongkir */
-				SELECT 'monthly_sales' AS title, t2.month as detail, IFNULL(t2.data,0) as data
+				SELECT 'monthly_sales' AS title, t2.month as detail, SUM(IFNULL(t2.data,0) + IFNULL(t3.data,0)) as data
 				FROM (
 					SELECT '{$month}' AS month
 				)t1
@@ -337,6 +351,14 @@ class Main_model extends CI_Model
 						AND MONTH(tgl_order) = '{$month}'
 					GROUP BY MONTH(tgl_order)
 				)t2 ON t1.month = t2.month
+                LEFT JOIN (
+                    SELECT id_order_eatery_m, MONTH(tgl_order) as month, SUM(subtotal_order - nominal_promosi + tax_order + service_order) as data
+                    FROM order_eatery_m
+                    WHERE void = '0'
+                        AND is_paid = '1'
+                        AND MONTH(tgl_order) = '{$month}'
+                        GROUP BY MONTH(tgl_order)
+                )t3 ON t1.month = t3.month
 				UNION
 				/*Delivery belum dikirim*/
 				SELECT 'delivery_to_do' AS title, '' AS detail, COUNT(*) as data
@@ -660,6 +682,11 @@ class Main_model extends CI_Model
     }
 
     function jurnal_umum_gabung($start_date, $end_date, $brand_order, $tipe_order, $cash_flow, $excel, $length = 10000000000, $start = 0){
+
+            $datetime = new DateTime($end_date);
+            $datetime->modify('+1 day');
+            $new_end_date = $datetime->format('Y-m-d H:i:s');
+
         $sql = "SELECT *, DATE_FORMAT(a.tgl_order, '%Y-%m-%d') AS custom_tgl
                 FROM (
                     SELECT a.*, (@mutasi := @mutasi + IF(a.DEBET <> 0, a.DEBET, (-1 * a.KREDIT))) AS MUTASI, (@count := @count + 1) AS COUNT
@@ -688,6 +715,14 @@ class Main_model extends CI_Model
                           AND (brand_jurnal_umum = '{$brand_order}' || 'all' = '{$brand_order}')
                           AND (tipe_jurnal_umum = '{$tipe_order}' || 'all' = '{$tipe_order}')
                           AND IF('IN' = '{$cash_flow}', debet_jurnal_umum <> 0, IF('all' = '{$cash_flow}', 1=1, kredit_jurnal_umum <> 0))
+                        UNION
+                        SELECT a.id_order_eatery_m AS ID, a.tgl_order, a.no_order_eatery, a.grand_total_order AS DEBET, 0 AS KREDIT, 'eatery' AS TIPE, 'AHF' AS brand_order, a.tipe_order, CONCAT(a.jenis_transaksi,' (', a.catatan_informasi,')') AS NAMA
+                        FROM order_eatery_m a
+                        WHERE a.void = '0' AND a.is_paid = '1'
+                            AND (a.tgl_order BETWEEN '{$start_date}' AND '{$new_end_date}')
+                            AND ('IN' = '{$cash_flow}' || 'all' = '{$cash_flow}')
+                            AND ('AHF' = '{$brand_order}' || 'all' = '{$brand_order}')
+                            AND (a.tipe_order = '{$tipe_order}' || 'all' = '{$tipe_order}')
                     )a
                     CROSS JOIN (select @mutasi := 0) params
                     CROSS JOIN (select @count := 0) counter

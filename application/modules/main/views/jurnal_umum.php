@@ -399,6 +399,8 @@
                             return "Tunai"
                         } else if (data.tipe_order == "FREE"){
                             return "Free"
+                        } else {
+                            return "";
                         }
                     }
                 }

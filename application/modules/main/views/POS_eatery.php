@@ -443,7 +443,7 @@
     })
 
     $('#nominal_promosi').change(function(){
-        percentage = Math.round((parseInt($('#hidden_nominal_promosi').val()) / parseInt(subtotal + tax + service)) * 100)
+        percentage = Math.round((parseInt($('#hidden_nominal_promosi').val()) / parseInt(subtotal)) * 100)
         $('#persen_promosi').val(percentage);
 
         set_harga()
@@ -451,7 +451,7 @@
 
     $('#persen_promosi').change(function(){
 
-        nominal_promosi = parseInt(subtotal + tax + service) * parseInt($(this).val()) / 100
+        nominal_promosi = parseInt(subtotal) * parseInt($(this).val()) / 100
 
         $('#nominal_promosi').val(formatRupiah(convertToRupiah(parseInt(nominal_promosi)), 'Rp. ', $('#nominal_promosi').parent().find('.hidden_form')));
 
@@ -624,15 +624,20 @@
     function set_harga(){
         $('#subtotal').val(formatRupiah(convertToRupiah(subtotal), 'Rp. ', $('#subtotal').parent().find('.hidden_form')));
 
+        if($('#promosi').val() == 'inputmanual'){
+            diskon = parseInt($('#hidden_nominal_promosi').val()) || 0;
+        } else {
+            diskon = 0;
+        }
+
         if($('#jenis_transaksi').val() == "GrabFood" || $('#jenis_transaksi').val() == "GoFood"){
             tax = 0;
             service = 0;
         } else {
-            tax = parseInt(subtotal) * 10 / 100;
-            service = (parseInt(subtotal) + tax) * 5 / 100;
+            service = parseInt((parseInt(subtotal) - parseInt(diskon)) * 5 / 100);
+            tax = parseInt((parseInt(subtotal) - parseInt(diskon) + service) * 10 / 100);
+            
         }
-
-
 
 
         $('#tax_order').val(formatRupiah(convertToRupiah(tax), 'Rp. ', $('#tax_order').parent().find('.hidden_form')));
@@ -640,11 +645,7 @@
 
         ongkir = $('#hidden_ongkir_order').val() || 0;
 
-        if($('#promosi').val() == 'inputmanual'){
-            diskon = parseInt($('#hidden_nominal_promosi').val()) || 0;
-        } else {
-            diskon = 0;
-        }
+        
 
         if($('#is_ongkir_kas').prop("checked")) {
             grandtotal = parseInt(subtotal) - parseInt(diskon);

@@ -414,8 +414,9 @@ class Main extends MX_Controller
             }
         }
 
-        $tax_order = round(floatval($subtotal_order) * 10 / 100);
-        $service_order = round((floatval($subtotal_order) + floatval($tax_order)) * 5 / 100);
+        $service_order = round((floatval($subtotal_order)  - floatval($nominal_promosi)) * 5 / 100);
+        $tax_order = round((floatval($subtotal_order)  - floatval($nominal_promosi) + $service_order) * 10 / 100);
+        
 
         // update price
         if(filter_var($is_ongkir_kas, FILTER_VALIDATE_BOOLEAN)){
@@ -4298,7 +4299,7 @@ class Main extends MX_Controller
                 $pdf->Cell(25 ,$payment_detail_height,'Subtotal',0,0);
                 $pdf->Cell(34 ,$payment_detail_height,"Rp. " . number_format($order->subtotal_order,2,',','.'),0,1,'R');//end of line
 
-                $pdf->Cell(130 ,$payment_detail_height,'MNC Bank 206010001126284 An. Ngurah Bramantha Patra',0,0);
+                $pdf->Cell(130 ,$payment_detail_height,'Bank Mandiri 1450013916586 An. Anak Agung Ayu Arina Saraswati Hardy',0,0);
                 $pdf->Cell(25 ,$payment_detail_height,'Pengiriman',0,0);
 
                 if($data_order->row()->is_ongkir_kas == '0'){
@@ -4914,7 +4915,7 @@ class Main extends MX_Controller
 
         $pdf->SetFont('Nunito','',8);
 
-        $pdf->Cell(130 ,$payment_detail_height,'MNC Bank 206010001126284 An. Ngurah Bramantha Patra',0,1);
+        $pdf->Cell(130 ,$payment_detail_height,'Bank Mandiri 1450013916586 An. Anak Agung Ayu Arina Saraswati Hardy',0,1);
 
         $pdf->SetFont('Nunito','B',8);
 

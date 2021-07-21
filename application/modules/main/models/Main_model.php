@@ -89,7 +89,8 @@ class Main_model extends CI_Model
             'input_username' => $data['input_username'],
             'tgl_order' => $data['tgl_order'],
             'is_paid' => $data['is_paid'],
-            'void' => $data['void']
+            'void' => $data['void'],
+            'tipe_order' => $data['tipe_order']
 
         );
 

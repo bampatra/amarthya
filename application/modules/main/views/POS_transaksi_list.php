@@ -41,7 +41,7 @@
                         <th> No Order </th>
                         <th> Jenis Transaksi </th>
                         <th> Grand Total </th>
-                        <th> Tax </th>
+                        <th style="width: 10%"> Tax </th>
                         <th> Service </th>
                         <th> Payment </th>
                         <th> Status  </th>
@@ -140,6 +140,7 @@
             serverSide: true,
             responsive: true,
             lengthChange: false,
+            pageLength: 20,
             searching: true,
             bInfo: false,
             language: {
@@ -166,7 +167,21 @@
 
                     }
                 },
-                {"data": "no_order_eatery"},
+                {
+                    "data": {
+                        "no_order_eatery": "no_order_eatery",
+                        "jenis_transaksi": "jenis_transaksi",
+                        "catatan_informasi": "catatan_informasi"
+                    },
+                    mRender : function(data, type, full) {
+                        if(data.jenis_transaksi == "GoFood" || data.jenis_transaksi == "GrabFood"){
+                            return data.catatan_informasi;
+                        } else {
+                            return data.no_order_eatery;
+                        }
+
+                    }
+                },
                 {"data": "jenis_transaksi"},
                 {
                     "data": {"grand_total_order": "grand_total_order"},

@@ -54,6 +54,30 @@
             </form>
         </div>
     </div>
+
+    <div class="card shadow mb-4">
+        <div class="card-header py-3">
+            <h6 class="m-0 font-weight-bold text-primary">Summary</h6>
+        </div>
+        <div class="card-body">
+            <table style="width:100%">
+
+                <tr class="no-hover-style">
+                    <td><span style="font-size: 12px"> Saldo </span></td>
+                    <td><span style="font-size: 12px"> Debet </span></td>
+                    <td><span style="font-size: 12px"> Kredit </span></td>
+                </tr>
+                <tr class="no-hover-style" id="summary-content">
+                    <td><h3>Rp. xxx</h3></td>
+                    <td><h3>Rp. xxx</h3></td>
+                    <td><h3>Rp. xxx</h3></td>
+                </tr>
+
+            </table>
+
+        </div>
+    </div>
+
     <div class="card shadow mb-4">
         <div class="card-header py-3">
             <h6 class="m-0 font-weight-bold text-primary">Jurnal Umum</h6>
@@ -310,6 +334,8 @@
         tipe_pembayaran = $('#tipe_pembayaran').val()
         cash_flow = $('#cash_flow').val()
 
+        get_summary_transaksi();
+
         $('#dataTable').DataTable().destroy();
         $('#dataTable').DataTable({
             processing: true,
@@ -446,8 +472,32 @@
             $('.modal-button-view-only').css('display', 'block');
             $('#jurnal-umum-modal').modal('toggle');
         }
-
     })
+
+    function get_summary_transaksi(){
+        $.ajax({
+            type: 'POST', // define the type of HTTP verb we want to use (POST for our form)
+            url: admin_url + 'jurnal_umum_summary', // the url where we want to POST// our data object
+            dataType: 'json',
+            data: {
+                start: $('#start_date').val(),
+                end: $('#end_date').val(),
+                brand: $('#brand').val(),
+                tipe: $('#tipe_pembayaran').val(),
+                flow: $('#cash_flow').val(),
+            },
+            success: function (response) {
+
+
+                html = '<td><h3>'+ convertToRupiah(response.total) +'</h3></td>\n' +
+                    '   <td><h3>'+ convertToRupiah(response.debet) +'</h3></td>\n' +
+                    '   <td><h3>'+ convertToRupiah(response.kredit) +'</h3></td>';
+
+                $('#summary-content').html(html);
+
+            }
+        })
+    }
 
 
 </script>

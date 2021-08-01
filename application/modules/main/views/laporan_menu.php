@@ -20,6 +20,14 @@
                     Dari tanggal
                     <input type="date" id="start_date" name="start_date" style="margin-right: 5px; margin-left: 5px" class="form-control form-control-sm" value="<?php echo date('Y')?>-01-01"> sampai tanggal
                     <input type="date" id="end_date" name="end_date" style="margin-right: 5px; margin-left: 5px" class="form-control form-control-sm" value="<?php echo date('Y-m-d')?>">
+                    <select id="kategori_menu" name="kategori_menu" style="margin-right: 5px; margin-left: 5px" class="form-control form-active-control form-control-sm">
+                        <option value="all"> Semua Kategori </option>
+                        <?php foreach ($kategori as $cat) { ?>
+                            <option value="<?php echo $cat->id_kategori_eatery; ?>">
+                                <?php echo $cat->nama_kategori; ?>
+                            </option>
+                        <?php } ?>
+                    </select>
                     <button class="btn btn-primary btn-sm apply" style="margin-right: 5px">Terapkan</button>
 <!--                    <button id="export_excel" class="btn btn-warning btn-sm">Export Excel</button>-->
                 </div>
@@ -90,6 +98,7 @@
 
         start_date = $('#start_date').val()
         end_date = $('#end_date').val()
+        kategori = $('#kategori_menu').val()
 
         $('#dataTable').DataTable().destroy();
         $('#dataTable').DataTable({
@@ -100,12 +109,13 @@
             lengthChange: false,
             searching: true,
             bInfo: false,
+            order: [2, 'asc'],
             language: {
                 search: ""
             },
             pagingType: "simple",
             ajax: {
-                url     : admin_url + 'get_laporan_menu?start=' + start_date + '&end=' + end_date,
+                url     : admin_url + 'get_laporan_menu?start=' + start_date + '&end=' + end_date + '&kategori=' + kategori,
                 type    : 'POST',
             },
             createdRow: function ( row, data, index ) {

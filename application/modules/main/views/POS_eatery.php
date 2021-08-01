@@ -19,11 +19,11 @@
                     <label class="col-sm-4 col-form-label col-form-label-sm">Jenis</label>
                     <div class="col-sm-8">
                         <select id="jenis_transaksi" name="jenis_transaksi" class="form-control form-active-control form-control-sm">
-                            <option value="Dine In"> Dine In</option>
-                            <option value="Take Away"> Take Away</option>
-                            <option value="Delivery"> Delivery by Amarthya</option>
-                            <option value="GrabFood"> GrabFood</option>
-                            <option value="GoFood"> GoFood</option>
+                            <?php
+                            foreach($jenis_transaksi as $jenis){
+                                echo "<option value='".$jenis->kode_jenis."'>".$jenis->nama_jenis."</option>";
+                            }
+                            ?>
                         </select>
                     </div>
                     <div class="invalid-feedback invalid-brand">Data tidak valid</div>

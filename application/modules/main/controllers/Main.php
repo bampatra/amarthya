@@ -14,6 +14,55 @@ class Main extends MX_Controller
         }
     }
 
+    function refresh_transaction_grand_total(){
+
+        if($this->session->userdata('username') != "bampatra"){
+            echo "Bam doang yang bisa akses";
+        }
+
+        $this->db->trans_begin();
+        set_time_limit(0);
+
+        // $dataset = $this->Main_model->get_discount_service_tax_comparison()->result_object();
+
+        // foreach($dataset as $data){
+
+        //     $nominal_promosi = round(floatval($data->actual_promosi));
+        //     $service_order = round(floatval($data->actual_service));
+        //     $tax_order = round(floatval($data->actual_tax));
+
+        //     $updated_data = compact('nominal_promosi', 'tax_order', 'service_order');
+
+        //     if(!$this->Main_model->update_order_eatery_m($updated_data, $data->id_order_eatery_m)){
+        //         $this->db->trans_rollback();
+        //         echo "Error at ".$data->no_order_eatery;
+        //     }
+
+        // }
+
+        // ==================================================================================
+
+        $dataset = $this->Main_model->get_service_tax_grab_gojek()->result_object();
+
+        foreach($dataset as $data){
+
+            $service_order = round(floatval($data->actual_service));
+            $tax_order = round(floatval($data->actual_tax));
+
+            $updated_data = compact('tax_order', 'service_order');
+
+            if(!$this->Main_model->update_order_eatery_m($updated_data, $data->id_order_eatery_m)){
+                $this->db->trans_rollback();
+                echo "Error at ".$data->no_order_eatery;
+            }
+
+        }
+
+        $this->db->trans_commit();
+        echo "Done";
+
+    }
+
     function index()
     {
 
@@ -142,6 +191,7 @@ class Main extends MX_Controller
     function POS_eatery(){
 
         $data['metode_pembayaran_list'] = $this->Main_model->get_metode_pembayaran()->result_object();
+        $data['jenis_transaksi'] = $this->Main_model->get_jenis_transaksi_eatery()->result_object();
         $data['staffs'] = $this->Main_model->get_staff()->result_object();
 
         $this->load->view('template/admin_header');
@@ -151,6 +201,7 @@ class Main extends MX_Controller
 
     function POS_transaksi_list(){
         $data['metode_pembayaran'] = $this->Main_model->get_metode_pembayaran()->result_object();
+        $data['jenis_transaksi'] = $this->Main_model->get_jenis_transaksi_eatery()->result_object();
 
         $this->load->view('template/admin_header');
         $this->load->view('POS_transaksi_list', $data);
@@ -227,16 +278,54 @@ class Main extends MX_Controller
             $payment = "all";
         }
 
-        $total = $this->Main_model->get_order_eatery_m($search, $status, $payment)->num_rows();
+        if(isset($_GET['jenis'])){
+            $jenis = htmlentities($_GET['jenis'], ENT_QUOTES);
+        } else {
+            $jenis = "all";
+        }
 
         $output = array();
+
+        if(isset($_GET['start']) && isset($_GET['end'])){
+
+            $start_date = htmlentities($_GET['start'], ENT_QUOTES);
+            $raw_end_date = htmlentities($_GET['end'], ENT_QUOTES);
+
+            $datetime = new DateTime($raw_end_date);
+            $datetime->modify('+1 day');
+            $end_date = $datetime->format('Y-m-d H:i:s');
+
+            $output['data'] = $this->Main_model->get_order_eatery_m($search, $status, $payment, $jenis, $start_date, $end_date, false, $length, $start)->result_object();
+            $total = $this->Main_model->get_order_eatery_m($search, $status, $payment, $jenis, $start_date, $end_date, false)->num_rows();
+
+
+        } else {
+            $output['data'] = '';
+            $output['recordsTotal'] = $output['recordsFiltered'] = 0;
+        }
+
         $output['draw'] = $draw;
         $output['recordsTotal'] = $output['recordsFiltered'] = $total;
-        $output['data']=array();
 
-
-        $output['data'] = $this->Main_model->get_order_eatery_m($search, $status, $payment, $length, $start)->result_object();
         echo json_encode($output);
+        return;
+
+    }
+
+    function get_summary_transaksi(){
+        $status = $_REQUEST['status'];
+        $payment = $_REQUEST['payment'];
+        $jenis = $_REQUEST['jenis'];
+        $start_date = htmlentities($_REQUEST['start'], ENT_QUOTES);
+        $raw_end_date = htmlentities($_REQUEST['end'], ENT_QUOTES);
+
+        $datetime = new DateTime($raw_end_date);
+        $datetime->modify('+1 day');
+        $end_date = $datetime->format('Y-m-d H:i:s');
+
+        $data = $this->Main_model->get_summary_transaksi($status, $payment, $jenis, $start_date, $end_date)->result_object();
+        $return_arr = array("data" => $data);
+        echo json_encode($return_arr);
         return;
 
     }
@@ -290,7 +379,7 @@ class Main extends MX_Controller
         $grand_total_order = 0.0;
         $staff_order = trim(htmlentities($_REQUEST['staff_order'], ENT_QUOTES));
         $input_username = $this->session->userdata('username');
-        $tgl_order = date("Y-m-d h:i:s");
+        $tgl_order = date("Y-m-d H:i:s");
 
         $tipe_order = "";
         $void = "0";
@@ -347,6 +436,8 @@ class Main extends MX_Controller
                     echo json_encode($return_arr);
                     return;
                 }
+            } else {
+                $tipe_order = 'REK';
             }
         }
 
@@ -1008,7 +1099,6 @@ class Main extends MX_Controller
         echo json_encode($return_arr);
     }
 
-
     function riwayat_belanja(){
 
         if($this->session->userdata('is_admin') != "1" && $this->session->userdata('is_admin') != "2" ){
@@ -1334,7 +1424,6 @@ class Main extends MX_Controller
         echo json_encode($return_arr);
     }
 
-
     function problem_solving(){
 
         if($this->session->userdata('is_admin') != "1" ){
@@ -1554,18 +1643,42 @@ class Main extends MX_Controller
         echo json_encode($output);
     }
 
+    function jurnal_umum_summary(){
+
+        $start_date = htmlentities($_REQUEST['start'], ENT_QUOTES);
+        $end_date = htmlentities($_REQUEST['end'], ENT_QUOTES);
+        $brand_order = htmlentities($_REQUEST['brand'], ENT_QUOTES);
+        $tipe_order = htmlentities($_REQUEST['tipe'], ENT_QUOTES);
+        $cash_flow = htmlentities($_REQUEST['flow'], ENT_QUOTES);
+
+
+        $data = $this->Main_model->jurnal_umum_summary($start_date, $end_date, $brand_order, $tipe_order, $cash_flow)->result_array();
+
+        $debet = intval($data[0]['data']) + intval($data[2]['data']) + intval($data[4]['data']);
+        $kredit = intval($data[1]['data']) + intval($data[3]['data']);
+        $total = intval($debet) - intval($kredit);
+
+        $return_arr = array("debet" => $debet, "kredit" => $kredit, "total" => $total);
+        echo json_encode($return_arr);
+        return;
+
+    }
+
     function laporan_menu(){
 
         if($this->session->userdata('is_admin') != "1" ){
             redirect(base_url('main'));
         }
 
+        $data['kategori'] = $this->Main_model->get_kategori_eatery()->result_object();
+
         $this->load->view('template/admin_header');
-        $this->load->view('laporan_menu');
+        $this->load->view('laporan_menu', $data);
         $this->load->view('template/admin_footer');
     }
 
     function get_laporan_menu(){
+
         if($this->session->userdata('is_admin') != "1" ){
             redirect(base_url('main'));
         }
@@ -1576,6 +1689,10 @@ class Main extends MX_Controller
         $start = $_REQUEST['start'];
         $search = trim(htmlentities($_REQUEST['search']["value"], ENT_QUOTES));
 
+        // server-side ordering
+        $order_col = $_REQUEST['order'][0]["column"] + 1;
+        $order_dir = $_REQUEST['order'][0]["dir"];
+
         $output = array();
         $output['draw'] = $draw;
         $output['data']=array();
@@ -1584,13 +1701,18 @@ class Main extends MX_Controller
 
             $start_date = htmlentities($_GET['start'], ENT_QUOTES);
             $raw_end_date = htmlentities($_GET['end'], ENT_QUOTES);
+            $kategori = htmlentities($_GET['kategori'], ENT_QUOTES);
 
             $datetime = new DateTime($raw_end_date);
             $datetime->modify('+1 day');
             $end_date = $datetime->format('Y-m-d H:i:s');
 
-            $output['data'] = $this->Main_model->laporan_menu($start_date, $end_date, $search, $length, $start)->result_object();
-            $output['recordsTotal'] = $output['recordsFiltered'] = $this->Main_model->laporan_menu($start_date, $end_date)->num_rows();
+            $output['data'] = $this->Main_model->laporan_menu($start_date, $end_date, $kategori, $search, $length, $start, $order_col, $order_dir)->result_object();
+
+//            echo $this->db->last_query();
+//            return;
+
+            $output['recordsTotal'] = $output['recordsFiltered'] = $this->Main_model->laporan_menu($start_date, $end_date, $kategori)->num_rows();
 
 
         } else {
@@ -3605,7 +3727,7 @@ class Main extends MX_Controller
         $start = $_REQUEST['start'];
         $search = trim(htmlentities($_REQUEST['search']["value"], ENT_QUOTES));
 
-        $total = $this->Main_model->get_product()->num_rows();
+        $total = $this->Main_model->get_product($search)->num_rows();
 
         $output = array();
         $output['draw'] = $draw;
@@ -5222,6 +5344,9 @@ class Main extends MX_Controller
         $data_start = $startRow;
         $no = 1;
 
+        $total_debet = 0;
+        $total_kredit = 0;
+
         foreach($data as $row){
             $objPHPExcel->getActiveSheet()->SetCellValue("A".$startRow, $no);
             $objPHPExcel->getActiveSheet()->SetCellValue("B".$startRow, html_entity_decode($this->get_brand($row->brand_order), ENT_QUOTES,'UTF-8'));
@@ -5249,10 +5374,21 @@ class Main extends MX_Controller
                 ));
             }
 
+            $total_debet += (int)$row->DEBET;
+            $total_kredit += (int)$row->KREDIT;
+
             $startRow++;
             $no++;
         }
 
+        $objPHPExcel->getActiveSheet()->getStyle("A$startRow:H$startRow")->getFill()->applyFromArray(array(
+            'type' => PHPExcel_Style_Fill::FILL_SOLID,
+            'startcolor' => array(
+                'rgb' => 'A8A7A5'
+            )
+        ));
+        $objPHPExcel->getActiveSheet()->SetCellValue("E".$startRow, $total_debet);
+        $objPHPExcel->getActiveSheet()->SetCellValue("F".$startRow, $total_kredit);
 
         $objPHPExcel->getActiveSheet()
             ->getStyle("E$data_start:G$startRow")
@@ -5726,6 +5862,183 @@ class Main extends MX_Controller
         header('Cache-Control: max-age=0'); //no cache
         $objWriter = PHPExcel_IOFactory::createWriter($objPHPExcel, 'Excel2007');
         $objWriter->save('php://output');
+
+    }
+
+    function excel_transaksi_eatery(){
+        if($this->session->userdata('is_admin') != "1"){
+            echo "Unauthorized";
+            return;
+        }
+
+        if(!isset($_GET['start']) || !isset($_GET['end']) || !isset($_GET['status']) || !isset($_GET['payment']) || !isset($_GET['jenis'])){
+            echo "Invalid data";
+            return;
+        }
+
+        include APPPATH.'third_party/PHPExcel/PHPExcel.php';
+
+        $startRow = 1;
+        $objPHPExcel = new PHPExcel();
+
+        $start_date = htmlentities($_GET['start'], ENT_QUOTES);
+        $raw_end_date = htmlentities($_GET['end'], ENT_QUOTES);
+
+        $datetime = new DateTime($raw_end_date);
+        $datetime->modify('+1 day');
+        $end_date = $datetime->format('Y-m-d H:i:s');
+
+        $status = htmlentities($_GET['status'], ENT_QUOTES);
+        $payment = htmlentities($_GET['payment'], ENT_QUOTES);
+        $jenis = htmlentities($_GET['jenis'], ENT_QUOTES);
+
+        $data = $this->Main_model->get_order_eatery_m(null, $status, $payment, $jenis, $start_date, $end_date, true)->result_object();
+
+        if(empty($data)){
+            echo "No data";
+            return;
+        }
+
+        $objPHPExcel->setActiveSheetIndex(0);
+
+        $objPHPExcel->getActiveSheet()->SetCellValue("A".$startRow, "Laporan Penjualan Eatery");
+        $objPHPExcel->getActiveSheet()->getStyle("A$startRow")->getFont()->setBold( true );
+        $objPHPExcel->getActiveSheet()->getStyle("A$startRow")->getFont()->setItalic( true );
+        $objPHPExcel->getActiveSheet()->getStyle("A$startRow")->getFont()->setSize(14);
+
+
+        $objPHPExcel->getActiveSheet()->getColumnDimension('A')->setWidth(6);
+        $objPHPExcel->getActiveSheet()->getColumnDimension('B')->setWidth(18);
+        $objPHPExcel->getActiveSheet()->getColumnDimension('C')->setWidth(18);
+        $objPHPExcel->getActiveSheet()->getColumnDimension('D')->setWidth(9);
+        $objPHPExcel->getActiveSheet()->getColumnDimension('E')->setWidth(12);
+        $objPHPExcel->getActiveSheet()->getColumnDimension('F')->setWidth(12);
+        $objPHPExcel->getActiveSheet()->getColumnDimension('G')->setWidth(12);
+        $objPHPExcel->getActiveSheet()->getColumnDimension('H')->setWidth(16);
+        $objPHPExcel->getActiveSheet()->getColumnDimension('I')->setWidth(9);
+
+        $startRow = 3;
+
+        $objPHPExcel->getActiveSheet()->SetCellValue("B".$startRow, "Periode");
+        $startRow++;
+        $objPHPExcel->getActiveSheet()->SetCellValue("B".$startRow, "$start_date sampai dengan $raw_end_date");
+
+
+        $objPHPExcel->getActiveSheet()->getStyle("B3:D$startRow")->applyFromArray(
+            array(
+                'borders' => array(
+                    'outline' => array(
+                        'style' => PHPExcel_Style_Border::BORDER_THIN,
+                        'color' => array('rgb' => 'DDDDDD')
+                    )
+                )
+            )
+        );
+
+        $startRow+=2;
+
+        $objPHPExcel->getActiveSheet()->SetCellValue("A".$startRow, "No");
+        $objPHPExcel->getActiveSheet()->SetCellValue("B".$startRow, "Tgl Order");
+        $objPHPExcel->getActiveSheet()->SetCellValue("C".$startRow, "No Order");
+        $objPHPExcel->getActiveSheet()->SetCellValue("D".$startRow, "Jenis");
+        $objPHPExcel->getActiveSheet()->SetCellValue("E".$startRow, "Grand Total");
+        $objPHPExcel->getActiveSheet()->SetCellValue("F".$startRow, "Tax");
+        $objPHPExcel->getActiveSheet()->SetCellValue("G".$startRow, "Service");
+        $objPHPExcel->getActiveSheet()->SetCellValue("H".$startRow, "Payment");
+        $objPHPExcel->getActiveSheet()->SetCellValue("I".$startRow, "Status");
+
+        $objPHPExcel->getActiveSheet()->getStyle("A$startRow:I$startRow")->getFill()->applyFromArray(array(
+            'type' => PHPExcel_Style_Fill::FILL_SOLID,
+            'startcolor' => array(
+                'rgb' => 'C0BEBF'
+            )
+        ));
+
+        $objPHPExcel->getActiveSheet()->getStyle("A$startRow:I$startRow")->getFont()->setBold( true );
+
+        $startRow++;
+        $data_start = $startRow;
+
+        $master_grand_total = 0;
+        $master_tax = 0;
+        $master_service = 0;
+
+        $no = 1;
+
+        foreach($data as $row){
+            $objPHPExcel->getActiveSheet()->SetCellValue("A".$startRow, $no);
+            $objPHPExcel->getActiveSheet()->SetCellValue("B".$startRow, $row->tgl_order);
+
+            if($row->jenis_transaksi == "GoFood" || $row->jenis_transaksi == "GrabFood"){
+                $objPHPExcel->getActiveSheet()->SetCellValue("C".$startRow, $row->catatan_informasi);
+            } else {
+                $objPHPExcel->getActiveSheet()->SetCellValue("C".$startRow, $row->no_order_eatery);
+            }
+
+
+            $objPHPExcel->getActiveSheet()->SetCellValue("D".$startRow, $row->jenis_transaksi);
+            $objPHPExcel->getActiveSheet()->SetCellValue("E".$startRow, (int)$row->grand_total_order);
+            $objPHPExcel->getActiveSheet()->SetCellValue("F".$startRow, (int)$row->tax_order);
+            $objPHPExcel->getActiveSheet()->SetCellValue("G".$startRow, (int)$row->service_order);
+            $objPHPExcel->getActiveSheet()->SetCellValue("H".$startRow, $row->nama_metode_pembayaran);
+
+            if($row->is_paid == "0"){
+                $objPHPExcel->getActiveSheet()->SetCellValue("I".$startRow, "Belum Bayar");
+            } else {
+                $objPHPExcel->getActiveSheet()->SetCellValue("I".$startRow, "Lunas");
+            }
+
+
+            if($no % 2 == 0){
+                $objPHPExcel->getActiveSheet()->getStyle("A$startRow:I$startRow")->getFill()->applyFromArray(array(
+                    'type' => PHPExcel_Style_Fill::FILL_SOLID,
+                    'startcolor' => array(
+                        'rgb' => 'F3F3F3'
+                    )
+                ));
+            }
+
+            $startRow++;
+            $no++;
+
+            $master_grand_total += (int) $row->grand_total_order;
+            $master_tax += (int) $row->tax_order;
+            $master_service += (int) $row->service_order;
+
+        }
+
+
+        $objPHPExcel->getActiveSheet()->getStyle("A$startRow:I$startRow")->getFill()->applyFromArray(array(
+            'type' => PHPExcel_Style_Fill::FILL_SOLID,
+            'startcolor' => array(
+                'rgb' => 'A8A7A5'
+            )
+        ));
+
+        $objPHPExcel->getActiveSheet()->SetCellValue("E".$startRow, $master_grand_total);
+        $objPHPExcel->getActiveSheet()->SetCellValue("F".$startRow, $master_tax);
+        $objPHPExcel->getActiveSheet()->SetCellValue("G".$startRow, $master_service);
+
+
+        $objPHPExcel->getActiveSheet()
+            ->getStyle("E$data_start:G$startRow")
+            ->getAlignment()
+            ->setHorizontal(PHPExcel_Style_Alignment::HORIZONTAL_RIGHT);
+
+        $objPHPExcel->getActiveSheet()->getStyle("E$data_start:G$startRow")->getNumberFormat()->setFormatCode('#,##0');
+//        $objPHPExcel->getActiveSheet()->getStyle("B$data_start:B$startRow")->getAlignment()->setWrapText(true);
+        $objPHPExcel->getActiveSheet()->getStyle("A$data_start:I$startRow")->getAlignment()->setVertical(PHPExcel_Style_Alignment::VERTICAL_TOP);
+
+
+        $objPHPExcel->getActiveSheet()->setShowGridlines(false);
+
+        $filename = "Laporan Penjualan Eatery ($start_date sampai $raw_end_date)";
+        header('Content-Type: application/vnd.ms-excel'); //mime type
+        header('Content-Disposition: attachment;filename="'.$filename.'.xlsx"'); //tell browser what's the file name
+        header('Cache-Control: max-age=0'); //no cache
+        $objWriter = PHPExcel_IOFactory::createWriter($objPHPExcel, 'Excel2007');
+        $objWriter->save('php://output');
+
 
     }
 

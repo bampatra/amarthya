@@ -2,12 +2,116 @@
 class Main_model extends CI_Model
 {
 
+    // ================= SPECIAL USE QUERIES ===================
+
+
+
+
+    function get_discount_service_tax_comparison(){
+        $sql = "SELECT a.*, SUM(a.subtotal_order - a.actual_promosi + a.actual_service + a.actual_tax) AS actual_grand_total
+                FROM (
+                    SELECT a.id_order_eatery_m, a.tgl_order, a.no_order_eatery, a.subtotal_order, a.db_promosi, a.actual_promosi, 
+                    a.db_service,
+                    ROUND(SUM((a.subtotal_order - a.actual_promosi) * 5 / 100))  AS actual_service,
+                    a.db_tax,
+                    ROUND(SUM((subtotal_order - a.actual_promosi + ((subtotal_order - a.actual_promosi) * 5 / 100) ) * 10 / 100)) AS actual_tax,
+                    a.grand_total_order AS db_grand_total
+                    FROM (
+                        SELECT id_order_eatery_m, tgl_order, no_order_eatery, subtotal_order, 
+                        nominal_promosi AS db_promosi,
+                        SUM(subtotal_order * 15 / 100) AS actual_promosi,
+                        service_order AS db_service,
+                        tax_order AS db_tax,
+                        grand_total_order
+                        FROM order_eatery_m
+                        WHERE jenis_transaksi = 'Dine In'
+                        AND void = '0'
+                        GROUP BY no_order_eatery
+                    )a
+                    GROUP BY no_order_eatery
+                    ORDER BY tgl_order
+                )a
+                WHERE db_promosi <> 0 AND no_order_eatery <> 'IGE60f7d7dae706e'
+                GROUP BY no_order_eatery
+                ORDER BY tgl_order";
+
+        $query = $this->db->query($sql);
+        return $query;
+    }
+
+    function get_service_tax_comparison(){
+        $sql = "SELECT a.*, SUM(a.subtotal_order + a.actual_service + a.actual_tax) AS actual_grand_total
+                FROM (
+                    SELECT a.id_order_eatery_m, a.tgl_order, a.no_order_eatery, a.subtotal_order, a.db_promosi,
+                    a.db_service,
+                    ROUND(SUM(a.subtotal_order * 5 / 100))  AS actual_service,
+                    a.db_tax,
+                    ROUND(SUM((subtotal_order + (subtotal_order * 5 / 100) ) * 10 / 100)) AS actual_tax,
+                    a.grand_total_order AS db_grand_total
+                    FROM (
+                        SELECT id_order_eatery_m, tgl_order, no_order_eatery, subtotal_order, 
+                        nominal_promosi AS db_promosi,
+                        service_order AS db_service,
+                        tax_order AS db_tax,
+                        grand_total_order
+                        FROM order_eatery_m
+                        WHERE jenis_transaksi = 'Dine In'
+                        AND void = '0'
+                        GROUP BY no_order_eatery
+                    )a
+                    GROUP BY no_order_eatery
+                    ORDER BY tgl_order
+                )a
+                WHERE db_promosi = 0
+                GROUP BY no_order_eatery
+                ORDER BY tgl_order";
+
+        $query = $this->db->query($sql);
+        return $query;
+    }
+
+    function get_service_tax_grab_gojek(){
+        $sql = "SELECT a.*, SUM(a.subtotal_order + a.actual_service + a.actual_tax) AS actual_grand_total
+                FROM (
+                    SELECT a.id_order_eatery_m, a.tgl_order, a.no_order_eatery, a.subtotal_order, a.db_promosi,
+                    a.db_service,
+                    ROUND(SUM((a.subtotal_order - a.db_promosi) * 5 / 100))  AS actual_service,
+                    a.db_tax,
+                    ROUND(SUM((subtotal_order - a.db_promosi + ((subtotal_order - a.db_promosi) * 5 / 100) ) * 10 / 100)) AS actual_tax,
+                    a.grand_total_order AS db_grand_total
+                    FROM (
+                        SELECT id_order_eatery_m, tgl_order, catatan_informasi AS no_order_eatery, subtotal_order, 
+                        nominal_promosi AS db_promosi,
+                        service_order AS db_service,
+                        tax_order AS db_tax,
+                        grand_total_order
+                        FROM order_eatery_m
+                        WHERE (jenis_transaksi = 'GoFood' || jenis_transaksi = 'GrabFood')
+                        AND void = '0'
+                        GROUP BY no_order_eatery
+                    )a
+                    GROUP BY no_order_eatery
+                    ORDER BY tgl_order
+                )a
+                GROUP BY no_order_eatery
+                ORDER BY tgl_order";
+
+        $query = $this->db->query($sql);
+        return $query;
+    }
+
+    // =========================================================
+
+
+
     function get_HP_food(){
         $sql = "SELECT a.id_menu, d.nama_menu, SUM(a.qty_bahan * b.HP_product) AS harga_bahan
                 FROM menu_bahan_eatery a
                 INNER JOIN menu_eatery d ON a.id_menu = d.id_menu
                 INNER JOIN product b ON a.id_product = b.id_product
-                WHERE (d.kategori_menu <> '14' && d.kategori_menu <> '16')
+                WHERE d.kategori_menu <> '16' 
+                    AND d.nama_menu NOT LIKE '%Gambino%' 
+                    AND d.nama_menu NOT LIKE '%Lanang%'
                 GROUP BY a.id_menu";
 
         $query = $this->db->query($sql);
@@ -24,23 +128,63 @@ class Main_model extends CI_Model
 
     }
 
-    function get_order_eatery_m($search = null, $status = "all", $payment = "all", $length = 10000000000, $start = 0){
+    function get_order_eatery_m($search = null, $status = "all", $payment = "all", $jenis = "all",$start_date, $end_date, $excel = false, $length = 10000000000, $start = 0){
         $sql = "SELECT * 
                 FROM order_eatery_m a
                 INNER JOIN metode_pembayaran b ON a.metode_pembayaran = b.html_id
                 WHERE a.void = '0'
                     AND (a.is_paid = '{$status}' || 'all' = '{$status}')
-                    AND (a.metode_pembayaran = '{$payment}' || 'all' = '{$payment}')";
+                    AND (a.metode_pembayaran = '{$payment}' || 'all' = '{$payment}')
+                    AND (a.jenis_transaksi = '{$jenis}' || 'all' = '{$jenis}')
+                    AND (a.tgl_order BETWEEN '{$start_date}' AND '{$end_date}') ";
 
         if($search != "" || $search != null){
             $sql .= " AND CONCAT(a.no_order_eatery) LIKE '%$search%'";
         }
 
-        $sql .= " ORDER BY a.tgl_order DESC LIMIT {$start}, {$length}";
+        if($excel){
+            $dir = "ASC";
+        } else {
+            $dir = "DESC";
+        }
+
+        $sql .= " ORDER BY a.tgl_order {$dir} LIMIT {$start}, {$length}";
 
         $query = $this->db->query($sql);
         return $query;
     }
+
+    function get_summary_transaksi($status = "all", $payment = "all", $jenis = "all", $start_date, $end_date, $search = null){
+        $sql = "SELECT SUM(grand_total_order) AS data
+                FROM order_eatery_m a 
+                WHERE a.void = '0' 
+                    AND (a.is_paid = '{$status}' || 'all' = '{$status}')
+                    AND (a.metode_pembayaran = '{$payment}' || 'all' = '{$payment}')
+                    AND (a.tgl_order BETWEEN '{$start_date}' AND '{$end_date}')
+                    AND (a.jenis_transaksi = '{$jenis}' || 'all' = '{$jenis}')
+                UNION
+                SELECT SUM(tax_order) AS data
+                FROM order_eatery_m a 
+                WHERE a.void = '0' 
+                    AND (a.is_paid = '{$status}' || 'all' = '{$status}')
+                    AND (a.metode_pembayaran = '{$payment}' || 'all' = '{$payment}')
+                    AND (a.tgl_order BETWEEN '{$start_date}' AND '{$end_date}')
+                    AND (a.jenis_transaksi = '{$jenis}' || 'all' = '{$jenis}')
+                UNION
+                SELECT SUM(service_order) AS data
+                FROM order_eatery_m a 
+                WHERE a.void = '0' 
+                    AND (a.is_paid = '{$status}' || 'all' = '{$status}')
+                    AND (a.metode_pembayaran = '{$payment}' || 'all' = '{$payment}')
+                    AND (a.tgl_order BETWEEN '{$start_date}' AND '{$end_date}')
+                    AND (a.jenis_transaksi = '{$jenis}' || 'all' = '{$jenis}')";
+
+        $query = $this->db->query($sql);
+        return $query;
+
+
+    }
+
 
     function get_order_eatery_detail($no_order_eatery){
         $sql ="SELECT a.*, b.*, c.nama_menu
@@ -125,6 +269,11 @@ class Main_model extends CI_Model
         return $query;
     }
 
+    function get_jenis_transaksi_eatery(){
+        $sql = "SELECT * FROM jenis_transaksi_eatery";
+        $query = $this->db->query($sql);
+        return $query;
+    }
 
     function get_brand_database($order_active = false){
         $sql = "SELECT * FROM brand";
@@ -658,7 +807,7 @@ class Main_model extends CI_Model
         return $query;
     }
 
-    function laporan_menu($start_date, $end_date, $search = '', $length = 10000000000, $start = 0){
+    function laporan_menu($start_date, $end_date, $kategori = "all", $search = '', $length = 10000000000, $start = 0, $order_col = '2', $order_dir = 'asc'){
         $sql = "SELECT a.id_menu, a.nama_menu,
                         IFNULL(b.total_qty, 0) AS total_qty,
                         IFNULL(b.total_order, 0) AS total_order
@@ -670,13 +819,14 @@ class Main_model extends CI_Model
                     WHERE b.void <> '1'
                         AND (b.tgl_order BETWEEN '{$start_date}' AND '{$end_date}') 
                     GROUP BY a.id_menu
-                )b ON a.id_menu = b.id_menu";
+                )b ON a.id_menu = b.id_menu
+                WHERE (a.kategori_menu = '{$kategori}' || 'all' = '{$kategori}')";
 
         if($search != "" || $search != null){
             $sql .= " AND a.nama_menu LIKE '%{$search}%'";
         }
 
-        $sql.= " ORDER BY a.nama_menu LIMIT {$start}, {$length}";
+        $sql.= " ORDER BY {$order_col} {$order_dir} LIMIT {$start}, {$length}";
 
         $query = $this->db->query($sql);
         return $query;
@@ -734,6 +884,59 @@ class Main_model extends CI_Model
                 $sql.= " ORDER BY COUNT DESC LIMIT {$start}, {$length}";
             }
 
+
+        $query = $this->db->query($sql);
+        return $query;
+    }
+
+    function jurnal_umum_summary($start_date, $end_date, $brand_order, $tipe_order, $cash_flow){
+
+        $datetime = new DateTime($end_date);
+        $datetime->modify('+1 day');
+        $new_end_date = $datetime->format('Y-m-d H:i:s');
+
+        $sql = "-- debet (masuk dari order customer)
+                SELECT SUM(a.grand_total_order) AS data
+                FROM order_m a
+                WHERE a.is_paid = '1' AND a.status_order = '1' 
+                    AND (a.tgl_order BETWEEN '{$start_date}' AND '{$end_date}') 
+                    AND (a.brand_order = '{$brand_order}' || 'all' = '{$brand_order}')
+                    AND (a.tipe_order = '{$tipe_order}' || 'all' = '{$tipe_order}') 
+                    AND ('IN' = '{$cash_flow}' || 'all' = '{$cash_flow}')
+                UNION 
+                -- kredit (bayar vendor)                
+                SELECT SUM(a.grand_total_order)
+                FROM order_vendor_m a
+                WHERE a.is_paid_vendor = '1' AND a.status_order_vendor = '1' 
+                    AND (a.tgl_order_vendor BETWEEN '{$start_date}' AND '{$end_date}') 
+                    AND (a.brand_order = '{$brand_order}' || 'all' = '{$brand_order}')
+                    AND (a.tipe_order = '{$tipe_order}' || 'all' = '{$tipe_order}')
+                    AND ('OUT' = '{$cash_flow}' || 'all' = '{$cash_flow}')         
+                UNION
+                -- debet (masuk dari input transaksi manual)
+                SELECT SUM(debet_jurnal_umum)
+                FROM jurnal_umum
+                WHERE (tgl_jurnal_umum BETWEEN '{$start_date}' AND '{$end_date}') 
+                    AND (brand_jurnal_umum = '{$brand_order}' || 'all' = '{$brand_order}')
+                    AND (tipe_jurnal_umum = '{$tipe_order}' || 'all' = '{$tipe_order}')
+                    AND IF('IN' = '{$cash_flow}', debet_jurnal_umum <> 0, IF('all' = '{$cash_flow}', 1=1, kredit_jurnal_umum <> 0))
+                UNION
+                -- kredit (keluar dari input transaksi manual)
+                SELECT SUM(kredit_jurnal_umum)
+                FROM jurnal_umum
+                WHERE (tgl_jurnal_umum BETWEEN '{$start_date}' AND '{$end_date}') 
+                    AND (brand_jurnal_umum = '{$brand_order}' || 'all' = '{$brand_order}')
+                    AND (tipe_jurnal_umum = '{$tipe_order}' || 'all' = '{$tipe_order}')
+                    AND IF('IN' = '{$cash_flow}', debet_jurnal_umum <> 0, IF('all' = '{$cash_flow}', 1=1, kredit_jurnal_umum <> 0))
+                UNION
+                -- debit (masuk dari eatery)
+                SELECT SUM(a.grand_total_order)
+                FROM order_eatery_m a
+                WHERE a.void = '0' 
+                    AND (a.tgl_order BETWEEN '{$start_date}' AND '{$new_end_date}')
+                    AND ('IN' = '{$cash_flow}' || 'all' = '{$cash_flow}')
+                    AND ('AHF' = '{$brand_order}' || 'all' = '{$brand_order}')
+                    AND (a.tipe_order = '{$tipe_order}' || 'all' = '{$tipe_order}')";
 
         $query = $this->db->query($sql);
         return $query;

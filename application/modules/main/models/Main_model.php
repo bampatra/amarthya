@@ -850,7 +850,7 @@ class Main_model extends CI_Model
                           AND (a.brand_order = '{$brand_order}' || 'all' = '{$brand_order}')
                           AND (a.tipe_order = '{$tipe_order}' || 'all' = '{$tipe_order}') 
                           AND ('IN' = '{$cash_flow}' || 'all' = '{$cash_flow}')
-                        UNION 
+                        UNION ALL
                         SELECT a.id_order_vendor_m as ID, a.tgl_order_vendor, a.no_order_vendor, 0 AS DEBET, a.grand_total_order AS KREDIT, 'ordervendor' AS TIPE, a.brand_order, a.tipe_order, b.nama_vendor AS NAMA
                         FROM order_vendor_m a
                         INNER JOIN vendor b ON a.id_vendor = b.id_vendor
@@ -859,14 +859,14 @@ class Main_model extends CI_Model
                           AND (a.brand_order = '{$brand_order}' || 'all' = '{$brand_order}')
                           AND (a.tipe_order = '{$tipe_order}' || 'all' = '{$tipe_order}')
                           AND ('OUT' = '{$cash_flow}' || 'all' = '{$cash_flow}')
-                        UNION
+                        UNION ALL
                         SELECT id_jurnal_umum as ID, tgl_jurnal_umum, keterangan_jurnal_umum, debet_jurnal_umum AS DEBET, kredit_jurnal_umum AS KREDIT, 'datajurnal' AS TIPE, brand_jurnal_umum AS brand_order, tipe_jurnal_umum AS tipe_order, 'empty' AS NAMA
                         FROM jurnal_umum
                         WHERE (tgl_jurnal_umum BETWEEN '{$start_date}' AND '{$end_date}') 
                           AND (brand_jurnal_umum = '{$brand_order}' || 'all' = '{$brand_order}')
                           AND (tipe_jurnal_umum = '{$tipe_order}' || 'all' = '{$tipe_order}')
                           AND IF('IN' = '{$cash_flow}', debet_jurnal_umum <> 0, IF('all' = '{$cash_flow}', 1=1, kredit_jurnal_umum <> 0))
-                        UNION
+                        UNION ALL
                         SELECT a.id_order_eatery_m AS ID, a.tgl_order, a.no_order_eatery, a.grand_total_order AS DEBET, 0 AS KREDIT, 'eatery' AS TIPE, 'AHF' AS brand_order, a.tipe_order, CONCAT(a.jenis_transaksi,' (', a.catatan_informasi,')') AS NAMA
                         FROM order_eatery_m a
                         WHERE a.void = '0' AND a.is_paid = '1'
@@ -903,7 +903,7 @@ class Main_model extends CI_Model
                     AND (a.brand_order = '{$brand_order}' || 'all' = '{$brand_order}')
                     AND (a.tipe_order = '{$tipe_order}' || 'all' = '{$tipe_order}') 
                     AND ('IN' = '{$cash_flow}' || 'all' = '{$cash_flow}')
-                UNION 
+                UNION ALL
                 -- kredit (bayar vendor)                
                 SELECT SUM(a.grand_total_order)
                 FROM order_vendor_m a
@@ -912,7 +912,7 @@ class Main_model extends CI_Model
                     AND (a.brand_order = '{$brand_order}' || 'all' = '{$brand_order}')
                     AND (a.tipe_order = '{$tipe_order}' || 'all' = '{$tipe_order}')
                     AND ('OUT' = '{$cash_flow}' || 'all' = '{$cash_flow}')         
-                UNION
+                UNION ALL
                 -- debet (masuk dari input transaksi manual)
                 SELECT SUM(debet_jurnal_umum)
                 FROM jurnal_umum
@@ -920,7 +920,7 @@ class Main_model extends CI_Model
                     AND (brand_jurnal_umum = '{$brand_order}' || 'all' = '{$brand_order}')
                     AND (tipe_jurnal_umum = '{$tipe_order}' || 'all' = '{$tipe_order}')
                     AND IF('IN' = '{$cash_flow}', debet_jurnal_umum <> 0, IF('all' = '{$cash_flow}', 1=1, kredit_jurnal_umum <> 0))
-                UNION
+                UNION ALL
                 -- kredit (keluar dari input transaksi manual)
                 SELECT SUM(kredit_jurnal_umum)
                 FROM jurnal_umum
@@ -928,7 +928,7 @@ class Main_model extends CI_Model
                     AND (brand_jurnal_umum = '{$brand_order}' || 'all' = '{$brand_order}')
                     AND (tipe_jurnal_umum = '{$tipe_order}' || 'all' = '{$tipe_order}')
                     AND IF('IN' = '{$cash_flow}', debet_jurnal_umum <> 0, IF('all' = '{$cash_flow}', 1=1, kredit_jurnal_umum <> 0))
-                UNION
+                UNION ALL
                 -- debit (masuk dari eatery)
                 SELECT SUM(a.grand_total_order)
                 FROM order_eatery_m a
@@ -1376,7 +1376,8 @@ class Main_model extends CI_Model
     }
 
     function get_order_m_deliv($search = null, $length = 10000000000, $start = 0, $status = 'all', $brand = "all"){
-        $sql = "SELECT *, a.id_order_m, b.id_customer
+        $sql = "SELECT  a.id_order_m, a.no_order, a.tgl_order, a.grand_total_order, a.ongkir_order, a.catatan_order, 
+		                b.id_customer, b.nama_customer, b.no_hp_customer, b.alamat_customer
                 FROM order_m a
                 INNER JOIN customer b ON a.id_customer = b.id_customer
                 LEFT JOIN delivery c ON a.id_order_m = c.id_order_m

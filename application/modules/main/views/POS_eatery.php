@@ -668,7 +668,7 @@
         $('.nama-menu').val(data.nama_menu);temp_HJ = data.HJ_menu;
         is_free = $('#is_free').prop("checked");
 
-        if($('#jenis_transaksi').val() == "Dine In" || $('#jenis_transaksi').val() == "Take Away"){
+        if($('#jenis_transaksi').val() == "Dine In" || $('#jenis_transaksi').val() == "Take Away" || $('#jenis_transaksi').val() == "Delivery"){
             temp_HJ = data.HJ_menu;
         } else {
             temp_HJ = data.HJ_online_menu

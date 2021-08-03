@@ -3196,7 +3196,7 @@ class Main extends MX_Controller
                 $total = $this->Main_model->get_order_m($search, 10000000000, 0, $status, $brand)->num_rows();
                 $output['data'] = $this->Main_model->get_order_m($search, $length, $start, $status, $brand)->result_object();
             } else {
-                $total = $this->Main_model->get_order_m_deliv($search, $length, $start, $status, $brand)->num_rows();
+                $total = $this->Main_model->get_order_m_deliv($search, 10000000000, 0, $status, $brand)->num_rows();
                 $output['data'] = $this->Main_model->get_order_m_deliv($search, $length, $start, $status, $brand)->result_object();
             }
         }

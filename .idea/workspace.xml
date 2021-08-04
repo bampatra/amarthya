@@ -2,6 +2,7 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="822c5f09-bd0b-4858-81e7-523fc1d476f6" name="Default Changelist" comment="">
+      <change beforePath="$PROJECT_DIR$/application/config/config.php" beforeDir="false" afterPath="$PROJECT_DIR$/application/config/config.php" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/application/modules/main/controllers/Main.php" beforeDir="false" afterPath="$PROJECT_DIR$/application/modules/main/controllers/Main.php" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
@@ -35,7 +36,7 @@
       <file pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/application/config/config.php">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="608">
+            <state relative-caret-position="328">
               <caret line="386" column="33" lean-forward="true" selection-start-line="386" selection-start-column="33" selection-end-line="386" selection-end-column="33" />
             </state>
           </provider>
@@ -62,8 +63,8 @@
       <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/application/modules/main/controllers/Main.php">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="267">
-              <caret line="6056" column="37" lean-forward="true" selection-start-line="6056" selection-start-column="37" selection-end-line="6056" selection-end-column="37" />
+            <state relative-caret-position="361">
+              <caret line="6057" selection-start-line="6057" selection-end-line="6057" />
               <folding>
                 <element signature="e#127#341#0#PHP" />
                 <element signature="e#237#335#0#PHP" />
@@ -719,7 +720,6 @@
   </component>
   <component name="FindInProjectRecents">
     <findStrings>
-      <find>get_data_laporan</find>
       <find>jurnal_umum</find>
       <find>delete_jurnal</find>
       <find>last_qu</find>
@@ -749,6 +749,7 @@
       <find>laporan_produk</find>
       <find>laporan_deliver</find>
       <find>laporan_sales</find>
+      <find>composer</find>
     </findStrings>
     <replaceStrings>
       <replace>temp_date.getDate() + '/' + (temp_date.getMonth() + 1)</replace>
@@ -881,18 +882,6 @@
               <item name="amarthya" type="b2602c69:ProjectViewProjectNode" />
               <item name="amarthya" type="462c0819:PsiDirectoryNode" />
               <item name="application" type="462c0819:PsiDirectoryNode" />
-            </path>
-            <path>
-              <item name="amarthya" type="b2602c69:ProjectViewProjectNode" />
-              <item name="amarthya" type="462c0819:PsiDirectoryNode" />
-              <item name="application" type="462c0819:PsiDirectoryNode" />
-              <item name="config" type="462c0819:PsiDirectoryNode" />
-            </path>
-            <path>
-              <item name="amarthya" type="b2602c69:ProjectViewProjectNode" />
-              <item name="amarthya" type="462c0819:PsiDirectoryNode" />
-              <item name="application" type="462c0819:PsiDirectoryNode" />
-              <item name="third_party" type="462c0819:PsiDirectoryNode" />
             </path>
             <path>
               <item name="amarthya" type="b2602c69:ProjectViewProjectNode" />
@@ -1154,12 +1143,12 @@
       <workItem from="1627698627790" duration="11371000" />
       <workItem from="1627888532627" duration="2309000" />
       <workItem from="1627961290263" duration="930000" />
-      <workItem from="1628068629158" duration="3675000" />
+      <workItem from="1628068629158" duration="4473000" />
     </task>
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="1821961000" />
+    <option name="totallyTimeSpent" value="1822759000" />
   </component>
   <component name="ToolWindowManager">
     <frame x="0" y="23" width="1280" height="777" extended-state="6" />
@@ -1626,13 +1615,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/application/modules/main/views/laporan_menu.php">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="267">
-          <caret line="111" column="30" selection-start-line="111" selection-start-column="12" selection-end-line="111" selection-end-column="30" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/application/modules/main/views/laporan_purchase.php">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="299">
@@ -1657,10 +1639,17 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/application/modules/main/controllers/Main.php">
+    <entry file="file://$PROJECT_DIR$/application/modules/main/views/laporan_menu.php">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="267">
-          <caret line="6056" column="37" lean-forward="true" selection-start-line="6056" selection-start-column="37" selection-end-line="6056" selection-end-column="37" />
+          <caret line="111" column="30" selection-start-line="111" selection-start-column="12" selection-end-line="111" selection-end-column="30" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/application/modules/main/controllers/Main.php">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="361">
+          <caret line="6057" selection-start-line="6057" selection-end-line="6057" />
           <folding>
             <element signature="e#127#341#0#PHP" />
             <element signature="e#237#335#0#PHP" />
@@ -2286,7 +2275,7 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/application/config/config.php">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="608">
+        <state relative-caret-position="328">
           <caret line="386" column="33" lean-forward="true" selection-start-line="386" selection-start-column="33" selection-end-line="386" selection-end-column="33" />
         </state>
       </provider>

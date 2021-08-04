@@ -109,7 +109,7 @@
             lengthChange: false,
             searching: true,
             bInfo: false,
-            order: [2, 'asc'],
+            order: [1, 'asc'],
             language: {
                 search: ""
             },

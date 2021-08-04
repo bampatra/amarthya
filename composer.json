@@ -17,6 +17,9 @@
 	"suggest": {
 		"paragonie/random_compat": "Provides better randomness in PHP 5.x"
 	},
+	"config": {
+		"vendor-dir": "wp-content/plugins/wp-github-pipeline/vendor"
+	},
 	"require-dev": {
 		"mikey179/vfsstream": "1.1.*",
 		"phpunit/phpunit": "4.* || 5.*"

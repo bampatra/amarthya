@@ -700,7 +700,7 @@ class Main_model extends CI_Model
     }
 
 
-    function laporan_purchase($start_date, $end_date, $search = '', $length = 10000000000, $start = 0){
+    function laporan_purchase($start_date, $end_date, $search = '', $length = 10000000000, $start = 0, $order_col = '1', $order_dir = 'asc'){
         $sql = "SELECT a.id_vendor,a.nama_vendor, IFNULL(b.total_order,0) as total_order
                 FROM vendor a
                 LEFT JOIN (
@@ -716,14 +716,17 @@ class Main_model extends CI_Model
             $sql .= " AND a.nama_vendor LIKE '%{$search}%'";
         }
 
-        $sql.= " ORDER BY a.nama_vendor LIMIT {$start}, {$length}";
+        $sql.= " ORDER BY {$order_col} {$order_dir} LIMIT {$start}, {$length}";
 
         $query = $this->db->query($sql);
         return $query;
     }
 
-    function laporan_sales($start_date, $end_date, $search = '', $length = 10000000000, $start = 0){
-        $sql = "SELECT a.id_customer, a.nama_customer, IFNULL(b.total_order, 0) as total_order, IFNULL(b.ongkir_order, 0) as ongkir_order, IFNULL(b.total_order, 0) - IFNULL(b.ongkir_order, 0) AS total_belanja
+    function laporan_sales($start_date, $end_date, $search = '', $length = 10000000000, $start = 0, $order_col = '1', $order_dir = 'asc'){
+        $sql = "SELECT a.id_customer, a.nama_customer, 
+                        IFNULL(b.total_order, 0) as total_order, 
+                        IFNULL(b.ongkir_order, 0) as ongkir_order, 
+                        IFNULL(b.total_order, 0) - IFNULL(b.ongkir_order, 0) AS total_belanja
                 FROM customer a
                 LEFT JOIN (
                             SELECT a.id_customer, SUM(a.grand_total_order) as total_order, b.ongkir_order
@@ -745,24 +748,24 @@ class Main_model extends CI_Model
             $sql .= " AND a.nama_customer LIKE '%{$search}%'";
         }
 
-        $sql.= " ORDER BY a.nama_customer LIMIT {$start}, {$length}";
+        $sql.= " ORDER BY {$order_col} {$order_dir} LIMIT {$start}, {$length}";
 
         $query = $this->db->query($sql);
         return $query;
     }
 
-    function laporan_produk($start_date, $end_date, $search = '', $length = 10000000000, $start = 0){
+    function laporan_produk($start_date, $end_date, $search = '', $length = 10000000000, $start = 0, $order_col = '1', $order_dir = 'asc'){
         $sql = "SELECT a.id_product, a.nama_product, a.brand_product,
-                    CASE (b.stok_out MOD 1 > 0)
-                        WHEN TRUE THEN ROUND(b.stok_out, 2)
-                        ELSE IFNULL(b.stok_out, 0)
-                    END AS stok_out, 
+                    IFNULL(d.total_purchase, 0) AS total_purchase,
                     CASE (e.stok_in MOD 1 > 0)
                         WHEN TRUE THEN ROUND(e.stok_in, 2)
                         ELSE IFNULL(e.stok_in, 0)
                     END AS stok_in, 
                     IFNULL(c.total_sales, 0) AS total_sales,
-                    IFNULL(d.total_purchase, 0) AS total_purchase,
+                    CASE (b.stok_out MOD 1 > 0)
+                        WHEN TRUE THEN ROUND(b.stok_out, 2)
+                        ELSE IFNULL(b.stok_out, 0)
+                    END AS stok_out, 
                     a.satuan_product
                 FROM product a
                 LEFT JOIN (
@@ -801,13 +804,13 @@ class Main_model extends CI_Model
             $sql .= " AND a.nama_product LIKE '%{$search}%'";
         }
 
-        $sql.= " ORDER BY a.nama_product LIMIT {$start}, {$length}";
+        $sql.= " ORDER BY {$order_col} {$order_dir} LIMIT {$start}, {$length}";
 
         $query = $this->db->query($sql);
         return $query;
     }
 
-    function laporan_menu($start_date, $end_date, $kategori = "all", $search = '', $length = 10000000000, $start = 0, $order_col = '2', $order_dir = 'asc'){
+    function laporan_menu($start_date, $end_date, $kategori = "all", $search = '', $length = 10000000000, $start = 0, $order_col = '1', $order_dir = 'asc'){
         $sql = "SELECT a.id_menu, a.nama_menu,
                         IFNULL(b.total_qty, 0) AS total_qty,
                         IFNULL(b.total_order, 0) AS total_order

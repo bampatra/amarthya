@@ -131,6 +131,7 @@
             pageLength: 20,
             searching: false,
             bInfo: false,
+            ordering: false,
             language: {
                 search: ""
             },

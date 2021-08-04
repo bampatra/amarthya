@@ -787,6 +787,10 @@
     function set_harga(){
         $('#subtotal').val(formatRupiah(convertToRupiah(subtotal), 'Rp. ', $('#subtotal').parent().find('.hidden_form')));
 
+        nominal_promosi = parseInt(subtotal) * parseInt($('#persen_promosi').val()) / 100
+        $('#nominal_promosi').val(formatRupiah(convertToRupiah(parseInt(nominal_promosi)), 'Rp. ', $('#nominal_promosi').parent().find('.hidden_form')));
+
+
 
         if($('#promosi').val() == 'inputmanual'){
             diskon = parseInt($('#hidden_nominal_promosi').val()) || 0;

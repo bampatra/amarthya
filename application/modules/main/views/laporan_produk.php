@@ -30,6 +30,7 @@
                     <tr class="no-hover-style">
                         <th style="display: none;"> ID </th>
                         <th style="min-width: 400px"> Nama Produk </th>
+                        <th style="display: none;"> Brand </th>
                         <th style="min-width: 150px"> Purchase </th>
                         <th> Stok In </th>
                         <th style="min-width: 150px"> Sales </th>
@@ -102,6 +103,7 @@
             pageLength: 20,
             lengthChange: false,
             searching: true,
+            order: [1, 'asc'],
             bInfo: false,
             language: {
                 search: ""
@@ -113,6 +115,7 @@
             },
             createdRow: function ( row, data, index ) {
                 $('td', row).eq(0).css("display", "none");
+                $('td', row).eq(2).css("display", "none");
             },
             columns: [
                 {"data": "id_product"},
@@ -141,6 +144,7 @@
 
                     }
                 },
+                {"data": "brand_product"},
                 {
                     "data": {"total_purchase":"total_purchase"},
                     mRender : function(data, type, full) {

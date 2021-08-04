@@ -130,6 +130,7 @@
             lengthChange: false,
             pageLength: 20,
             searching: false,
+            ordering: false,
             bInfo: false,
             language: {
                 search: ""

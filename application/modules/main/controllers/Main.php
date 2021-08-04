@@ -1746,6 +1746,10 @@ class Main extends MX_Controller
         $start = $_REQUEST['start'];
         $search = trim(htmlentities($_REQUEST['search']["value"], ENT_QUOTES));
 
+        // server-side ordering
+        $order_col = $_REQUEST['order'][0]["column"] + 1;
+        $order_dir = $_REQUEST['order'][0]["dir"];
+
         $output = array();
         $output['draw'] = $draw;
         $output['data']=array();
@@ -1756,7 +1760,7 @@ class Main extends MX_Controller
             $end_date = htmlentities($_GET['end'], ENT_QUOTES);
 
 
-            $output['data'] = $this->Main_model->laporan_produk($start_date, $end_date, $search, $length, $start)->result_object();
+            $output['data'] = $this->Main_model->laporan_produk($start_date, $end_date, $search, $length, $start, $order_col, $order_dir)->result_object();
             $output['recordsTotal'] = $output['recordsFiltered'] = $this->Main_model->laporan_produk($start_date, $end_date)->num_rows();
 
 
@@ -1791,6 +1795,10 @@ class Main extends MX_Controller
         $start = $_REQUEST['start'];
         $search = trim(htmlentities($_REQUEST['search']["value"], ENT_QUOTES));
 
+        // server-side ordering
+        $order_col = $_REQUEST['order'][0]["column"] + 1;
+        $order_dir = $_REQUEST['order'][0]["dir"];
+
         $output = array();
         $output['draw'] = $draw;
         $output['data']=array();
@@ -1801,7 +1809,7 @@ class Main extends MX_Controller
             $end_date = htmlentities($_GET['end'], ENT_QUOTES);
 
 
-            $output['data'] = $this->Main_model->laporan_sales($start_date, $end_date, $search, $length, $start)->result_object();
+            $output['data'] = $this->Main_model->laporan_sales($start_date, $end_date, $search, $length, $start, $order_col, $order_dir)->result_object();
             $output['recordsTotal'] = $output['recordsFiltered'] = $this->Main_model->laporan_sales($start_date, $end_date)->num_rows();
 
 
@@ -1835,6 +1843,10 @@ class Main extends MX_Controller
         $start = $_REQUEST['start'];
         $search = trim(htmlentities($_REQUEST['search']["value"], ENT_QUOTES));
 
+        // server-side ordering
+        $order_col = $_REQUEST['order'][0]["column"] + 1;
+        $order_dir = $_REQUEST['order'][0]["dir"];
+
         $output = array();
         $output['draw'] = $draw;
         $output['data']=array();
@@ -1845,7 +1857,7 @@ class Main extends MX_Controller
             $end_date = htmlentities($_GET['end'], ENT_QUOTES);
 
 
-            $output['data'] = $this->Main_model->laporan_purchase($start_date, $end_date, $search, $length, $start)->result_object();
+            $output['data'] = $this->Main_model->laporan_purchase($start_date, $end_date, $search, $length, $start, $order_col, $order_dir)->result_object();
             $output['recordsTotal'] = $output['recordsFiltered'] = $this->Main_model->laporan_purchase($start_date, $end_date)->num_rows();
 
 
@@ -6045,7 +6057,7 @@ class Main extends MX_Controller
     function thermal_receipt_order(){
 //        $this->load->view('thermal');
 
-        require_once $_SERVER['DOCUMENT_ROOT'].'/amarthya' . '/vendor/autoload.php';
+        require $_SERVER['DOCUMENT_ROOT'].'/amarthya' . '/vendor/autoload.php';
         $mpdf = new Mpdf(['tempDir' => APPPATH . '/temp', 'margin_bottom' => 0, 'margin_footer' => 0]); // Create new mPDF Document
 
         $html = '<!DOCTYPE html>

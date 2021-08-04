@@ -95,6 +95,7 @@
             pageLength: 20,
             lengthChange: false,
             searching: true,
+            order: [1, 'asc'],
             bInfo: false,
             language: {
                 search: ""

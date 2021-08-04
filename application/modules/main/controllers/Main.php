@@ -6057,7 +6057,8 @@ class Main extends MX_Controller
     function thermal_receipt_order(){
 //        $this->load->view('thermal');
 
-        require $_SERVER['DOCUMENT_ROOT'].'/amarthya' . '/vendor/autoload.php';
+//        require $_SERVER['DOCUMENT_ROOT'].'/amarthya' . '/vendor/autoload.php';
+        require __DIR__ . '/vendor/autoload.php';
         $mpdf = new Mpdf(['tempDir' => APPPATH . '/temp', 'margin_bottom' => 0, 'margin_footer' => 0]); // Create new mPDF Document
 
         $html = '<!DOCTYPE html>

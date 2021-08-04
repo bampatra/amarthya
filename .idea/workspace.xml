@@ -2,20 +2,7 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="822c5f09-bd0b-4858-81e7-523fc1d476f6" name="Default Changelist" comment="">
-      <change beforePath="$PROJECT_DIR$/.idea/amarthya.iml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/amarthya.iml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/php.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/php.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/application/modules/main/controllers/Main.php" beforeDir="false" afterPath="$PROJECT_DIR$/application/modules/main/controllers/Main.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/application/modules/main/models/Main_model.php" beforeDir="false" afterPath="$PROJECT_DIR$/application/modules/main/models/Main_model.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/application/modules/main/views/POS_eatery.php" beforeDir="false" afterPath="$PROJECT_DIR$/application/modules/main/views/POS_eatery.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/application/modules/main/views/POS_transaksi_detail.php" beforeDir="false" afterPath="$PROJECT_DIR$/application/modules/main/views/POS_transaksi_detail.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/application/modules/main/views/laporan_menu.php" beforeDir="false" afterPath="$PROJECT_DIR$/application/modules/main/views/laporan_menu.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/application/modules/main/views/laporan_produk.php" beforeDir="false" afterPath="$PROJECT_DIR$/application/modules/main/views/laporan_produk.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/application/modules/main/views/laporan_purchase.php" beforeDir="false" afterPath="$PROJECT_DIR$/application/modules/main/views/laporan_purchase.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/application/modules/main/views/laporan_sales.php" beforeDir="false" afterPath="$PROJECT_DIR$/application/modules/main/views/laporan_sales.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/application/modules/main/views/riwayat_belanja.php" beforeDir="false" afterPath="$PROJECT_DIR$/application/modules/main/views/riwayat_belanja.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/application/modules/main/views/riwayat_belanja_vendor.php" beforeDir="false" afterPath="$PROJECT_DIR$/application/modules/main/views/riwayat_belanja_vendor.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/composer.json" beforeDir="false" afterPath="$PROJECT_DIR$/composer.json" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
@@ -57,8 +44,8 @@
       <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/composer.json">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="270">
-              <caret line="18" column="6" lean-forward="true" selection-start-line="18" selection-start-column="6" selection-end-line="18" selection-end-column="6" />
+            <state relative-caret-position="75">
+              <caret line="5" column="21" lean-forward="true" selection-start-line="5" selection-start-column="21" selection-end-line="5" selection-end-column="21" />
             </state>
           </provider>
         </entry>
@@ -75,8 +62,8 @@
       <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/application/modules/main/controllers/Main.php">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="329">
-              <caret line="6059" column="15" selection-start-line="6059" selection-start-column="15" selection-end-line="6059" selection-end-column="15" />
+            <state relative-caret-position="267">
+              <caret line="6056" column="37" lean-forward="true" selection-start-line="6056" selection-start-column="37" selection-end-line="6056" selection-end-column="37" />
               <folding>
                 <element signature="e#127#341#0#PHP" />
                 <element signature="e#237#335#0#PHP" />
@@ -850,8 +837,8 @@
         <option value="$PROJECT_DIR$/application/modules/main/views/riwayat_belanja_vendor.php" />
         <option value="$PROJECT_DIR$/application/modules/main/views/laporan_purchase.php" />
         <option value="$PROJECT_DIR$/application/modules/main/models/Main_model.php" />
-        <option value="$PROJECT_DIR$/application/modules/main/controllers/Main.php" />
         <option value="$PROJECT_DIR$/composer.json" />
+        <option value="$PROJECT_DIR$/application/modules/main/controllers/Main.php" />
         <option value="$PROJECT_DIR$/application/config/config.php" />
       </list>
     </option>
@@ -1167,12 +1154,12 @@
       <workItem from="1627698627790" duration="11371000" />
       <workItem from="1627888532627" duration="2309000" />
       <workItem from="1627961290263" duration="930000" />
-      <workItem from="1628068629158" duration="3050000" />
+      <workItem from="1628068629158" duration="3675000" />
     </task>
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="1821336000" />
+    <option name="totallyTimeSpent" value="1821961000" />
   </component>
   <component name="ToolWindowManager">
     <frame x="0" y="23" width="1280" height="777" extended-state="6" />
@@ -1663,10 +1650,17 @@
     <entry file="file://$PROJECT_DIR$/vendor/autoload.php">
       <provider selected="true" editor-type-id="text-editor" />
     </entry>
+    <entry file="file://$PROJECT_DIR$/composer.json">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="75">
+          <caret line="5" column="21" lean-forward="true" selection-start-line="5" selection-start-column="21" selection-end-line="5" selection-end-column="21" />
+        </state>
+      </provider>
+    </entry>
     <entry file="file://$PROJECT_DIR$/application/modules/main/controllers/Main.php">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="329">
-          <caret line="6059" column="15" selection-start-line="6059" selection-start-column="15" selection-end-line="6059" selection-end-column="15" />
+        <state relative-caret-position="267">
+          <caret line="6056" column="37" lean-forward="true" selection-start-line="6056" selection-start-column="37" selection-end-line="6056" selection-end-column="37" />
           <folding>
             <element signature="e#127#341#0#PHP" />
             <element signature="e#237#335#0#PHP" />
@@ -2287,13 +2281,6 @@
             <element signature="e#234938#235208#0#PHP" />
             <element signature="e#234984#235202#0#PHP" />
           </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/composer.json">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="270">
-          <caret line="18" column="6" lean-forward="true" selection-start-line="18" selection-start-column="6" selection-end-line="18" selection-end-column="6" />
         </state>
       </provider>
     </entry>

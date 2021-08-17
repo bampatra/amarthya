@@ -200,12 +200,159 @@ class Main extends MX_Controller
     }
 
     function POS_transaksi_list(){
+
+        if($this->session->userdata('is_admin') != "1" ){
+            redirect(base_url('main'));
+        }
+
         $data['metode_pembayaran'] = $this->Main_model->get_metode_pembayaran()->result_object();
         $data['jenis_transaksi'] = $this->Main_model->get_jenis_transaksi_eatery()->result_object();
 
         $this->load->view('template/admin_header');
         $this->load->view('POS_transaksi_list', $data);
         $this->load->view('template/admin_footer');
+    }
+
+    function lost_and_breakage(){
+        $data['metode_pembayaran'] = $this->Main_model->get_metode_pembayaran()->result_object();
+        $data['jenis_transaksi'] = $this->Main_model->get_jenis_transaksi_eatery()->result_object();
+
+        $this->load->view('template/admin_header');
+        $this->load->view('lost_and_breakage', $data);
+        $this->load->view('template/admin_footer');
+    }
+
+    function get_lost_and_breakage(){
+        if($this->session->userdata('is_admin') != "1" ){
+            redirect(base_url('main'));
+        }
+
+        // server-side pagination
+        $draw = $_REQUEST['draw'];
+        $length = $_REQUEST['length'];
+        $start = $_REQUEST['start'];
+
+        $search = trim(htmlentities($_REQUEST['search']["value"], ENT_QUOTES));
+
+        $output = array();
+        $output['draw'] = $draw;
+        $output['data']=array();
+
+        if(isset($_GET['start']) && isset($_GET['end'])){
+
+            $start_date = htmlentities($_GET['start'], ENT_QUOTES);
+            $end_date = htmlentities($_GET['end'], ENT_QUOTES);
+
+
+            $output['data'] = $this->Main_model->get_lost_and_breakage($start_date, $end_date, $search, $length, $start)->result_object();
+            $output['recordsTotal'] = $output['recordsFiltered'] = $this->Main_model->get_lost_and_breakage($start_date, $end_date, $search)->num_rows();
+
+
+        } else {
+            $output['data'] = '';
+            $output['recordsTotal'] = $output['recordsFiltered'] = 0;
+        }
+
+        echo json_encode($output);
+    }
+
+    function add_lost_and_breakage(){
+
+        if($this->session->userdata('is_admin') != "1" ){
+            redirect(base_url('main'));
+        }
+
+        $id_lost_and_breakage = strtoupper(trim(htmlentities($_REQUEST['id_lost_and_breakage'], ENT_QUOTES)));
+        $timestamp_lost_and_breakage = trim(htmlentities($_REQUEST['timestamp_lost_and_breakage'], ENT_QUOTES));
+        $deskripsi_lost_and_breakage = trim(htmlentities($_REQUEST['deskripsi_lost_and_breakage'], ENT_QUOTES));
+        $tipe_lost_and_breakage = trim(htmlentities($_REQUEST['tipe_lost_and_breakage'], ENT_QUOTES));
+        $nominal_lost_and_breakage = strtoupper(trim(htmlentities($_REQUEST['nominal_lost_and_breakage'], ENT_QUOTES)));
+        $active_lost_and_breakage = '1';
+
+        //validation
+        $error = array();
+
+        $this->db->trans_begin();
+
+        if(empty($timestamp_lost_and_breakage) || !preg_match("/^[0-9]{4}-(0[1-9]|1[0-2])-(0[1-9]|[1-2][0-9]|3[0-1])$/",$timestamp_lost_and_breakage)){
+            array_push($error, "invalid-tanggal");
+        }
+
+        if(empty($deskripsi_lost_and_breakage)){
+            array_push($error, "invalid-deskripsi");
+        }
+
+        if($tipe_lost_and_breakage != "LostBreakage" && $tipe_lost_and_breakage != "Uniform"){
+            array_push($error, "invalid-tipe");
+        }
+
+        if(empty($nominal_lost_and_breakage)){
+            array_push($error, "invalid-nominal");
+        }
+
+        if(!empty($error)){
+            $return_arr = array("Status" => 'FORMERROR', "Error" => $error);
+            $this->db->trans_rollback();
+            echo json_encode($return_arr);
+            return;
+        }
+
+        $data = compact('timestamp_lost_and_breakage', 'tipe_lost_and_breakage', 'nominal_lost_and_breakage', 'deskripsi_lost_and_breakage',
+                'nominal_lost_and_breakage', 'active_lost_and_breakage');
+
+
+        if($this->Main_model->get_lost_and_breakage_by_id($id_lost_and_breakage)->num_rows() == 0){
+            if($this->Main_model->add_lost_and_breakage($data)){
+                $this->db->trans_commit();
+                $return_arr = array("Status" => 'OK', "Message" => 'Berhasil ditambahkan');
+            } else {
+                $this->db->trans_rollback();
+                $return_arr = array("Status" => 'ERROR', "Message" => 'Gagal menambahkan data');
+            }
+        } else {
+            if($this->Main_model->update_lost_and_breakage($data, $id_lost_and_breakage)){
+                $this->db->trans_commit();
+                $return_arr = array("Status" => 'OK', "Message" => 'Berhasil diupdate');
+            } else {
+                $this->db->trans_rollback();
+                $return_arr = array("Status" => 'ERROR', "Message" => 'Gagal mengupdate data');
+            }
+
+        }
+
+        echo json_encode($return_arr);
+
+    }
+
+    function delete_lost_and_breakage(){
+
+        if($this->session->userdata('is_admin') != "1" ){
+            redirect(base_url('main'));
+        }
+
+        $id_lost_and_breakage = trim(htmlentities($_REQUEST['id_lost_and_breakage'], ENT_QUOTES));
+
+        if($this->Main_model->get_lost_and_breakage_by_id($id_lost_and_breakage)->num_rows() == 0){
+            $return_arr = array("Status" => 'ERROR', "Message" => 'Data tidak ditemukan');
+            echo json_encode($return_arr);
+            return;
+        }
+
+        $active_lost_and_breakage = '0';
+        $data = compact('active_lost_and_breakage');
+
+        $this->db->trans_begin();
+
+        if($this->Main_model->update_lost_and_breakage($data, $id_lost_and_breakage)){
+            $this->db->trans_commit();
+            $return_arr = array("Status" => 'OK', "Message" => 'Berhasil diupdate');
+        } else {
+            $this->db->trans_rollback();
+            $return_arr = array("Status" => 'ERROR', "Message" => 'Gagal mengupdate data');
+        }
+
+        echo json_encode($return_arr);
+
     }
 
     function POS_transaksi_detail(){
@@ -324,7 +471,16 @@ class Main extends MX_Controller
         $end_date = $datetime->format('Y-m-d H:i:s');
 
         $data = $this->Main_model->get_summary_transaksi($status, $payment, $jenis, $start_date, $end_date)->result_object();
-        $return_arr = array("data" => $data);
+
+        $grand_total = $data[0]->data;
+        $tax = $data[1]->data;
+        $service = $data[2]->data;
+
+        $uniform = round((int)$service * 0.2);
+        $lost_and_breakage = round((int)$service * 0.2);
+
+
+        $return_arr = compact('grand_total', 'tax', 'service', 'uniform', 'lost_and_breakage');
         echo json_encode($return_arr);
         return;
 

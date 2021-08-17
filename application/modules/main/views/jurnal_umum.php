@@ -254,7 +254,7 @@
         $('#id_jurnal_umum').val(0);
         setTimeout(function() {$('.modal-dialog').scrollTop(0);}, 200);
         $('.modal-button-view-only').css('display', 'none');
-        $('#vendor-form').trigger('reset');
+        $('#jurnal-umum-form').trigger('reset');
         $('.form-active-control').prop('disabled', false);
         $('#jurnal-umum-modal').modal('toggle');
         $('.modal-button-save').css('display', 'block');

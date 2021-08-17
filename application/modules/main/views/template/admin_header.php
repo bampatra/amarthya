@@ -284,7 +284,11 @@
                 <div class="bg-white py-2 collapse-inner rounded">
                     <h6 class="collapse-header">Option:</h6>
                     <a class="collapse-item" href="<?php echo base_url('main/POS_eatery')?>">POS</a>
+
+                    <?php if($this->session->userdata('is_admin') == "1") { ?>
                     <a class="collapse-item" href="<?php echo base_url('main/POS_transaksi_list')?>">Daftar Transaksi</a>
+                    <a class="collapse-item" href="<?php echo base_url('main/lost_and_breakage')?>">Lost and Breakage</a>
+                    <?php } ?>
                 </div>
             </div>
         </li>

@@ -316,10 +316,11 @@
                 end: $('#end_date').val(),
                 jenis: jenis
             },
-            success: function (response) {
-                html = '<td><h3>'+ convertToRupiah(response.data[0].data) +'</h3></td>\n' +
-                    '   <td><h3>'+ convertToRupiah(response.data[1].data) +'</h3></td>\n' +
-                    '   <td><h3>'+ convertToRupiah(response.data[2].data) +'</h3></td>';
+            success: function (data) {
+
+                html = '<td><h3>'+ convertToRupiah(data.grand_total) +'</h3></td>\n' +
+                    '   <td><h3>'+ convertToRupiah(data.tax) +'</h3></td>\n' +
+                    '   <td><h3>'+ convertToRupiah(data.service) +'</h3></td>';
 
                 $('#summary-content').html(html);
 

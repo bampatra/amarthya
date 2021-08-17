@@ -4,9 +4,6 @@ class Main_model extends CI_Model
 
     // ================= SPECIAL USE QUERIES ===================
 
-
-
-
     function get_discount_service_tax_comparison(){
         $sql = "SELECT a.*, SUM(a.subtotal_order - a.actual_promosi + a.actual_service + a.actual_tax) AS actual_grand_total
                 FROM (
@@ -103,6 +100,50 @@ class Main_model extends CI_Model
     // =========================================================
 
 
+    function get_lost_and_breakage($start_date, $end_date, $search = null, $length = 10000000000, $start = 0){
+        $sql = "SELECT *,
+                    DATE_FORMAT(timestamp_lost_and_breakage, '%Y-%m-%d') AS custom_tgl
+                FROM lost_and_breakage
+                WHERE active_lost_and_breakage = '1'
+                   AND (timestamp_lost_and_breakage BETWEEN '{$start_date}' AND '{$end_date}') ";
+
+        if($search != "" || $search != null){
+            $sql .= " AND CONCAT(deskripsi_lost_and_breakage) LIKE '%$search%'";
+        }
+
+        $sql .= " ORDER BY timestamp_lost_and_breakage DESC LIMIT {$start}, {$length}";
+
+        $query = $this->db->query($sql);
+        return $query;
+    }
+
+    function get_lost_and_breakage_by_id($id_lost_and_breakage){
+        $sql = "SELECT * FROM lost_and_breakage
+                WHERE active_lost_and_breakage = '1'
+                    AND id_lost_and_breakage = '{$id_lost_and_breakage}'";
+
+        $query = $this->db->query($sql);
+        return $query;
+    }
+
+    function add_lost_and_breakage($data){
+        $input_data = array(
+            'timestamp_lost_and_breakage' => $data['timestamp_lost_and_breakage'],
+            'tipe_lost_and_breakage' => $data['tipe_lost_and_breakage'],
+            'nominal_lost_and_breakage' => $data['nominal_lost_and_breakage'],
+            'deskripsi_lost_and_breakage' => $data['deskripsi_lost_and_breakage'],
+            'active_lost_and_breakage' => $data['active_lost_and_breakage']
+        );
+
+        $this->db->insert('lost_and_breakage',$input_data);
+        $insert_id = $this->db->insert_id();
+        return $insert_id;
+    }
+
+    function update_lost_and_breakage($updated_data, $id_lost_and_breakage){
+        $this->db->where('id_lost_and_breakage', $id_lost_and_breakage);
+        return $this->db->update('lost_and_breakage',$updated_data);
+    }
 
     function get_HP_food(){
         $sql = "SELECT a.id_menu, d.nama_menu, SUM(a.qty_bahan * b.HP_product) AS harga_bahan
@@ -139,7 +180,7 @@ class Main_model extends CI_Model
                     AND (a.tgl_order BETWEEN '{$start_date}' AND '{$end_date}') ";
 
         if($search != "" || $search != null){
-            $sql .= " AND CONCAT(a.no_order_eatery) LIKE '%$search%'";
+            $sql .= " AND CONCAT(a.no_order_eatery,' ', a.catatan_informasi,' ', a.catatan_order) LIKE '%$search%'";
         }
 
         if($excel){

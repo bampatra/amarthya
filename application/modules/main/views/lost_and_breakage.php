@@ -379,7 +379,7 @@
     $('.add').click(function (e) {
         e.preventDefault();
         $('.invalid-feedback').css('display', 'none');
-        $('#id_jurnal_umum').val(0);
+        $('#id_lost_and_breakage').val(0);
         setTimeout(function() {$('.modal-dialog').scrollTop(0);}, 200);
         $('.modal-button-view-only').css('display', 'none');
         $('#lost-breakage-form').trigger('reset');

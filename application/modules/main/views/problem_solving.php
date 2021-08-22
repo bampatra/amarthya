@@ -244,7 +244,7 @@
     $('.add').click(function (e) {
         e.preventDefault();
         $('.invalid-feedback').css('display', 'none');
-        $('#id_problemsolving').val(0);
+        $('#id_problem_solving').val(0);
         setTimeout(function() {$('.modal-dialog').scrollTop(0);}, 200);
         $('.modal-button-view-only').css('display', 'none');
         $('#problemsolving-form').trigger('reset');

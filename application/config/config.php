@@ -25,7 +25,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 */
 //  $config['base_url'] = 'http://localhost/amarthyabali/';
 //$config['base_url'] = 'https://amarthya.000webhostapp.com/';
-$config['base_url'] = 'https://amarthya-v2.herokuapp.com/';
+$config['base_url'] = 'https://amarthya-v2-1b1a5c543feb.herokuapp.com/';
 
 /*
 |--------------------------------------------------------------------------

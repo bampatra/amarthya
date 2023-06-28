@@ -1,4 +1,5 @@
 <?php
+ob_start();
 defined('BASEPATH') OR exit('No direct script access allowed');
 use \Mpdf\Mpdf;
 
@@ -4569,8 +4570,8 @@ class Main extends MX_Controller
 
                     $pdf->Cell(18 ,9,$order->qty_order,'',0,'C', TRUE);
                     $pdf->Cell(15 ,9,$order->satuan_product,'',0,'C', TRUE);
-                    $pdf->Cell(35 ,9,"Rp. " . number_format($order->harga_order,2,',','.'),'',0,'R', TRUE);
-                    $pdf->Cell(35 ,9,"Rp. " . number_format($order->total_order,2,',','.'),'',1, 'R', TRUE);//end of line
+                    $pdf->Cell(35 ,9,"Rp. " . number_format($order->harga_order ?? 0,2,',','.'),'',0,'R', TRUE);
+                    $pdf->Cell(35 ,9,"Rp. " . number_format($order->total_order ?? 0,2,',','.'),'',1, 'R', TRUE);//end of line
                 }
 
 
@@ -4587,13 +4588,13 @@ class Main extends MX_Controller
                 $pdf->Cell(130 ,$payment_detail_height,'Instruksi Pembayaran',0,0);
                 $pdf->SetFont('Nunito','',10);
                 $pdf->Cell(25 ,$payment_detail_height,'Subtotal',0,0);
-                $pdf->Cell(34 ,$payment_detail_height,"Rp. " . number_format($order->subtotal_order,2,',','.'),0,1,'R');//end of line
+                $pdf->Cell(34 ,$payment_detail_height,"Rp. " . number_format($order->subtotal_order ?? 0,2,',','.'),0,1,'R');//end of line
 
                 $pdf->Cell(130 ,$payment_detail_height,'Bank Mandiri 1450013916586 An. Anak Agung Ayu Arina Saraswati Hardy',0,0);
                 $pdf->Cell(25 ,$payment_detail_height,'Pengiriman',0,0);
 
                 if($data_order->row()->is_ongkir_kas == '0'){
-                    $pdf->Cell(34 ,$payment_detail_height,"Rp. " . number_format($order->ongkir_order,2,',','.'),0,1,'R');//end of line
+                    $pdf->Cell(34 ,$payment_detail_height,"Rp. " . number_format($order->ongkir_order ?? 0,2,',','.'),0,1,'R');//end of line
                 } else {
                     $pdf->Cell(34 ,$payment_detail_height,"Rp. " . number_format(0,2,',','.'),0,1,'R');//end of line
                 }
@@ -4601,13 +4602,13 @@ class Main extends MX_Controller
 
                 $pdf->Cell(130 ,$payment_detail_height,'',0,0);
                 $pdf->Cell(25 ,$payment_detail_height,'Diskon',0,0);
-                $pdf->Cell(34 ,$payment_detail_height,"(Rp. " . number_format($order->diskon_order,2,',','.').")",0,1,'R');//end of line
+                $pdf->Cell(34 ,$payment_detail_height,"(Rp. " . number_format($order->diskon_order ?? 0,2,',','.').")",0,1,'R');//end of line
 
                 $pdf->SetFont('Nunito','B',10);
 
                 $pdf->Cell(130 ,$payment_detail_height,'',0,0);
                 $pdf->Cell(25 ,$payment_detail_height,'Total','B',0);
-                $pdf->Cell(34 ,$payment_detail_height,"Rp. " . number_format($order->grand_total_order,2,',','.'),'B',1,'R');//end of line
+                $pdf->Cell(34 ,$payment_detail_height,"Rp. " . number_format($order->grand_total_order ?? 0,2,',','.'),'B',1,'R');//end of line
 
                 // ================ SIGNATURE ===============
 
@@ -4747,8 +4748,8 @@ class Main extends MX_Controller
                     $pdf->Cell(54 ,6,$order->nama_product,'',0, 'L', TRUE);
                     $pdf->Cell(15 ,6,$order->qty_order_vendor,'',0,'C', TRUE);
                     $pdf->Cell(15 ,6,$order->satuan_product,'',0,'C', TRUE);
-                    $pdf->Cell(35 ,6,"Rp. " . number_format($order->harga_order_vendor,2,',','.'),'',0,'R', TRUE);
-                    $pdf->Cell(35 ,6,"Rp. " . number_format($order->total_order_vendor,2,',','.'),'',1, 'R', TRUE);//end of line
+                    $pdf->Cell(35 ,6,"Rp. " . number_format($order->harga_order_vendor ?? 0,2,',','.'),'',0,'R', TRUE);
+                    $pdf->Cell(35 ,6,"Rp. " . number_format($order->total_order_vendor ?? 0,2,',','.'),'',1, 'R', TRUE);//end of line
                 }
 
                 // ================ SIGNATURE ===============
@@ -4764,17 +4765,17 @@ class Main extends MX_Controller
 
                 $pdf->Cell(139 ,5,'',0,0, 'L', TRUE);
                 $pdf->Cell(15 ,5,'Subtotal:',0,0, 'L', TRUE);
-                $pdf->Cell(35 ,5,"Rp. " . number_format($data_order->row()->diskon_order_vendor + $data_order->row()->grand_total_order,2,',','.'),0,1, 'R', TRUE);
+                $pdf->Cell(35 ,5,"Rp. " . number_format($data_order->row()->diskon_order_vendor + $data_order->row()->grand_total_order ?? 0,2,',','.'),0,1, 'R', TRUE);
 
                 $pdf->Cell(139 ,5,'',0,0, 'L', TRUE);
                 $pdf->Cell(15 ,5,'Diskon:',0,0, 'L', TRUE);
-                $pdf->Cell(35 ,5,"Rp. " . number_format($data_order->row()->diskon_order_vendor,2,',','.'),0,1, 'R', TRUE);
+                $pdf->Cell(35 ,5,"Rp. " . number_format($data_order->row()->diskon_order_vendor ?? 0,2,',','.'),0,1, 'R', TRUE);
 
                 $pdf->setFillColor(201,201,201);
                 $pdf->Cell(139 ,5,'',0,0, 'L', TRUE);
                 $pdf->SetFont('Nunito','B',10);
                 $pdf->Cell(15 ,5,'Total:',0,0, 'L', TRUE);
-                $pdf->Cell(35 ,5,"Rp. " . number_format($data_order->row()->grand_total_order,2,',','.'),0,1, 'R', TRUE);
+                $pdf->Cell(35 ,5,"Rp. " . number_format($data_order->row()->grand_total_order ?? 0,2,',','.'),0,1, 'R', TRUE);
 
 
                 $pdf->SetFont('Nunito','',10);
@@ -4919,46 +4920,46 @@ class Main extends MX_Controller
 
                 $pdf->Cell(20 ,6,'1','T, L, R',0, 'R', TRUE);
                 $pdf->Cell(87 ,6,'Gaji','T, L, R',0, 'L', TRUE);
-                $pdf->Cell(82 ,6,"Rp. " . number_format($data->salary_staff,2,',','.'),'T, L, R',1, 'R', TRUE);
+                $pdf->Cell(82 ,6,"Rp. " . number_format($data->salary_staff ?? 0,2,',','.'),'T, L, R',1, 'R', TRUE);
 
 
                 $pdf->Cell(20 ,6,'2',' L, R',0, 'R', TRUE);
                 $pdf->Cell(87 ,6,'Upah Delivery','L, R',0, 'L', TRUE);
-                $pdf->Cell(82 ,6,"Rp. " . number_format($data->ongkir_salary,2,',','.'),'L, R',1, 'R', TRUE);
+                $pdf->Cell(82 ,6,"Rp. " . number_format($data->ongkir_salary ?? 0,2,',','.'),'L, R',1, 'R', TRUE);
 
                 $pdf->Cell(20 ,6,'3',' L, R',0, 'R', TRUE);
                 $pdf->Cell(87 ,6,'Fee Penjualan','L, R',0, 'L', TRUE);
-                $pdf->Cell(82 ,6,"Rp. " . number_format($data->fee_penjualan_salary,2,',','.'),'L, R',1, 'R', TRUE);
+                $pdf->Cell(82 ,6,"Rp. " . number_format($data->fee_penjualan_salary ?? 0,2,',','.'),'L, R',1, 'R', TRUE);
 
                 $pdf->Cell(20 ,6,'4',' L, R',0, 'R', TRUE);
                 $pdf->Cell(87 ,6,'Lembur','L, R',0, 'L', TRUE);
-                $pdf->Cell(82 ,6,"Rp. " . number_format($data->lembur_salary,2,',','.'),'L, R',1, 'R', TRUE);
+                $pdf->Cell(82 ,6,"Rp. " . number_format($data->lembur_salary ?? 0,2,',','.'),'L, R',1, 'R', TRUE);
 
                 $pdf->Cell(20 ,6,'5',' L, R',0, 'R', TRUE);
                 $pdf->Cell(87 ,6,'Kas Bon','L, R',0, 'L', TRUE);
-                $pdf->Cell(82 ,6,"Rp. " . number_format($data->kas_bon_salary,2,',','.'),'L, R',1, 'R', TRUE);
+                $pdf->Cell(82 ,6,"Rp. " . number_format($data->kas_bon_salary ?? 0,2,',','.'),'L, R',1, 'R', TRUE);
 
                 $pdf->Cell(20 ,6,'6',' L, R',0, 'R', TRUE);
                 $pdf->Cell(87 ,6,'Potongan Kas Bon','L, R',0, 'L', TRUE);
-                $pdf->Cell(82 ,6,"(Rp. " . number_format($data->potongan_kas_bon_salary,2,',','.').")",'L, R',1, 'R', TRUE);
+                $pdf->Cell(82 ,6,"(Rp. " . number_format($data->potongan_kas_bon_salary ?? 0,2,',','.').")",'L, R',1, 'R', TRUE);
 
                 $pdf->Cell(20 ,6,'7',' L, R',0, 'R', TRUE);
                 $pdf->Cell(87 ,6,'THR','L, R',0, 'L', TRUE);
-                $pdf->Cell(82 ,6,"Rp. " . number_format($data->THR_salary,2,',','.'),'L, R',1, 'R', TRUE);
+                $pdf->Cell(82 ,6,"Rp. " . number_format($data->THR_salary ?? 0,2,',','.'),'L, R',1, 'R', TRUE);
 
                 if($data->lain_lain_salary != 0 || !empty($data->lain_lain_salary)){
                     $pdf->Cell(20 ,6,'8',' L, R',0, 'R', TRUE);
                     $pdf->Cell(87 ,6,'Dana Kuota Internet','L, R',0, 'L', TRUE);
-                    $pdf->Cell(82 ,6,"Rp. " . number_format($data->kuota_internet_salary,2,',','.'),'L, R',1, 'R', TRUE);
+                    $pdf->Cell(82 ,6,"Rp. " . number_format($data->kuota_internet_salary ?? 0,2,',','.'),'L, R',1, 'R', TRUE);
 
                     $pdf->Cell(20 ,6,'9',' L, R, B',0, 'R', TRUE);
                     $pdf->Cell(87 ,6,"Lain-lain (".$data->catatan_lain_lain.")",'L, R, B',0, 'L', TRUE);
-                    $pdf->Cell(82 ,6,"Rp. " . number_format($data->lain_lain_salary,2,',','.'),'L, R, B',1, 'R', TRUE);
+                    $pdf->Cell(82 ,6,"Rp. " . number_format($data->lain_lain_salary ?? 0,2,',','.'),'L, R, B',1, 'R', TRUE);
 
                 } else {
                     $pdf->Cell(20 ,6,'8',' L, R, B',0, 'R', TRUE);
                     $pdf->Cell(87 ,6,'Dana Kuota Internet','L, R, B',0, 'L', TRUE);
-                    $pdf->Cell(82 ,6,"Rp. " . number_format($data->kuota_internet_salary,2,',','.'),'L, R, B',1, 'R', TRUE);
+                    $pdf->Cell(82 ,6,"Rp. " . number_format($data->kuota_internet_salary ?? 0,2,',','.'),'L, R, B',1, 'R', TRUE);
                 }
 
                 $pdf->setFillColor(226,239,218);
@@ -4974,7 +4975,7 @@ class Main extends MX_Controller
                                         floatval((empty($data->lain_lain_salary)) ? 0 : $data->lain_lain_salary) -
                                             floatval((empty($data->potongan_kas_bon_salary)) ? 0 : $data->potongan_kas_bon_salary);
 
-                $pdf->Cell(189 ,6,'Total: '."Rp. " . number_format($total_gaji,2,',','.'),1, 1, 'R', TRUE);
+                $pdf->Cell(189 ,6,'Total: '."Rp. " . number_format($total_gaji ?? 0,2,',','.'),1, 1, 'R', TRUE);
 
 
                 // ================ SIGNATURE ===============
@@ -5149,7 +5150,7 @@ class Main extends MX_Controller
                 }
 
 
-                $pdf->Cell(42 ,5,"Rp. " . number_format($data->grand_total_order,2,',','.'),'',1, 'R', TRUE);
+                $pdf->Cell(42 ,5,"Rp. " . number_format($data->grand_total_order ?? 0,2,',','.'),'',1, 'R', TRUE);
 
                 // ================ INVOICE HEADER ===============
 
@@ -5168,7 +5169,7 @@ class Main extends MX_Controller
                     $pdf->Cell(25 ,6,"",'',0,'L', TRUE);
                     $pdf->Cell(67 ,6,"Ongkir",'',0, 'L', TRUE);
                     $pdf->Cell(56 ,6,"",'',0, 'L', TRUE);
-                    $pdf->Cell(42 ,5,"Rp. " . number_format($data->ongkir_order,2,',','.'),'',1, 'R', TRUE);//end of line
+                    $pdf->Cell(42 ,5,"Rp. " . number_format($data->ongkir_order ?? 0,2,',','.'),'',1, 'R', TRUE);//end of line
                 }
 
                 if($data->diskon_order != '0'){
@@ -5176,7 +5177,7 @@ class Main extends MX_Controller
                     $pdf->Cell(25 ,6,"",'',0,'L', TRUE);
                     $pdf->Cell(67 ,6,"Diskon",'',0, 'L', TRUE);
                     $pdf->Cell(56 ,6,"",'',0, 'L', TRUE);
-                    $pdf->Cell(42 ,5,"(Rp. " . number_format($data->diskon_order,2,',','.').")",'',1, 'R', TRUE);//end of line
+                    $pdf->Cell(42 ,5,"(Rp. " . number_format($data->diskon_order ?? 0,2,',','.').")",'',1, 'R', TRUE);//end of line
                 }
 
                 $prev_order = $data->no_order;
@@ -5185,9 +5186,9 @@ class Main extends MX_Controller
             $pdf->setFillColor(255,255,255);
             $pdf->Cell(25 ,6,"",'',0,'L', TRUE);
             $pdf->Cell(67 ,6,$data->nama_product,'',0, 'L', TRUE);
-            $pdf->Cell(28 ,5,"Rp. " . number_format($data->harga_order,2,',','.'),'',0,'L', TRUE);
+            $pdf->Cell(28 ,5,"Rp. " . number_format($data->harga_order ?? 0,2,',','.'),'',0,'L', TRUE);
             $pdf->Cell(28 ,5,$data->qty_order,'',0,'R', TRUE);
-            $pdf->Cell(42 ,5,"Rp. " . number_format($data->total_order,2,',','.'),'',1, 'R', TRUE);//end of line
+            $pdf->Cell(42 ,5,"Rp. " . number_format($data->total_order ?? 0,2,',','.'),'',1, 'R', TRUE);//end of line
 
 
 
@@ -5211,11 +5212,11 @@ class Main extends MX_Controller
 
         $pdf->Cell(110 ,$payment_detail_height,'',0,0);
         $pdf->Cell(45 ,$payment_detail_height,'Total Terbayar','',0);
-        $pdf->Cell(34 ,$payment_detail_height,"Rp. " . number_format($total_terbayar,2,',','.'),'',1,'R');//end of line
+        $pdf->Cell(34 ,$payment_detail_height,"Rp. " . number_format($total_terbayar ?? 0,2,',','.'),'',1,'R');//end of line
 
         $pdf->Cell(110 ,$payment_detail_height,'',0,0);
         $pdf->Cell(45 ,$payment_detail_height,'Total yang Harus Dibayar','B',0);
-        $pdf->Cell(34 ,$payment_detail_height,"Rp. " . number_format($total_yang_harus_dibayar,2,',','.'),'B',1,'R');//end of line
+        $pdf->Cell(34 ,$payment_detail_height,"Rp. " . number_format($total_yang_harus_dibayar ?? 0,2,',','.'),'B',1,'R');//end of line
 
         // ================ SIGNATURE ===============
 

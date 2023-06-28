@@ -169,7 +169,7 @@ class Main_model extends CI_Model
 
     }
 
-    function get_order_eatery_m($search = null, $status = "all", $payment = "all", $jenis = "all",$start_date, $end_date, $excel = false, $length = 10000000000, $start = 0){
+    function get_order_eatery_m($search, $status, $payment, $jenis, $start_date, $end_date, $excel = false, $length = 10000000000, $start = 0){
         $sql = "SELECT * 
                 FROM order_eatery_m a
                 INNER JOIN metode_pembayaran b ON a.metode_pembayaran = b.html_id
@@ -195,7 +195,7 @@ class Main_model extends CI_Model
         return $query;
     }
 
-    function get_summary_transaksi($status = "all", $payment = "all", $jenis = "all", $start_date, $end_date, $search = null){
+    function get_summary_transaksi($status, $payment, $jenis, $start_date, $end_date, $search = null){
         $sql = "SELECT SUM(grand_total_order) AS data
                 FROM order_eatery_m a 
                 WHERE a.void = '0' 

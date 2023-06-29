@@ -34,7 +34,7 @@
                             <option value="none">Stok Kosong</option>
                         </select>
                     </div>
-                    <button id="export_excel" class="btn btn-warning btn-sm">Export Excel</button>
+                    <!-- <button id="export_excel" class="btn btn-warning btn-sm">Export Excel</button> -->
                 </form>
 
                 <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">

@@ -18,7 +18,7 @@
                     <input type="date" id="start_date" name="start_date" style="margin-right: 5px; margin-left: 5px" class="form-control form-control-sm" value="<?php echo date('Y')?>-01-01"> sampai tanggal
                     <input type="date" id="end_date" name="end_date" style="margin-right: 5px; margin-left: 5px" class="form-control form-control-sm" value="<?php echo date('Y-m-d')?>">
                     <button class="btn btn-primary btn-sm apply" style="margin-right: 5px">Terapkan</button>
-                    <button id="export_excel" class="btn btn-warning btn-sm">Export Excel</button>
+                    <!-- <button id="export_excel" class="btn btn-warning btn-sm">Export Excel</button> -->
                 </div>
             </form>
             <div class="table-responsive">

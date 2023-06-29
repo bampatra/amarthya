@@ -49,7 +49,7 @@
                         <option value="OUT"> Pengeluaran </option>
                     </select>
                     <button id="save_setting" class="btn btn-primary btn-sm" style="margin-right: 5px">Simpan</button>
-                    <button id="export_excel" class="btn btn-warning btn-sm">Export Excel</button>
+                    <!-- <button id="export_excel" class="btn btn-warning btn-sm">Export Excel</button> -->
                 </div>
             </form>
         </div>
